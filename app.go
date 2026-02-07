@@ -3,18 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
-	"path/filepath"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-// App struct
 type App struct {
 	ctx context.Context
 }
 
-// NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{}
 }
@@ -25,27 +21,28 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
+func (a *App) SaveConfig() string {
+	// TODO
+
+	return "Success" // TODO: BG localization
+}
+
 func (a *App) GenerateDeclarationOne(v string) string {
 	content := []byte("test,test,test")
 
-	var options runtime.OpenDialogOptions
+	var options runtime.OpenDialogOptions // TODO: options
 	dir, err := runtime.OpenDirectoryDialog(a.ctx, options)
 	if err != nil {
 		return err.Error()
 	}
 
-	// TODO: OpenDirectoryDialog(ctx context.Context, dialogOptions OpenDialogOptions) (string, error)
-	// TODO: SaveFileDialog?
-	path1, err := filepath.Abs(dir + "/dat1.txt")
-	if err != nil {
-		// TODO a.log LogPrint(ctx, err.Error())
-		return err.Error()
-	}
-
-	err = os.WriteFile(path1, content, 0644)
+	path1, err := SaveDeclaration(dir, content)
 	if err != nil {
 		return err.Error()
 	}
 
+	// TODO a.log LogPrint(ctx, err.Error()), MessageDialog
+
+	// TODO: update message
 	return fmt.Sprintf("Success %s, %d bytes writen to %s", v, len(content), path1)
 }
