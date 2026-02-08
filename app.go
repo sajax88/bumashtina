@@ -8,7 +8,8 @@ import (
 )
 
 type App struct {
-	ctx context.Context
+	ctx    context.Context
+	config Config
 }
 
 func NewApp() *App {
@@ -26,14 +27,20 @@ func (a *App) SaveConfig(c Config) string {
 	if err != nil {
 		return err.Error()
 	}
+	a.config = c
 	return "Success" // TODO: BG localization
 }
 
 func (a *App) LoadConfig() Config {
+	if a.config.LastName != "" { // TODO
+		return a.config
+	}
+
 	c, err := LoadConfigFromFile()
 	if err != nil {
 		return Config{}
 	}
+	a.config = c
 	return c
 }
 

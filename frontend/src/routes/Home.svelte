@@ -6,7 +6,6 @@
   import { onMount } from 'svelte';
 
 	onMount(() => {
-		console.log('the component has mounted');
     load_config()
 	});
 
@@ -62,5 +61,4 @@
     border: none;
     background-color: rgba(255, 255, 255, 1);
   }
-
 </style>
