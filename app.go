@@ -21,8 +21,7 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-func (a *App) SaveConfig() string {
-	c := Config{"Joe", "Test", "Smith"} // TODO
+func (a *App) SaveConfig(c Config) string {
 	err := SaveConfigToFile(c)
 	if err != nil {
 		return err.Error()
@@ -38,7 +37,7 @@ func (a *App) LoadConfig() Config {
 	return c
 }
 
-func (a *App) GenerateDeclarationOne(v string) string {
+func (a *App) GenerateDeclarationOne() string {
 	content := []byte("test,test,test")
 
 	var options runtime.OpenDialogOptions // TODO: options
@@ -55,5 +54,5 @@ func (a *App) GenerateDeclarationOne(v string) string {
 	// TODO a.log LogPrint(ctx, err.Error()), MessageDialog
 
 	// TODO: update message
-	return fmt.Sprintf("Success %s, %d bytes writen to %s", v, len(content), path1)
+	return fmt.Sprintf("Success %s, %d bytes writen to %s", len(content), path1)
 }

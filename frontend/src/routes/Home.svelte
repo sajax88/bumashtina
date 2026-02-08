@@ -3,30 +3,43 @@
   import { SaveConfig } from "../../wailsjs/go/main/App.js";
   import { LoadConfig } from "../../wailsjs/go/main/App.js";
 
+  import { onMount } from 'svelte';
+
+	onMount(() => {
+		console.log('the component has mounted');
+    load_config()
+	});
+
   let res = ""
-  let message = ""
+  let config;
 
   function decl1(): void {
-    GenerateDeclarationOne(message).then((result) => (res = result));
+    GenerateDeclarationOne().then((result) => (res = result));
   }
 
   function save_config(): void {
-    SaveConfig().then((result) => (res = result));
+    SaveConfig(config).then((result) => (res = result));
   }
 
   function load_config(): void {
     LoadConfig().then(function (result) {
-        res = result.FirstName + " " + result.LastName
+        config = result
     });
   }
 </script>
 
 <main>
   <div class="input-box" id="input-box">
-    <input autocomplete="off" class="input" id="name" bind:value={message} type="text" />
-    <button class="btn" on:click={decl1}>Decl1</button>
+    {#if config}
+    <input class="input" id="FirstName" bind:value={config.FirstName} type="text" />
+    <input class="input" id="MiddleName" bind:value={config.MiddleName} type="text" />
+    <input class="input" id="LastName" bind:value={config.LastName} type="text" />
+
+
      <button class="btn" on:click={save_config}>Save Config</button>
-     <button class="btn" on:click={load_config}>Load Config</button>
+    {/if}
+
+    <button class="btn" on:click={decl1}>Decl1</button>
     <div>{res}</div>
 
     <a href="#/page">Page</a>
