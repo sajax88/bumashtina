@@ -1,64 +1,63 @@
 package main
 
+import (
+	"encoding/json"
+	"log"
+	"os"
+	"path/filepath"
+)
+
 type Config struct {
-	firstName  string
-	middleName string
-	lastName   string
+	FirstName  string
+	MiddleName string
+	LastName   string
 }
 
-func LoadConfig() (Config, error) {
+func getConfigPath() (string, error) {
+	configDir, dirErr := os.UserConfigDir()
+
+	if dirErr != nil {
+		log.Fatal(dirErr)
+		return "", dirErr
+	}
+
+	configPath := filepath.Join(configDir, "bumashtina.conf")
+
+	return configPath, nil
+}
+
+func LoadConfigFromFile() (Config, error) {
 	var c Config
-	// TODO
 
-	// Load settings from the file, if there
-	// configDir, dirErr := os.UserConfigDir()
+	configPath, err := getConfigPath()
+	if err != nil {
+		return c, err
+	}
 
-	// var (
-	// 	configPath string
-	// 	origConfig []byte
-	// )
-	// if dirErr == nil {
-	// 	configPath = filepath.Join(configDir, "ExampleUserConfigDir", "example.conf")
-	// 	var err error
-	// 	origConfig, err = os.ReadFile(configPath)
-	// 	if err != nil && !os.IsNotExist(err) {
-	// 		// The user has a config file but we couldn't read it.
-	// 		// Report the error instead of ignoring their configuration.
-	// 		log.Fatal(err)
-	// 	}
-	// }
+	savedConfig, err := os.ReadFile(configPath)
+	if err != nil && !os.IsNotExist(err) {
+		// There is a config file but we couldn't read it
+		log.Fatal(err)
+		return c, err
+	}
 
-	// // Use and perhaps make changes to the config.
-	// config := bytes.Clone(origConfig)
+	if savedConfig != nil {
+		json.Unmarshal(savedConfig, &c)
+	}
 
 	return c, nil
 }
 
-func SaveConfig(c Config) string {
-	// TODO
+func SaveConfigToFile(c Config) error {
+	configPath, err := getConfigPath()
+	if err != nil {
+		return err
+	}
 
-	// configDir, dirErr := os.UserConfigDir()
-	// if dirErr == nil {
-	// 	configPath = filepath.Join(configDir, "ExampleUserConfigDir", "example.conf")
-	// 	var err error
-	// 	origConfig, err = os.ReadFile(configPath)
-	// 	if err != nil && !os.IsNotExist(err) {
-	// 		// The user has a config file but we couldn't read it.
-	// 		// Report the error instead of ignoring their configuration.
-	// 		log.Fatal(err)
-	// 	}
-	// }
-	// if configPath == "" {
-	// 	log.Printf("not saving config changes: %v", dirErr)
-	// } else {
-	// 	err := os.MkdirAll(filepath.Dir(configPath), 0700)
-	// 	if err == nil {
-	// 		err = os.WriteFile(configPath, config, 0600)
-	// 	}
-	// 	if err != nil {
-	// 		log.Printf("error saving config changes: %v", err)
-	// 	}
-	// }
+	config, err := json.Marshal(c)
+	if err != nil {
+		return err
+	}
 
-	return "Success" // TODO: BG localization
+	return os.WriteFile(configPath, config, 0600)
 }

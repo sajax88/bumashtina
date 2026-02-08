@@ -22,9 +22,20 @@ func (a *App) startup(ctx context.Context) {
 }
 
 func (a *App) SaveConfig() string {
-	// TODO
-
+	c := Config{"Joe", "Test", "Smith"} // TODO
+	err := SaveConfigToFile(c)
+	if err != nil {
+		return err.Error()
+	}
 	return "Success" // TODO: BG localization
+}
+
+func (a *App) LoadConfig() Config {
+	c, err := LoadConfigFromFile()
+	if err != nil {
+		return Config{}
+	}
+	return c
 }
 
 func (a *App) GenerateDeclarationOne(v string) string {

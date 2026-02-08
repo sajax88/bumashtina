@@ -6,7 +6,7 @@ import (
 )
 
 func SaveDeclaration(dir string, content []byte) (string, error) {
-	path1, err := filepath.Abs(dir + "/dat1.txt") // TODO: name
+	path1, err := filepath.Abs(filepath.Join(dir, "dat1.txt")) // TODO: name
 	if err != nil {
 		return "", err
 	}
