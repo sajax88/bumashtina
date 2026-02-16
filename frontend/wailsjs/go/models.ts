@@ -1,12 +1,14 @@
 export namespace main {
 	
-	export class Config {
+	export class UserConfig {
 	    FirstName: string;
 	    MiddleName: string;
 	    LastName: string;
+	    Egn: string;
+	    Bulstat: string;
 	
 	    static createFrom(source: any = {}) {
-	        return new Config(source);
+	        return new UserConfig(source);
 	    }
 	
 	    constructor(source: any = {}) {
@@ -14,6 +16,8 @@ export namespace main {
 	        this.FirstName = source["FirstName"];
 	        this.MiddleName = source["MiddleName"];
 	        this.LastName = source["LastName"];
+	        this.Egn = source["Egn"];
+	        this.Bulstat = source["Bulstat"];
 	    }
 	}
 

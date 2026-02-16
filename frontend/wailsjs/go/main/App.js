@@ -6,10 +6,10 @@ export function GenerateDeclarationOne() {
   return window['go']['main']['App']['GenerateDeclarationOne']();
 }
 
-export function LoadConfig() {
-  return window['go']['main']['App']['LoadConfig']();
+export function LoadUserConfig() {
+  return window['go']['main']['App']['LoadUserConfig']();
 }
 
-export function SaveConfig(arg1) {
-  return window['go']['main']['App']['SaveConfig'](arg1);
+export function SaveUserConfig(arg1) {
+  return window['go']['main']['App']['SaveUserConfig'](arg1);
 }

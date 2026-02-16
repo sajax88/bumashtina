@@ -4,6 +4,6 @@ import {main} from '../models';
 
 export function GenerateDeclarationOne():Promise<string>;
 
-export function LoadConfig():Promise<main.Config>;
+export function LoadUserConfig():Promise<main.UserConfig>;
 
-export function SaveConfig(arg1:main.Config):Promise<string>;
+export function SaveUserConfig(arg1:main.UserConfig):Promise<string>;

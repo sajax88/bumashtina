@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -22,30 +23,34 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-func (a *App) SaveConfig(c Config) string {
-	err := SaveConfigToFile(c)
+func (a *App) SaveUserConfig(c UserConfig) string {
+	if !c.IsValid() {
+		return "Invalid config" // TODO: BG localization
+	}
+	a.config.user = c
+	err := SaveConfigToFile(a.config)
 	if err != nil {
 		return err.Error()
 	}
-	a.config = c
+
 	return "Success" // TODO: BG localization
 }
 
-func (a *App) LoadConfig() Config {
-	if a.config.LastName != "" { // TODO
-		return a.config
+func (a *App) LoadUserConfig() UserConfig {
+	if a.config != (Config{}) { // TODO
+		return a.config.user
 	}
 
 	c, err := LoadConfigFromFile()
 	if err != nil {
-		return Config{}
+		log.Fatal(err)
 	}
 	a.config = c
-	return c
+	return c.user
 }
 
 func (a *App) GenerateDeclarationOne() string {
-	content := []byte("test,test,test")
+	content := []byte("test,test,test") // TODO
 
 	var options runtime.OpenDialogOptions // TODO: options
 	dir, err := runtime.OpenDirectoryDialog(a.ctx, options)

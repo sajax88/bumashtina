@@ -5,12 +5,37 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 )
 
-type Config struct {
+type UserConfig struct {
 	FirstName  string
 	MiddleName string
 	LastName   string
+	Egn        string
+	Bulstat    string
+}
+
+type Settings struct {
+	IsPregnancyInsuranceEnabled bool // TODO: other
+}
+
+type Config struct {
+	user     UserConfig
+	settings Settings
+}
+
+func (c UserConfig) IsValid() bool {
+	notEmpty := c.FirstName != "" && c.LastName != "" && c.Egn != "" && c.Bulstat != ""
+	numbersOnly := isDigitsOnly(c.Egn) && isDigitsOnly(c.Bulstat)
+	return notEmpty && numbersOnly
+}
+
+func isDigitsOnly(s string) bool {
+	if _, err := strconv.Atoi(s); err == nil {
+		return true
+	}
+	return false
 }
 
 func getConfigPath() (string, error) {
@@ -27,7 +52,8 @@ func getConfigPath() (string, error) {
 }
 
 func LoadConfigFromFile() (Config, error) {
-	var c Config
+	s := Settings{IsPregnancyInsuranceEnabled: true} // TODO: default settings
+	c := Config{user: UserConfig{}, settings: s}
 
 	configPath, err := getConfigPath()
 	if err != nil {
@@ -37,11 +63,10 @@ func LoadConfigFromFile() (Config, error) {
 	savedConfig, err := os.ReadFile(configPath)
 	if err != nil && !os.IsNotExist(err) {
 		// There is a config file but we couldn't read it
-		log.Fatal(err)
 		return c, err
 	}
 
-	if savedConfig != nil {
+	if len(savedConfig) > 0 {
 		json.Unmarshal(savedConfig, &c)
 	}
 
