@@ -6,8 +6,16 @@ export function GenerateDeclarationOne() {
   return window['go']['main']['App']['GenerateDeclarationOne']();
 }
 
+export function LoadSettingsConfig() {
+  return window['go']['main']['App']['LoadSettingsConfig']();
+}
+
 export function LoadUserConfig() {
   return window['go']['main']['App']['LoadUserConfig']();
+}
+
+export function SaveSettingsConfig(arg1) {
+  return window['go']['main']['App']['SaveSettingsConfig'](arg1);
 }
 
 export function SaveUserConfig(arg1) {

@@ -17,12 +17,12 @@ type UserConfig struct {
 }
 
 type Settings struct {
-	IsPregnancyInsuranceEnabled bool // TODO: other
+	IsPregnancyInsuranceEnabled bool
 }
 
 type Config struct {
-	user     UserConfig
-	settings Settings
+	User     UserConfig
+	Settings Settings
 }
 
 func (c UserConfig) IsValid() bool {
@@ -53,7 +53,7 @@ func getConfigPath() (string, error) {
 
 func LoadConfigFromFile() (Config, error) {
 	s := Settings{IsPregnancyInsuranceEnabled: true} // TODO: default settings
-	c := Config{user: UserConfig{}, settings: s}
+	c := Config{User: UserConfig{}, Settings: s}
 
 	configPath, err := getConfigPath()
 	if err != nil {
@@ -80,7 +80,9 @@ func SaveConfigToFile(c Config) error {
 	}
 
 	config, err := json.Marshal(c)
+	log.Print("Saving config:", c, string(config))
 	if err != nil {
+		log.Print(err)
 		return err
 	}
 

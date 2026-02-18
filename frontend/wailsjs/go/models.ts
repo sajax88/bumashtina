@@ -1,5 +1,17 @@
 export namespace main {
 	
+	export class Settings {
+	    IsPregnancyInsuranceEnabled: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new Settings(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.IsPregnancyInsuranceEnabled = source["IsPregnancyInsuranceEnabled"];
+	    }
+	}
 	export class UserConfig {
 	    FirstName: string;
 	    MiddleName: string;

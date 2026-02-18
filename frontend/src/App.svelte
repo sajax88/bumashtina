@@ -2,12 +2,14 @@
   import Router from "svelte-spa-router";
   import Home from './routes/Home.svelte';
 
-  import Page from './routes/Page.svelte'
+  import Settings from './routes/Settings.svelte'
+  import Personal from './routes/Personal.svelte'
 </script>
 
 <Router
     routes={{
         "/": Home,
-        "/page": Page,
+        "/settings": Settings,
+        "/personal": Personal,
     }}
 />

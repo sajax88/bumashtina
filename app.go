@@ -27,7 +27,18 @@ func (a *App) SaveUserConfig(c UserConfig) string {
 	if !c.IsValid() {
 		return "Invalid config" // TODO: BG localization
 	}
-	a.config.user = c
+	a.config.User = c
+	err := SaveConfigToFile(a.config)
+	if err != nil {
+		return err.Error()
+	}
+
+	return "Success" // TODO: BG localization
+}
+
+func (a *App) SaveSettingsConfig(c Settings) string {
+	// TODO: validation
+	a.config.Settings = c
 	err := SaveConfigToFile(a.config)
 	if err != nil {
 		return err.Error()
@@ -38,7 +49,7 @@ func (a *App) SaveUserConfig(c UserConfig) string {
 
 func (a *App) LoadUserConfig() UserConfig {
 	if a.config != (Config{}) { // TODO
-		return a.config.user
+		return a.config.User
 	}
 
 	c, err := LoadConfigFromFile()
@@ -46,7 +57,20 @@ func (a *App) LoadUserConfig() UserConfig {
 		log.Fatal(err)
 	}
 	a.config = c
-	return c.user
+	return c.User
+}
+
+func (a *App) LoadSettingsConfig() Settings {
+	if a.config != (Config{}) { // TODO
+		return a.config.Settings
+	}
+
+	c, err := LoadConfigFromFile()
+	if err != nil {
+		log.Fatal(err)
+	}
+	a.config = c
+	return c.Settings
 }
 
 func (a *App) GenerateDeclarationOne() string {

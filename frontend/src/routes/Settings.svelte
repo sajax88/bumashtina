@@ -1,5 +1,5 @@
 <script lang="ts">
-  //import { LoadConfig } from "../../wailsjs/go/main/App.js";
+  import { LoadSettingsConfig, SaveSettingsConfig } from "../../wailsjs/go/main/App.js";
 
   import { onMount } from 'svelte';
 
@@ -11,18 +11,18 @@
   let config;
 
   function save_config(): void {
-    // TODO SaveSettingsConfig(config).then((result) => (res = result));
+    SaveSettingsConfig(config).then((result) => (res = result));
   }
 
   function load_config(): void {
-    // LoadConfig().then(function (result) {
-    //     config = result
-    // });
+    LoadSettingsConfig().then(function (result) {
+        config = result
+    });
   }
 </script>
 
 <main>
-  <h1>Page</h1>
+  <h1>Settings</h1>
   <a href="#/">Home</a>
 
   {#if config}
