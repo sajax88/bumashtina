@@ -40,6 +40,10 @@
         <input class="input" required id="LastName" bind:value={config.LastName} type="text" />
       </div>
       <div class="form-group">
+        <label for="YearOfBirth">Year of Birth</label>
+        <input class="input" required type="text" id="YearOfBirth" bind:value={config.YearOfBirth} />
+      </div>
+      <div class="form-group">
         <label for="Egn">EGN</label>
         <input class="input" required type="text" id="Egn" bind:value={config.Egn} />
       </div>

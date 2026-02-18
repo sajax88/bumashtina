@@ -9,11 +9,12 @@ import (
 )
 
 type UserConfig struct {
-	FirstName  string
-	MiddleName string
-	LastName   string
-	Egn        string
-	Bulstat    string
+	FirstName   string
+	MiddleName  string
+	LastName    string
+	Egn         string
+	Bulstat     string
+	YearOfBirth string
 }
 
 type Settings struct {
@@ -26,8 +27,8 @@ type Config struct {
 }
 
 func (c UserConfig) IsValid() bool {
-	notEmpty := c.FirstName != "" && c.LastName != "" && c.Egn != "" && c.Bulstat != ""
-	numbersOnly := isDigitsOnly(c.Egn) && isDigitsOnly(c.Bulstat)
+	notEmpty := c.FirstName != "" && c.LastName != "" && c.Egn != "" && c.Bulstat != "" && c.YearOfBirth != ""
+	numbersOnly := isDigitsOnly(c.Egn) && isDigitsOnly(c.Bulstat) && isDigitsOnly(c.YearOfBirth)
 	return notEmpty && numbersOnly
 }
 
@@ -87,4 +88,18 @@ func SaveConfigToFile(c Config) error {
 	}
 
 	return os.WriteFile(configPath, config, 0600)
+}
+
+func GetHardcodedConfig() {
+	// •    19,8% за фонд „Пенсии“ за родените преди 1 януари 1960 г., както и лицата по чл. 4б от КСО;
+	// •    14,8% за фонд „Пенсии“ за родените след 31 декември 1959 г.; - DEPENDING ON SETTINGS
+	// •    3,5% за фонд „Общо заболяване и майчинство“* - OPTIONAL, IN SETTINGS
+	// •    5% за ДЗПО – Универсален пенсионен фонд за родените след 31 декември 1959 г.; - DEPENDING ON SETTINGS
+	// •    8% за здравно осигуряване.
+	// Общо 0.278
+
+	// Мин.осиг.доход: 550,66 евро
+	// Макс.осиг.доход: 2111.64 евро
+	// признатите разходи 25%
+	// Данък 10%
 }

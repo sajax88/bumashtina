@@ -18,6 +18,7 @@ export namespace main {
 	    LastName: string;
 	    Egn: string;
 	    Bulstat: string;
+	    YearOfBirth: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new UserConfig(source);
@@ -30,6 +31,7 @@ export namespace main {
 	        this.LastName = source["LastName"];
 	        this.Egn = source["Egn"];
 	        this.Bulstat = source["Bulstat"];
+	        this.YearOfBirth = source["YearOfBirth"];
 	    }
 	}
 
