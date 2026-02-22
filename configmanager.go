@@ -8,6 +8,8 @@ import (
 	"strconv"
 )
 
+const MONEY_DIVIDER = 100
+
 type UserConfig struct {
 	FirstName   string
 	MiddleName  string
@@ -27,8 +29,8 @@ type Config struct {
 }
 
 func (c UserConfig) IsValid() bool {
-	notEmpty := c.FirstName != "" && c.LastName != "" && c.Egn != "" && c.Bulstat != "" && c.YearOfBirth != ""
-	numbersOnly := isDigitsOnly(c.Egn) && isDigitsOnly(c.Bulstat) && isDigitsOnly(c.YearOfBirth)
+	notEmpty := c.FirstName != "" && c.LastName != "" && c.Egn != "" && c.Bulstat != ""
+	numbersOnly := isDigitsOnly(c.Egn) && isDigitsOnly(c.Bulstat) && (c.YearOfBirth == "" || isDigitsOnly(c.YearOfBirth))
 	return notEmpty && numbersOnly
 }
 
@@ -40,14 +42,19 @@ func isDigitsOnly(s string) bool {
 }
 
 func getConfigPath() (string, error) {
-	configDir, dirErr := os.UserConfigDir()
+	configDir, dirErr := os.UserHomeDir()
 
 	if dirErr != nil {
 		log.Fatal(dirErr)
 		return "", dirErr
 	}
 
-	configPath := filepath.Join(configDir, "bumashtina.conf")
+	configPath := filepath.Join(configDir, "bumashtina", "data", "config.json")
+	err := os.MkdirAll(filepath.Dir(configPath), os.ModePerm)
+	if err != nil {
+		log.Fatal(err)
+		return "", err
+	}
 
 	return configPath, nil
 }
@@ -90,16 +97,26 @@ func SaveConfigToFile(c Config) error {
 	return os.WriteFile(configPath, config, 0600)
 }
 
-func GetHardcodedConfig() {
-	// •    19,8% за фонд „Пенсии“ за родените преди 1 януари 1960 г., както и лицата по чл. 4б от КСО;
-	// •    14,8% за фонд „Пенсии“ за родените след 31 декември 1959 г.; - DEPENDING ON SETTINGS
-	// •    3,5% за фонд „Общо заболяване и майчинство“* - OPTIONAL, IN SETTINGS
-	// •    5% за ДЗПО – Универсален пенсионен фонд за родените след 31 декември 1959 г.; - DEPENDING ON SETTINGS
-	// •    8% за здравно осигуряване.
-	// Общо 0.278
+// Money is stored with Divider (100) to avoid floating point issues.
+// E.g. 550,66 euro is stored as 55066.
+type TaxesConfig struct {
+	MinInsuranceIncomeCents      int32
+	MaxInsuranceIncomeCents      int32
+	ExpensesPercentage           float32
+	TaxPercentage                float32
+	PensionPercentage            float32
+	HealthInsurancePercentage    float32
+	PregnancyInsurancePercentage float32
+}
 
-	// Мин.осиг.доход: 550,66 евро
-	// Макс.осиг.доход: 2111.64 евро
-	// признатите разходи 25%
-	// Данък 10%
+func GetTaxesConfig() TaxesConfig {
+	return TaxesConfig{
+		MinInsuranceIncomeCents:      55066,  // 550,66 euro
+		MaxInsuranceIncomeCents:      211164, // 2111,64 euro
+		ExpensesPercentage:           25.0,   // 25% признати разходи
+		TaxPercentage:                10.0,   // 10% данък върху дохода
+		PensionPercentage:            19.8,   // 19,8% за фонд „Пенсии“
+		HealthInsurancePercentage:    8.0,    // 8% за фонд „Здравно осигуряване“
+		PregnancyInsurancePercentage: 3.5,    // 3,5% за фонд „Майчинство“ - see Settings.IsPregnancyInsuranceEnabled
+	}
 }

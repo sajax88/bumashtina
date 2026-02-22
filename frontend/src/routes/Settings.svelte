@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { LoadSettingsConfig, SaveSettingsConfig } from "../../wailsjs/go/main/App.js";
+  import { 
+    LoadSettingsConfig, 
+    SaveSettingsConfig,
+    LoadTaxesConfig
+  } from "../../wailsjs/go/main/App.js";
 
   import { onMount } from 'svelte';
 
@@ -9,6 +13,7 @@
 
   let res = ""
   let config;
+  let taxes_config;
 
   function save_config(): void {
     SaveSettingsConfig(config).then((result) => (res = result));
@@ -17,6 +22,9 @@
   function load_config(): void {
     LoadSettingsConfig().then(function (result) {
         config = result
+    });
+    LoadTaxesConfig().then(function (result) {
+        taxes_config = result
     });
   }
 </script>
@@ -32,4 +40,16 @@
     </div>
   {/if}
    <button class="btn" on:click={save_config}>Save Settings</button>
+
+   <h2>Taxes Configuration</h2>
+   {#if taxes_config}
+     <div class="taxes-config">
+       {#each Object.entries(taxes_config) as [key, value]}
+         <div class="config-item">
+           <span class="config-key">{key}:</span>
+           <span class="config-value">{value}</span>
+         </div>
+       {/each}
+     </div>
+   {/if}
 </main>

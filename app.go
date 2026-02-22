@@ -73,10 +73,14 @@ func (a *App) LoadSettingsConfig() Settings {
 	return c.Settings
 }
 
+func (a *App) LoadTaxesConfig() TaxesConfig {
+	return GetTaxesConfig()
+}
+
 func (a *App) GenerateDeclarationOne() string {
 	content := []byte("test,test,test") // TODO
 
-	var options runtime.OpenDialogOptions // TODO: options
+	var options runtime.OpenDialogOptions // TODO: options default
 	dir, err := runtime.OpenDirectoryDialog(a.ctx, options)
 	if err != nil {
 		return err.Error()
@@ -91,4 +95,22 @@ func (a *App) GenerateDeclarationOne() string {
 
 	// TODO: update message
 	return fmt.Sprintf("Success %s, %d bytes writen to %s", len(content), path1)
+}
+
+func (a *App) GenerateDeclarationSix() string {
+	// TODO
+	return "TODO"
+}
+
+func (a *App) GetRemindersText() string {
+	// TODO
+
+	// Декларации за данъци и осигуровки:
+	// Декларация 1 за дължими осигуровки – всеки месец от 25-о число на следващия месец;
+	// Декларация 6 за дължими осигурителни вноски – до 30.04 на следващата календарна година;
+	// Декларация по чл. 55 от ЗДДФЛ – до края на месеца следващ тримесечието, за което декларацията се подава (само за първите три тримесечия);
+	// Декларация по чл. 50 от ЗДДФЛ – до 30.04 на годината следваща тази, за която се подава декларацията.
+	// При ДДС регистрация – ежемесечни ДДС декларации до 15-о число на следващия месец.
+
+	return "TODO"
 }

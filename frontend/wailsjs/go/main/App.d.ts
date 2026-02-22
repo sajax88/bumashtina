@@ -4,7 +4,13 @@ import {main} from '../models';
 
 export function GenerateDeclarationOne():Promise<string>;
 
+export function GenerateDeclarationSix():Promise<string>;
+
+export function GetRemindersText():Promise<string>;
+
 export function LoadSettingsConfig():Promise<main.Settings>;
+
+export function LoadTaxesConfig():Promise<main.TaxesConfig>;
 
 export function LoadUserConfig():Promise<main.UserConfig>;
 

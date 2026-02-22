@@ -6,8 +6,20 @@ export function GenerateDeclarationOne() {
   return window['go']['main']['App']['GenerateDeclarationOne']();
 }
 
+export function GenerateDeclarationSix() {
+  return window['go']['main']['App']['GenerateDeclarationSix']();
+}
+
+export function GetRemindersText() {
+  return window['go']['main']['App']['GetRemindersText']();
+}
+
 export function LoadSettingsConfig() {
   return window['go']['main']['App']['LoadSettingsConfig']();
+}
+
+export function LoadTaxesConfig() {
+  return window['go']['main']['App']['LoadTaxesConfig']();
 }
 
 export function LoadUserConfig() {
