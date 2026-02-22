@@ -78,7 +78,10 @@ func (a *App) LoadTaxesConfig() TaxesConfig {
 }
 
 func (a *App) GenerateDeclarationOne() string {
-	content := []byte("test,test,test") // TODO
+	content, err := MakeDeclarationOne()
+	if err != nil {
+		return err.Error()
+	}
 
 	var options runtime.OpenDialogOptions // TODO: options default
 	dir, err := runtime.OpenDirectoryDialog(a.ctx, options)
@@ -94,7 +97,7 @@ func (a *App) GenerateDeclarationOne() string {
 	// TODO a.log LogPrint(ctx, err.Error()), MessageDialog
 
 	// TODO: update message
-	return fmt.Sprintf("Success %s, %d bytes writen to %s", len(content), path1)
+	return fmt.Sprintf("Success, %d bytes writen to %s", len(content), path1)
 }
 
 func (a *App) GenerateDeclarationSix() string {
