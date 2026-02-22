@@ -4,6 +4,7 @@
 
   import Settings from './routes/Settings.svelte'
   import Personal from './routes/Personal.svelte'
+  import Data from './routes/Data.svelte'
 </script>
 
 <Router
@@ -11,5 +12,6 @@
         "/": Home,
         "/settings": Settings,
         "/personal": Personal,
+        "/data": Data,
     }}
 />
