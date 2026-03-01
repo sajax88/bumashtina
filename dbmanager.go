@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"os"
 	"path/filepath"
@@ -18,8 +19,8 @@ func getDataPath() (string, error) {
 		return "", dirErr
 	}
 
-	dataPath := filepath.Join(homeDir, "bumashtina", "data.json")
-	err := os.MkdirAll(dataPath, os.ModePerm)
+	dataPath := filepath.Join(homeDir, "bumashtina", "data", "data.json")
+	err := os.MkdirAll(filepath.Dir(dataPath), os.ModePerm)
 	if err != nil {
 		log.Fatal(err)
 		return "", err
@@ -28,20 +29,21 @@ func getDataPath() (string, error) {
 	return dataPath, nil
 }
 
-func SaveDataToFile() error {
+func SaveDataToFile(f IncomeForm) error {
 	dataPath, err := getDataPath()
 	if err != nil {
 		return err
 	}
 
+	// TODO: load all data, insert or update, save new data
+
 	// TODO
-	data := []byte{} // TODO
-	// config, err := json.Marshal(c)
-	// log.Print("Saving data:", c, string(config))
-	// if err != nil {
-	// 	log.Print(err)
-	// 	return err
-	// }
+	data, err := json.Marshal(f)
+	log.Print("Saving data:", string(data))
+	if err != nil {
+		log.Print(err)
+		return err
+	}
 
 	return os.WriteFile(dataPath, data, 0600)
 }

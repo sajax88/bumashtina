@@ -6,13 +6,13 @@ export function GenerateDeclarationOne():Promise<string>;
 
 export function GenerateDeclarationSix():Promise<string>;
 
-export function GetRemindersText():Promise<string>;
-
 export function LoadSettingsConfig():Promise<main.Settings>;
 
 export function LoadTaxesConfig():Promise<main.TaxesConfig>;
 
 export function LoadUserConfig():Promise<main.UserConfig>;
+
+export function SaveIncomeForm(arg1:main.IncomeForm):Promise<string>;
 
 export function SaveSettingsConfig(arg1:main.Settings):Promise<string>;
 

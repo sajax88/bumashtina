@@ -10,10 +10,6 @@ export function GenerateDeclarationSix() {
   return window['go']['main']['App']['GenerateDeclarationSix']();
 }
 
-export function GetRemindersText() {
-  return window['go']['main']['App']['GetRemindersText']();
-}
-
 export function LoadSettingsConfig() {
   return window['go']['main']['App']['LoadSettingsConfig']();
 }
@@ -24,6 +20,10 @@ export function LoadTaxesConfig() {
 
 export function LoadUserConfig() {
   return window['go']['main']['App']['LoadUserConfig']();
+}
+
+export function SaveIncomeForm(arg1) {
+  return window['go']['main']['App']['SaveIncomeForm'](arg1);
 }
 
 export function SaveSettingsConfig(arg1) {

@@ -1,5 +1,20 @@
 package main
 
+type IncomeForm struct {
+	Month            int16
+	Year             int16
+	MonthIncomeCents int64
+	TaxedIncomeCents int64
+	DayEnd           int16
+	DayStart         int16
+	WorkDaysTotal    int16
+
+	TaxesToPayCents          int64
+	SocialSecurityToPayCents int64
+
+	TaxesConfig TaxesConfig
+}
+
 func CalculateSocialSecurity() {
 	// TODO
 	// За да определите осигуровките си

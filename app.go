@@ -77,6 +77,18 @@ func (a *App) LoadTaxesConfig() TaxesConfig {
 	return GetTaxesConfig()
 }
 
+func (a *App) SaveIncomeForm(f IncomeForm) string {
+	// TODO: validation
+	// TODO: calculate taxes and social security, save them together with the form
+	// TODO: add tax config to the form
+	err := SaveDataToFile(f)
+	if err != nil {
+		return err.Error()
+	}
+
+	return "Success" // TODO: BG localization
+}
+
 func (a *App) GenerateDeclarationOne() string {
 	content, err := MakeDeclarationOne()
 	if err != nil {
@@ -102,18 +114,5 @@ func (a *App) GenerateDeclarationOne() string {
 
 func (a *App) GenerateDeclarationSix() string {
 	// TODO
-	return "TODO"
-}
-
-func (a *App) GetRemindersText() string {
-	// TODO
-
-	// Декларации за данъци и осигуровки:
-	// Декларация 1 за дължими осигуровки – всеки месец от 25-о число на следващия месец;
-	// Декларация 6 за дължими осигурителни вноски – до 30.04 на следващата календарна година;
-	// Декларация по чл. 55 от ЗДДФЛ – до края на месеца следващ тримесечието, за което декларацията се подава (само за първите три тримесечия);
-	// Декларация по чл. 50 от ЗДДФЛ – до 30.04 на годината следваща тази, за която се подава декларацията.
-	// При ДДС регистрация – ежемесечни ДДС декларации до 15-о число на следващия месец.
-
 	return "TODO"
 }

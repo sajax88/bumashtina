@@ -107,6 +107,7 @@ type TaxesConfig struct {
 	PensionPercentage            float32
 	HealthInsurancePercentage    float32
 	PregnancyInsurancePercentage float32
+	Divider                      int32
 }
 
 func GetTaxesConfig() TaxesConfig {
@@ -118,5 +119,6 @@ func GetTaxesConfig() TaxesConfig {
 		PensionPercentage:            19.8,   // 19,8% за фонд „Пенсии“
 		HealthInsurancePercentage:    8.0,    // 8% за фонд „Здравно осигуряване“
 		PregnancyInsurancePercentage: 3.5,    // 3,5% за фонд „Майчинство“ - see Settings.IsPregnancyInsuranceEnabled
+		Divider:                      MONEY_DIVIDER,
 	}
 }
