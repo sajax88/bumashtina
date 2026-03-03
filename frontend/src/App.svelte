@@ -15,3 +15,7 @@
         "/data": Data,
     }}
 />
+
+<div class="footer">
+  <p>Made with: Wails, Svelte, Lucide</p>
+</div>

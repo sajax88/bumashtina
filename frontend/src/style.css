@@ -1,12 +1,11 @@
 html {
-    background-color: rgba(222, 214, 200, 1);
+    background-color: #dbd0b8;
     text-align: center;
-    color: white;
 }
 
 body {
     margin: 0;
-    color: #555;
+    color: #444;
     font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
     "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
@@ -25,21 +24,116 @@ body {
     text-align: center;
 }
 
+.nav {
+    display: flex;
+    justify-content: center;
+    background-color: #c9c1ad;
+    padding: 10px 0;
+}
+
+.nav a {
+    color: #444;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.nav a svg {
+    margin-right: 5px;
+}
+
+.nav a:hover {
+    color: #777;
+}
+
 .input-box {
+    background-color: #ebe4d5;
     padding:30px;
     text-align: left;
 }
 
 .input-box .btn {
-    line-height: 30px;
-    border-radius: 3px;
+    line-height: 20px;
+    border-radius: 2px;
     border: none;
-    margin: 0 0 0 20px;
-    padding: 0 8px;
+    padding: 8px 10px;
     cursor: pointer;
+    background-color: #c9c1ad;
+    vertical-align: middle;
+  } 
+
+  .input-box span {
+    display: flex;
+    align-items: center;
+  }
+
+  .input-box .btn svg {
+    margin-right: 4px;
+  }
+
+
+.input-box .btn:hover {
+    background-color: #d4ccb8;
   }
 
   .input-box .input:focus {
     border: none;
     background-color: rgba(255, 255, 255, 1);
+  }
+
+
+.input-box .btn-small {
+    line-height: 20px;
+    padding: 4px 6px;
+    margin-left: 10px;
+  }
+
+  .form-row {
+    margin-bottom: 5px;
+  }
+
+.input-box label {
+    display:inline-block;
+    width:200px;
+    text-align: right;
+    padding-right:10px;
+  }
+
+  .submit-group {
+    padding: 10px 0 0 210px;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 10px 0;
+    margin-top: 20px;
+    font-size: small;
+  }
+
+  .alert {
+    margin: 20px 0;
+    padding: 15px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+  }
+
+  .alert svg {
+    margin-right: 10px;
+  }
+
+  .success {
+    background-color: #c6d498;
+  }
+
+  .error {
+    background-color: #edb18a;
+  }
+
+  div.info {
+    font-size: small;
+    padding-left:210px;
+    padding:5px 0 5px 210px;
   }

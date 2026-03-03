@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { mount_component } from "svelte/internal";
+    import { Save, TrendingDown, TrendingUp, BookText, CircleCheck, CircleAlert, NotebookText, Settings, User } from 'lucide-svelte';
   import { 
     LoadUserConfig, 
     LoadSettingsConfig, 
@@ -72,79 +72,106 @@
 </script>
 
 <main>
-    <a href="#/data">Entered Data</a>
-    <a href="#/personal">Personal</a>
-    <a href="#/settings">Settings</a>
+
+  <div class="nav">
+    <a href="#/data"><NotebookText size="16" /> Въведени данни</a>
+    <a href="#/personal"><User size="16" /> Лични данни</a>
+    <a href="#/settings"><Settings size="16" /> Настройки</a>
+</div>
 
   <div class="input-box" id="input-box">
-  <h2>Enter Income</h2>
+  <h2>Въведи данни за доходи</h2>
 
   <div class="form-row">
     <div class="form-group">
-      <label for="Month">Month</label>
+      <label for="Month">Месец</label>
       <select class="input" required id="Month" bind:value={form.Month}>
-        <option value="1">January</option>
-        <option value="2">February</option>
-        <option value="3">March</option>
-        <option value="4">April</option>
-        <option value="5">May</option>
-        <option value="6">June</option>
-        <option value="7">July</option>
-        <option value="8">August</option>
-        <option value="9">September</option>
-        <option value="10">October</option>
-        <option value="11">November</option>
-        <option value="12">December</option>
+        <option value="1">Януари</option>
+        <option value="2">Февруари</option>
+        <option value="3">Март</option>
+        <option value="4">Април</option>
+        <option value="5">Май</option>
+        <option value="6">Юни</option>
+        <option value="7">Юли</option>
+        <option value="8">Август</option>
+        <option value="9">Септември</option>
+        <option value="10">Октомври</option>
+        <option value="11">Ноември</option>
+        <option value="12">Декември</option>
       </select>
     </div>
+    </div>
+    
+    <div class="form-row">
     <div class="form-group">
-      <label for="Year">Year</label>
+      <label for="Year">Година</label>
       <input class="input" required id="Year" type="number" bind:value={form.Year} />
     </div>
   </div>
 
   <div class="form-row">
     <div class="form-group">
-      <label for="MonthIncome">Month Income</label>
+      <label for="MonthIncome">Доход за месец</label>
       <input class="input" required id="MonthIncome" type="text" bind:value={form.MonthIncome} />
     </div>
-    <div class="form-group">
-      <label for="TaxedIncome">Taxed Income</label>
-      <input class="input" required id="TaxedIncome" type="text" bind:value={form.TaxedIncome} />
 
-    <button class="btn" on:click={setMinIncome}>Set Min</button>
-    <button class="btn" on:click={setMaxIncome}>Set Max</button>
+    </div>
+
+
+    <div class="form-row">
+    <div class="form-group">
+      <label for="TaxedIncome">Осигурителен доход</label>
+      <input class="input" required id="TaxedIncome" type="text" bind:value={form.TaxedIncome} />
+    
+    <button class="btn btn-small" on:click={setMinIncome}>
+      <span><TrendingDown color="#444" size="16" /> Мин</span>
+    </button>
+
+    <button class="btn btn-small" on:click={setMaxIncome}>
+      <span><TrendingUp color="#444" size="16" /> Макс</span>
+    </button>
     </div>
   </div>
 
   <div class="form-row">
    <!-- TODO: button to show/hide these two fields-->
     <div class="form-group">
-      <label for="DayStart">Day Start</label>
+      <label for="DayStart">Начален ден на дейност</label>
       <input class="input" id="DayStart" type="number" bind:value={form.DayStart} />
+      <div class="info">Само ако започваш дейност през този месец</div> <!--TODO: check -->
     </div>
+
+    </div>  
+
+    <div class="form-row">
     <div class="form-group">
-      <label for="DayEnd">Day End</label>
+      <label for="DayEnd">Краен ден на дейност</label>
       <input class="input" id="DayEnd" type="number" bind:value={form.DayEnd} />
+      <div class="info">Само ако приключваш дейност през този месец</div> <!--TODO: check -->
     </div>
     </div>
 
   <div class="form-row">
     <div class="form-group">
-      <label for="WorkDaysTotal">Work Days Total</label>
+      <label for="WorkDaysTotal">Общо работни дни</label>
       <input class="input" id="WorkDaysTotal" type="number" bind:value={form.WorkDaysTotal} />
 
       <!-- TODO: open url-->
-      <br><small> Check: <a href="https://kik-info.com/spravochnik/calendar/{form.Year}" target="_blank">
+      <div class="info">Провери работни дни: <a href="https://kik-info.com/spravochnik/calendar/{form.Year}" target="_blank">
         https://kik-info.com/spravochnik/calendar/{form.Year}
-      </a></small>
+      </a></div>
     </div>
   </div>
-
-   <button class="btn btn-large" on:click={saveIncome}>Enter</button>
-
+<div class="form-row">
+    <div class="form-group submit-group">
+   <button class="btn btn-large" on:click={saveIncome}>
+    <span><Save color="#444" size="20" /> Запази</span>
+  </button>
+</div>
+</div>
     {#if data}
-    <div>
+    <div class="alert success">
+    <CircleCheck color="#748733" size="20" />
       {data}
       TODO: taxes and insurances calculated, 
       3 months advance payment tax,
@@ -152,27 +179,35 @@
     </div>
     
      <div>
-      <button class="btn" on:click={decl1}>Generate Declaration 1</button>
-      <div>{res}</div>
+      <button class="btn" on:click={decl1}>
+        <span><BookText color="#444" size="20" /> Генерирай декларация 1</span> 
+      </button>
     </div>
 
     {/if}
     <!-- TODO
-    <button class="btn">Generate Declaration 6 (yearly)</button>
+    <button class="btn">
+      <span><BookText color="#444" size="20" /> Генерирай декларация 6</span> 
+    </button>
     <div></div>-->
   </div>
 
-  <!-- TODO: second column -->
-  <p>Декларация 1 за дължими осигуровки – всеки месец от 25-то число на следващия месец;<br>
-	Декларация 6 за дължими осигурителни вноски – до 30.04 на следващата календарна година; <br>
-	Декларация по чл. 55 от ЗДДФЛ – до края на месеца следващ тримесечието, за което декларацията се подава (само за първите три тримесечия); <br>
-	Декларация по чл. 50 от ЗДДФЛ – до 30.04 на следващата календарна година <br>
-	При ДДС регистрация – ежемесечни ДДС декларации до 15-то число на следващия месец.</p>
+<div id="declarations-schedule">
+ <h2>Подаваме в НАП:</h2>
+  <ul>
+    <li>Декларация 1 за дължими осигуровки – всеки месец от 25-то число на следващия месец;</li>
+    <li>Декларация 6 за дължими осигурителни вноски – до 30.04 на следващата календарна година;</li>
+    <li>Декларация по чл. 55 от ЗДДФЛ – за първите три тримесечия, до края на следващия месец, следващ тримесечието;</li>
+    <li>Декларация по чл. 50 от ЗДДФЛ – до 30.04 на следващата календарна година;</li>
+    <li>При ДДС регистрация – ежемесечни ДДС декларации до 15-то число на следващия месец.</li>
+  </ul>
+
+  </div>
 </main>
 
 <style>
-  .input-box label {
-    display:inline-block;
-    width:120px;
+  #declarations-schedule {
+    padding:0 20px;
+    text-align: left;
   }
 </style>
