@@ -18,6 +18,10 @@ export function LoadTaxesConfig() {
   return window['go']['main']['App']['LoadTaxesConfig']();
 }
 
+export function LoadTaxesConfigLabels() {
+  return window['go']['main']['App']['LoadTaxesConfigLabels']();
+}
+
 export function LoadUserConfig() {
   return window['go']['main']['App']['LoadUserConfig']();
 }

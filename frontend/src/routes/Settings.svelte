@@ -2,12 +2,13 @@
   import { 
     LoadSettingsConfig, 
     SaveSettingsConfig,
-    LoadTaxesConfig
+    LoadTaxesConfig,
+    LoadTaxesConfigLabels
   } from "../../wailsjs/go/main/App.js";
 
   import { onMount } from 'svelte';
 
-  import { Save } from 'lucide-svelte';
+  import { Save, CircleCheck } from 'lucide-svelte';
 
 	onMount(() => {
     load_config()
@@ -16,6 +17,7 @@
   let res = ""
   let config;
   let taxes_config;
+  let taxes_labels;
 
   function saveConfig(): void {
     SaveSettingsConfig(config).then((result) => (res = result));
@@ -27,6 +29,9 @@
     });
     LoadTaxesConfig().then(function (result) {
         taxes_config = result
+    });
+    LoadTaxesConfigLabels().then(function (result) {
+        taxes_labels = result
     });
   }
 </script>
@@ -50,16 +55,31 @@
   </button>
 </div>
 </div>
+
+{#if res}
+    <div class="alert success">
+    <CircleCheck color="#748733" size="20" />  {res}
+    </div>
+{/if}
+
 {/if}
    <h2>Данъци и осигуровки</h2>
-   {#if taxes_config}
+   {#if taxes_config && taxes_labels}
      <table class="table">
        <tbody>
          {#each Object.entries(taxes_config) as [key, value]}
+            {#if key !== "Divider"}
            <tr>
-             <td>{key}</td>
-             <td>{value}</td>
+             <td>{taxes_labels[Object.keys(taxes_config).indexOf(key)]}</td>
+             <td>
+                {#if Object.keys(taxes_config).indexOf(key) < 2}
+                  {value} <!-- TODO: divide by Divider -->
+                {:else}
+                  {value} %
+                {/if}
+            </td>
            </tr>
+           {/if}
          {/each}
        </tbody>
      </table>
@@ -69,7 +89,7 @@
 
 <style>
   .table td:first-child {
-    width: 150px;
+    width: 350px;
   }
    .table td:last-child {
     font-weight: bold;

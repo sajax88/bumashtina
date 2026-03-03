@@ -10,6 +10,8 @@ export function LoadSettingsConfig():Promise<main.Settings>;
 
 export function LoadTaxesConfig():Promise<main.TaxesConfig>;
 
+export function LoadTaxesConfigLabels():Promise<Array<string>>;
+
 export function LoadUserConfig():Promise<main.UserConfig>;
 
 export function SaveIncomeForm(arg1:main.IncomeForm):Promise<string>;

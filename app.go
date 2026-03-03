@@ -77,6 +77,10 @@ func (a *App) LoadTaxesConfig() TaxesConfig {
 	return GetTaxesConfig()
 }
 
+func (a *App) LoadTaxesConfigLabels() []string {
+	return GetLabelsForTaxesConfig()
+}
+
 func (a *App) SaveIncomeForm(f IncomeForm) string {
 	// TODO: validation
 	// TODO: calculate taxes and social security, save them together with the form

@@ -125,7 +125,6 @@
   </div>
 
   <div class="form-row">
-   <!-- TODO: button to show/hide these two fields-->
     <div class="form-group">
       <label for="DayStart">Начален ден на дейност</label>
       <input class="input" id="DayStart" type="number" bind:value={form.DayStart} />
@@ -164,21 +163,23 @@
     <div class="alert success">
     <CircleCheck color="#748733" size="20" />
       {data}
+      <!--
       TODO: taxes and insurances calculated, 
       3 months advance payment tax,
       NET income, 
+      -->
     </div>
     
      <div>
       <button class="btn" on:click={decl1}>
-        <span><BookText color="#444" size="20" /> Генерирай декларация 1</span> 
+        <span><BookText color="#444" size="20" /> Генерирай Декларация 1</span> 
       </button>
     </div>
 
     {/if}
     <!-- TODO
     <button class="btn">
-      <span><BookText color="#444" size="20" /> Генерирай декларация 6</span> 
+      <span><BookText color="#444" size="20" /> Генерирай Декларация 6</span> 
     </button>
     <div></div>-->
   </div>

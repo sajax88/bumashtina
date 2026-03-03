@@ -78,10 +78,10 @@
 </div>
 {#if res}
     <div class="alert success">
-    <CircleCheck color="#748733" size="20" />   {res}
+    <CircleCheck color="#748733" size="20" />  {res}
     </div>
-       {/if}
     {/if}
+{/if}
   </div>
 </main>
 
