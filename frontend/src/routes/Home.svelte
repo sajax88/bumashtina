@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Save, TrendingDown, TrendingUp, BookText, CircleCheck, CircleAlert, NotebookText, Settings, User } from 'lucide-svelte';
+    import { Save, TrendingDown, TrendingUp, BookText, CircleCheck, CircleAlert } from 'lucide-svelte';
   import { 
     LoadUserConfig, 
     LoadSettingsConfig, 
@@ -72,13 +72,6 @@
 </script>
 
 <main>
-
-  <div class="nav">
-    <a href="#/data"><NotebookText size="16" /> Въведени данни</a>
-    <a href="#/personal"><User size="16" /> Лични данни</a>
-    <a href="#/settings"><Settings size="16" /> Настройки</a>
-</div>
-
   <div class="input-box" id="input-box">
   <h2>Въведи данни за доходи</h2>
 
@@ -114,9 +107,7 @@
       <label for="MonthIncome">Доход за месец</label>
       <input class="input" required id="MonthIncome" type="text" bind:value={form.MonthIncome} />
     </div>
-
     </div>
-
 
     <div class="form-row">
     <div class="form-group">

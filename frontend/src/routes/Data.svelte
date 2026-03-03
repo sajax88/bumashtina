@@ -1,9 +1,22 @@
 <script lang="ts">
-  
+   
 </script>
 
 <main>
-  <h1>Data</h1>
-  <a href="#/">Home</a>
+<div class="input-box" id="input-box">
+  <h2>Въведени данни</h2>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Месец</th>
+        <th>Доход</th>
+        <th>Осигурителен доход</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- TODO -->
+    </tbody>
+  </table>
 
 </main>

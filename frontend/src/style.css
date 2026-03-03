@@ -137,3 +137,19 @@ body {
     padding-left:210px;
     padding:5px 0 5px 210px;
   }
+
+  .table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .table th, .table td {
+    border: 1px solid #c9c1ad;
+    padding: 8px;
+    text-align: left;
+  }
+
+    .table th {
+        background-color: #c9c1ad;
+    }

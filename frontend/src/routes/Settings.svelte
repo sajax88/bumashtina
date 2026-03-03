@@ -7,6 +7,8 @@
 
   import { onMount } from 'svelte';
 
+  import { Save } from 'lucide-svelte';
+
 	onMount(() => {
     load_config()
 	});
@@ -15,7 +17,7 @@
   let config;
   let taxes_config;
 
-  function save_config(): void {
+  function saveConfig(): void {
     SaveSettingsConfig(config).then((result) => (res = result));
   }
 
@@ -30,26 +32,46 @@
 </script>
 
 <main>
-  <h1>Settings</h1>
-  <a href="#/">Home</a>
+<div class="input-box" id="input-box">
+  <h2>Настройки</h2>
 
   {#if config}
+   <div class="form-row">
     <div class="form-group">
-      <label for="IsPregnancyInsuranceEnabled">Is Pregnancy Insurance Enabled</label>
+      <label for="IsPregnancyInsuranceEnabled">Общо заболяване и майчинство</label>
       <input class="checkbox" id="IsPregnancyInsuranceEnabled" bind:checked={config.IsPregnancyInsuranceEnabled} type="checkbox" />
     </div>
-  {/if}
-   <button class="btn" on:click={save_config}>Save Settings</button>
+  </div>
 
-   <h2>Taxes Configuration</h2>
+   <div class="form-row">
+    <div class="form-group submit-group">
+    <button class="btn btn-large" on:click={saveConfig}>
+    <span><Save color="#444" size="20" /> Запази</span>
+  </button>
+</div>
+</div>
+{/if}
+   <h2>Данъци и осигуровки</h2>
    {#if taxes_config}
-     <div class="taxes-config">
-       {#each Object.entries(taxes_config) as [key, value]}
-         <div class="config-item">
-           <span class="config-key">{key}:</span>
-           <span class="config-value">{value}</span>
-         </div>
-       {/each}
-     </div>
+     <table class="table">
+       <tbody>
+         {#each Object.entries(taxes_config) as [key, value]}
+           <tr>
+             <td>{key}</td>
+             <td>{value}</td>
+           </tr>
+         {/each}
+       </tbody>
+     </table>
    {/if}
+   </div> 
 </main>
+
+<style>
+  .table td:first-child {
+    width: 150px;
+  }
+   .table td:last-child {
+    font-weight: bold;
+  }
+</style>
