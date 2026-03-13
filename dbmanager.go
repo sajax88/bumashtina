@@ -12,7 +12,7 @@ import (
 // TODO: save income and paid social security and calculated taxes for each month
 
 func getDataPath() (string, error) {
-	homeDir, dirErr := os.UserHomeDir()
+	homeDir, dirErr := os.UserConfigDir()
 
 	if dirErr != nil {
 		log.Fatal(dirErr)

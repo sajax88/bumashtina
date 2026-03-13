@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Save, TrendingDown, TrendingUp, BookText, CircleCheck, CircleAlert } from 'lucide-svelte';
+  import { Save, TrendingDown, TrendingUp, BookText, CircleCheck, CircleAlert } from 'lucide-svelte';
   import { 
     LoadUserConfig, 
     LoadSettingsConfig, 

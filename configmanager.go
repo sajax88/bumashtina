@@ -42,7 +42,7 @@ func isDigitsOnly(s string) bool {
 }
 
 func getConfigPath() (string, error) {
-	configDir, dirErr := os.UserHomeDir()
+	configDir, dirErr := os.UserConfigDir()
 
 	if dirErr != nil {
 		log.Fatal(dirErr)
