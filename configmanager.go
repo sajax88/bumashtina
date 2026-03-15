@@ -107,7 +107,7 @@ type TaxesConfig struct {
 	PensionPercentage            float32
 	HealthInsurancePercentage    float32
 	PregnancyInsurancePercentage float32
-	Divider                      int32
+	Divider                      int32 // TODO: move somewhere global
 }
 
 func GetTaxesConfig() TaxesConfig {

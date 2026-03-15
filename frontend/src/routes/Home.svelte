@@ -67,7 +67,7 @@
   }
 
   function decl1(): void {
-    GenerateDeclarationOne().then((result) => (res = result));
+    GenerateDeclarationOne(parseInt(form.Month), form.Year).then((result) => (res = result));
   }
 </script>
 

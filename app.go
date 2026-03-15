@@ -33,7 +33,7 @@ func (a *App) SaveUserConfig(c UserConfig) string {
 		return err.Error()
 	}
 
-	return "Success" // TODO: BG localization
+	return "Успешно запазено"
 }
 
 func (a *App) SaveSettingsConfig(c Settings) string {
@@ -44,7 +44,7 @@ func (a *App) SaveSettingsConfig(c Settings) string {
 		return err.Error()
 	}
 
-	return "Success" // TODO: BG localization
+	return "Успешно запазено"
 }
 
 func (a *App) LoadUserConfig() UserConfig {
@@ -81,20 +81,43 @@ func (a *App) LoadTaxesConfigLabels() []string {
 	return GetLabelsForTaxesConfig()
 }
 
+func (a *App) LoadAllIncomeData() []IncomeForm {
+	rows, err := GetAllDataFromFile()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return rows
+}
+
 func (a *App) SaveIncomeForm(f IncomeForm) string {
 	// TODO: validation
 	// TODO: calculate taxes and social security, save them together with the form
-	// TODO: add tax config to the form
+	// TaxesToPayCents          int64
+	// SocialSecurityToPayCents int64
+	// TODO: possibility to save really paid taxes and social security
 	err := SaveDataToFile(f)
 	if err != nil {
 		return err.Error()
 	}
 
-	return "Success" // TODO: BG localization
+	return "Успешно запазено"
 }
 
-func (a *App) GenerateDeclarationOne() string {
-	content, err := MakeDeclarationOne()
+func (a *App) DeleteData(month int, year int) string {
+	err := DeleteDataFromFile(month, year)
+	if err != nil {
+		return err.Error()
+	}
+	return "Успешно изтрито"
+}
+
+func (a *App) GenerateDeclarationOne(month int, year int) string {
+	incomeForm, err := GetDataFromFile(month, year)
+	if err != nil {
+		return err.Error()
+	}
+
+	content, err := MakeDeclarationOne(incomeForm)
 	if err != nil {
 		return err.Error()
 	}

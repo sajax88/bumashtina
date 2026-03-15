@@ -9,11 +9,11 @@ import (
 	"golang.org/x/text/transform"
 )
 
-func MakeDeclarationOne() ([]byte, error) {
+func MakeDeclarationOne(f IncomeForm) ([]byte, error) {
 	endSymbol := ""
 	fiedls := []string{
-		"2",       // TODO
-		"2026",    // TODO
+		string(f.Month),
+		string(f.Year),
 		"булстат", // TODO
 		"егн",     // TODO
 		"0",
