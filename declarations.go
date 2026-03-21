@@ -2,24 +2,36 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"slices"
+	"strings"
 
 	"golang.org/x/text/encoding/charmap"
 	"golang.org/x/text/transform"
 )
 
-func MakeDeclarationOne(f IncomeForm) ([]byte, error) {
+func firstSymbol(s string) string {
+	r := []rune(s)
+	if len(r) > 1 {
+		return string(r[:1])
+	}
+	return s
+}
+
+func MakeDeclarationOne(f IncomeForm, u UserConfig) ([]byte, error) {
+	initials := strings.ToUpper(firstSymbol(u.FirstName) + firstSymbol(u.MiddleName)) // TODO
 	endSymbol := ""
+
 	fiedls := []string{
-		string(f.Month),
-		string(f.Year),
-		"булстат", // TODO
-		"егн",     // TODO
+		fmt.Sprintf("%d", f.Month),
+		fmt.Sprintf("%d", f.Year),
+		u.Bulstat,
+		u.Egn,
 		"0",
-		"ИМЯ",      // TODO
-		"ИНИЦИАЛЫ", // TODO
-		"12",       // Self-employed
+		strings.ToUpper(u.LastName),
+		initials,
+		"12", // Самоосигуряващо се лице
 		"00",
 		"00",
 		"00",
@@ -28,10 +40,10 @@ func MakeDeclarationOne(f IncomeForm) ([]byte, error) {
 		"00",
 		"00",
 		"00",
-		"00", // TODO: check start/end days
+		"00", // TODO: check start/end days in NAP program
 		"00",
-		"2000", // TODO
-		"20",   // TODO
+		fmt.Sprintf("%d00", f.WorkDaysTotal),
+		fmt.Sprintf("%d", f.WorkDaysTotal),
 		"00",
 		"00",
 		"00",
@@ -45,16 +57,16 @@ func MakeDeclarationOne(f IncomeForm) ([]byte, error) {
 		"0000",
 		"0.00",
 		"0.00",
-		"2111.64", // TODO
+		fmt.Sprintf("%.2f", (float32(f.TaxedIncomeCents) / float32(MONEY_DIVIDER))),
 		"0.00",
-		"14.80", // TODO
+		fmt.Sprintf("%.2f", f.TaxesConfig.PensionPercentagePartOne),
 		"0.00",
-		"8.00", // TODO
-		"0.00",
-		"0.00",
+		fmt.Sprintf("%.2f", f.TaxesConfig.HealthInsurancePercentage),
 		"0.00",
 		"0.00",
-		"5.00", // TODO
+		"0.00",
+		"0.00",
+		fmt.Sprintf("%.2f", f.TaxesConfig.PensionPercentagePartTwo),
 		"0.00",
 		"0.00",
 		"0.00",

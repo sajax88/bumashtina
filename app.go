@@ -95,6 +95,7 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 	// TaxesToPayCents          int64
 	// SocialSecurityToPayCents int64
 	// TODO: possibility to save really paid taxes and social security
+	f.TaxesConfig = GetTaxesConfig()
 	err := SaveDataToFile(f)
 	if err != nil {
 		return err.Error()
@@ -117,7 +118,9 @@ func (a *App) GenerateDeclarationOne(month int, year int) string {
 		return err.Error()
 	}
 
-	content, err := MakeDeclarationOne(incomeForm)
+	personalData := a.LoadUserConfig()
+
+	content, err := MakeDeclarationOne(incomeForm, personalData)
 	if err != nil {
 		return err.Error()
 	}

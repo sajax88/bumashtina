@@ -8,6 +8,8 @@ export namespace main {
 	    PensionPercentage: number;
 	    HealthInsurancePercentage: number;
 	    PregnancyInsurancePercentage: number;
+	    PensionPercentagePartOne: number;
+	    PensionPercentagePartTwo: number;
 	    Divider: number;
 	
 	    static createFrom(source: any = {}) {
@@ -23,6 +25,8 @@ export namespace main {
 	        this.PensionPercentage = source["PensionPercentage"];
 	        this.HealthInsurancePercentage = source["HealthInsurancePercentage"];
 	        this.PregnancyInsurancePercentage = source["PregnancyInsurancePercentage"];
+	        this.PensionPercentagePartOne = source["PensionPercentagePartOne"];
+	        this.PensionPercentagePartTwo = source["PensionPercentagePartTwo"];
 	        this.Divider = source["Divider"];
 	    }
 	}

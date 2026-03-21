@@ -1,9 +1,10 @@
 <script lang="ts">
-  import {LoadAllIncomeData, DeleteData} from "../../wailsjs/go/main/App.js";
-
-   import { onMount } from 'svelte';
+  import {LoadAllIncomeData, DeleteData,GenerateDeclarationOne} from "../../wailsjs/go/main/App.js";
+  import {BookText} from 'lucide-svelte';
+  import { onMount } from 'svelte';
 
   let data;
+  let res = ""
 
 	onMount(async () => {
     await load_data()
@@ -21,6 +22,14 @@
         load_data()
     });
   }
+
+  function decl1(month, year): void {
+    GenerateDeclarationOne(month, year).then(function(result) {
+      console.log(result)
+      // TODO: show success message, or error
+      res = result
+    });
+  }
 </script>
 
 <main>
@@ -33,6 +42,7 @@
         <th>Месец</th>
         <th>Доход</th>
         <th>Осигурителен доход</th>
+        <th>Д.1</th>
         <th></th>
         <!-- TODO -->
       </tr>
@@ -45,6 +55,11 @@
             <td>{row.MonthIncomeCents / 100}</td>
             <td>{row.TaxedIncomeCents / 100}</td>
             <!-- TODO -->
+             <td>
+               <button class="declaration-button" on:click={() => decl1(row.Month, row.Year)}>
+                <BookText color="#444" size="20" />
+              </button>
+             </td>
              <td>
               <button class="delete-button" on:click={() => delete_data(row.Month, row.Year)}>
                 X
@@ -64,6 +79,13 @@
     background-color: transparent;
     border: none;
     color: #923a3a;
+    cursor: pointer;
+  }
+
+  .declaration-button {
+    background-color: transparent;
+    border: none;
+    color: #444;
     cursor: pointer;
   }
 </style>

@@ -16,10 +16,6 @@ type IncomeForm struct {
 }
 
 func CalculateSocialSecurity(f IncomeForm, settings Settings) int32 {
-	// За да определите осигуровките си
-	// следва да умножите осигурителен доход по 0.278 или 0.313
-	// в зависимост от това дали имате включено майчинство в настройките.
-
 	insurancePercent := f.TaxesConfig.PensionPercentage + f.TaxesConfig.HealthInsurancePercentage
 	if settings.IsPregnancyInsuranceEnabled {
 		insurancePercent += f.TaxesConfig.PregnancyInsurancePercentage
@@ -31,13 +27,9 @@ func CalculateSocialSecurity(f IncomeForm, settings Settings) int32 {
 }
 
 func CalculateTaxForMonth(f IncomeForm, insurance int32) int32 {
-	// За да определите авансовия си данък
-	// следва да извадите от доход  признатите разходи 25%
-	// и платените осигуровки
-
 	expenses := int32(float32(f.MonthIncomeCents) * f.TaxesConfig.ExpensesPercentage / 100)
 
-	return int32(f.MonthIncomeCents) - expenses - insurance
+	return (int32(f.MonthIncomeCents) - expenses - insurance) * int32(f.TaxesConfig.TaxPercentage) / 100
 }
 
 func CalculateAdvanceTaxForThreeMonths(f IncomeForm, insurance int32) int32 {
