@@ -20,6 +20,7 @@ func firstSymbol(s string) string {
 }
 
 func MakeDeclarationOne(f IncomeForm, u UserConfig) ([]byte, error) {
+	// todo: VALIDATE
 	initials := strings.ToUpper(firstSymbol(u.FirstName) + firstSymbol(u.MiddleName)) // TODO
 	endSymbol := ""
 
@@ -32,6 +33,8 @@ func MakeDeclarationOne(f IncomeForm, u UserConfig) ([]byte, error) {
 		strings.ToUpper(u.LastName),
 		initials,
 		"12", // Самоосигуряващо се лице
+		fmt.Sprintf("%02d", f.DayStart),
+		fmt.Sprintf("%02d", f.DayEnd),
 		"00",
 		"00",
 		"00",
@@ -40,10 +43,8 @@ func MakeDeclarationOne(f IncomeForm, u UserConfig) ([]byte, error) {
 		"00",
 		"00",
 		"00",
-		"00", // TODO: check start/end days in NAP program
-		"00",
-		fmt.Sprintf("%d00", f.WorkDaysTotal),
-		fmt.Sprintf("%d", f.WorkDaysTotal),
+		fmt.Sprintf("%02d00", f.WorkDaysTotal),
+		fmt.Sprintf("%02d", f.WorkDaysTotal),
 		"00",
 		"00",
 		"00",
