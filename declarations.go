@@ -20,7 +20,7 @@ func firstSymbol(s string) string {
 }
 
 func MakeDeclarationOne(f IncomeForm, u UserConfig) ([]byte, error) {
-	// todo: VALIDATE
+	// TODO: VALIDATE days
 	initials := strings.ToUpper(firstSymbol(u.FirstName) + firstSymbol(u.MiddleName)) // TODO
 	endSymbol := ""
 

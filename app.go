@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -125,13 +126,18 @@ func (a *App) GenerateDeclarationOne(month int, year int) string {
 		return err.Error()
 	}
 
-	var options runtime.OpenDialogOptions // TODO: options default
-	dir, err := runtime.OpenDirectoryDialog(a.ctx, options)
+	var options runtime.SaveDialogOptions
+	options.DefaultFilename = fmt.Sprintf("Declaration1_%d_%02d.txt", year, month)
+	options.DefaultDirectory, err = os.UserHomeDir()
+	if err != nil {
+		return err.Error()
+	}
+	saveFilePath, err := runtime.SaveFileDialog(a.ctx, options)
 	if err != nil {
 		return err.Error()
 	}
 
-	path1, err := SaveDeclaration(dir, content)
+	saveFilePath, err = SaveDeclaration(saveFilePath, content)
 	if err != nil {
 		return err.Error()
 	}
@@ -139,7 +145,7 @@ func (a *App) GenerateDeclarationOne(month int, year int) string {
 	// TODO a.log LogPrint(ctx, err.Error()), MessageDialog
 
 	// TODO: update message
-	return fmt.Sprintf("Success, %d bytes writen to %s", len(content), path1)
+	return fmt.Sprintf("Success, %d bytes writen to %s", len(content), saveFilePath)
 }
 
 func (a *App) GenerateDeclarationSix() string {

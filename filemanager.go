@@ -2,19 +2,13 @@ package main
 
 import (
 	"os"
-	"path/filepath"
 )
 
-func SaveDeclaration(dir string, content []byte) (string, error) {
-	path1, err := filepath.Abs(filepath.Join(dir, "dat1.txt")) // TODO: name
+func SaveDeclaration(filepath string, content []byte) (string, error) {
+	err := os.WriteFile(filepath, content, 0644)
 	if err != nil {
 		return "", err
 	}
 
-	err = os.WriteFile(path1, content, 0644)
-	if err != nil {
-		return "", err
-	}
-
-	return path1, nil
+	return filepath, nil
 }
