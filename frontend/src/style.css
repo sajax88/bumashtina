@@ -105,6 +105,14 @@ body {
     padding-left:210px;
   }
 
+  #input-box-settings .checkbox-group {
+    padding-left:0;
+  }
+
+  #input-box-settings .submit-group {
+    padding: 10px 0 0 0;
+  }
+
   .input-box .checkbox-group input[type="checkbox"] {
     width: 18px;
     height: 18px;

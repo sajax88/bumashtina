@@ -37,15 +37,15 @@
 </script>
 
 <main>
-<div class="input-box" id="input-box">
+<div class="input-box" id="input-box-settings">
   <h2>Настройки</h2>
 
   {#if config}
    <div class="form-row">
-    <div class="form-group">
-      <label for="IsPregnancyInsuranceEnabled">Общо заболяване и майчинство</label>
+    <div class="form-group checkbox-group"> 
       <input class="checkbox" id="IsPregnancyInsuranceEnabled" bind:checked={config.IsPregnancyInsuranceEnabled} type="checkbox" />
-    </div>
+      <label class="checkbox-label" for="IsPregnancyInsuranceEnabled">Общо заболяване и майчинство</label>
+      </div>
   </div>
 
    <div class="form-row">
@@ -63,7 +63,8 @@
 {/if}
 
 {/if}
-   <h2>Данъци и осигуровки</h2>
+   <!-- TODO: allow to update -->
+   <h2>Данъци и осигуровки, 2026</h2>
    {#if taxes_config && taxes_labels}
      <table class="table">
        <tbody>
