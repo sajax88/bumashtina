@@ -101,6 +101,24 @@ body {
     padding-right:10px;
   }
 
+  .input-box .checkbox-group {
+    padding-left:210px;
+  }
+
+  .input-box .checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+  }
+
+  .input-box label.checkbox-label {
+    vertical-align: middle;
+    display:inline-block;
+    padding-right:0;
+    text-align: left;
+    width:auto;
+  }
+
   .submit-group {
     padding: 10px 0 0 210px;
   }

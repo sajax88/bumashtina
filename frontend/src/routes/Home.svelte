@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Save, TrendingDown, TrendingUp, BookText, CircleCheck, CircleAlert } from 'lucide-svelte';
+  import { Save, BookText, CircleCheck, CircleAlert, ArrowBigDown, ArrowBigUp } from 'lucide-svelte';
   import { 
     LoadUserConfig, 
     LoadSettingsConfig, 
@@ -115,31 +115,14 @@
       <input class="input" required id="TaxedIncome" type="text" bind:value={form.TaxedIncome} />
     
     <button class="btn btn-small" on:click={setMinIncome}>
-      <span><TrendingDown color="#444" size="16" /> Мин</span>
+      <span><ArrowBigDown color="#444" size="16" /> Мин</span>
     </button>
 
     <button class="btn btn-small" on:click={setMaxIncome}>
-      <span><TrendingUp color="#444" size="16" /> Макс</span>
+      <span><ArrowBigUp color="#444" size="16" /> Макс</span>
     </button>
     </div>
   </div>
-
-  <div class="form-row">
-    <div class="form-group">
-      <label for="DayStart">Начален ден на дейност</label>
-      <input class="input" id="DayStart" type="number" bind:value={form.DayStart} />
-      <div class="info">Само ако започваш дейност през този месец</div> <!--TODO: check -->
-    </div>
-
-    </div>  
-
-    <div class="form-row">
-    <div class="form-group">
-      <label for="DayEnd">Краен ден на дейност</label>
-      <input class="input" id="DayEnd" type="number" bind:value={form.DayEnd} />
-      <div class="info">Само ако приключваш дейност през този месец</div> <!--TODO: check -->
-    </div>
-    </div>
 
   <div class="form-row">
     <div class="form-group">
@@ -152,6 +135,36 @@
       </a></div>
     </div>
   </div>
+
+  <div class="form-row">
+    <div class="form-group checkbox-group">
+      <input id="AddStartOrEnd" type="checkbox" on:change={(e) => {
+        document.getElementById('AddStartOrEndFieldset').style.display = e.target.checked ? 'block' : 'none';
+      }} />
+
+      <label class='checkbox-label' for="AddStartOrEnd">Приключвам или започвам дейност този месец</label>
+    </div>
+  </div>
+
+  <fieldset id="AddStartOrEndFieldset" style="display: none;">
+  <div class="form-row">
+    <div class="form-group">
+      <label for="DayStart">Начален ден на дейност</label>
+      <input class="input" id="DayStart" type="number" bind:value={form.DayStart} />
+      <div class="info">Само ако започваш дейност през този месец</div> <!--TODO: check, Tsveta! -->
+    </div>
+
+    </div>  
+
+    <div class="form-row">
+    <div class="form-group">
+      <label for="DayEnd">Краен ден на дейност</label>
+      <input class="input" id="DayEnd" type="number" bind:value={form.DayEnd} />
+      <div class="info">Само ако приключваш дейност през този месец</div> <!--TODO: check, Tsveta! -->
+    </div>
+    </div>
+    </fieldset> 
+  
 <div class="form-row">
     <div class="form-group submit-group">
    <button class="btn btn-large" on:click={saveIncome}>
@@ -185,7 +198,7 @@
   </div>
 
 <div id="declarations-schedule">
- <h2>Подаваме в НАП:</h2>
+ <h2>Подаваме в НАП</h2>
   <ul>
     <li>Декларация 1 за дължими осигуровки – всеки месец от 25-то число на следващия месец;</li>
     <li>Декларация 6 за дължими осигурителни вноски – до 30.04 на следващата календарна година;</li>

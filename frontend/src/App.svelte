@@ -27,5 +27,5 @@
 />
 
 <div class="footer">
-  <p>Made with: Wails, Svelte, Lucide</p>
+  <p>Made with: Wails, Svelte, Lucide. <a href="https://github.com/sajax88/bumashtina" target="_blank">GitHub</a></p><!-- TODO: link-->
 </div>

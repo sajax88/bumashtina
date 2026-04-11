@@ -3,7 +3,7 @@
     LoadSettingsConfig, 
     SaveSettingsConfig,
     LoadTaxesConfig,
-    LoadTaxesConfigLabels
+    LoadTaxesConfigLabels,
   } from "../../wailsjs/go/main/App.js";
 
   import { onMount } from 'svelte';
@@ -73,7 +73,7 @@
              <td>{taxes_labels[Object.keys(taxes_config).indexOf(key)]}</td>
              <td>
                 {#if Object.keys(taxes_config).indexOf(key) < 2}
-                  {value} <!-- TODO: divide by Divider -->
+                  {value / taxes_config.Divider} <!-- TODO: divide by Divider -->
                 {:else}
                   {value} %
                 {/if}

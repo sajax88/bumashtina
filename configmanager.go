@@ -11,12 +11,11 @@ import (
 const MONEY_DIVIDER = 100
 
 type UserConfig struct {
-	FirstName   string
-	MiddleName  string
-	LastName    string
-	Egn         string
-	Bulstat     string
-	YearOfBirth string
+	FirstName  string
+	MiddleName string
+	LastName   string
+	Egn        string
+	Bulstat    string
 }
 
 type Settings struct {
@@ -29,8 +28,9 @@ type Config struct {
 }
 
 func (c UserConfig) IsValid() bool {
+	// TODO: only cyrillic, number of digits for EGN and Bulstat, etc.
 	notEmpty := c.FirstName != "" && c.LastName != "" && c.Egn != "" && c.Bulstat != ""
-	numbersOnly := isDigitsOnly(c.Egn) && isDigitsOnly(c.Bulstat) && (c.YearOfBirth == "" || isDigitsOnly(c.YearOfBirth))
+	numbersOnly := isDigitsOnly(c.Egn) && isDigitsOnly(c.Bulstat)
 	return notEmpty && numbersOnly
 }
 
@@ -130,12 +130,14 @@ func GetTaxesConfig() TaxesConfig {
 
 func GetLabelsForTaxesConfig() []string {
 	return []string{
-		"Минимален осигурителен доход",
-		"Максимален осигурителен доход",
+		"Минимален осигурителен доход, EUR",
+		"Максимален осигурителен доход, EUR",
 		"Процент признати разходи",
 		"Данъчна ставка",
 		"Процент за фонд „Пенсии“",
 		"Процент за фонд „Здравно осигуряване“",
 		"Процент за фонд „Майчинство“",
+		"Процент за фонд „Пенсии“ – за родените след 31 декември 1959 г.",
+		"Процент за ДЗПО – Универсален пенсионен фонд за родените след 31 декември 1959 г.",
 	}
 }

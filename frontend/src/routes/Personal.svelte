@@ -47,14 +47,7 @@
         <input class="input" required id="LastName" bind:value={config.LastName} type="text" />
       </div>
       </div>
-
-       <div class="form-row">
-      <div class="form-group">
-        <label for="YearOfBirth">Година на раждане</label>
-        <input class="input" required type="text" id="YearOfBirth" bind:value={config.YearOfBirth} />
-      </div>
-        </div>
-
+ 
     <div class="form-row">
       <div class="form-group">
         <label for="Egn">ЕГН</label>
