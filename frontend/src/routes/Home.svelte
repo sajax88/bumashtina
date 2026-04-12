@@ -8,6 +8,9 @@
     SaveIncomeForm
    } from "../../wailsjs/go/main/App.js";
 
+
+  import {BrowserOpenURL} from "../wailsjs/runtime";
+
   import { onMount } from 'svelte';
 
 	onMount(async () => {
@@ -155,7 +158,10 @@
       <input class="input" min="0" max="31" id="WorkDaysTotal" type="number" bind:value={form.WorkDaysTotal} />
 
       <!-- TODO: open url-->
-      <div class="info">Провери работни дни: <a href="https://kik-info.com/spravochnik/calendar/{form.Year}" target="_blank">
+      <div class="info">Провери работни дни: <a 
+      href="#" 
+      on:click={() => BrowserOpenURL('https://kik-info.com/spravochnik/calendar/' + form.Year)}
+      >
         https://kik-info.com/spravochnik/calendar/{form.Year}
       </a></div>
     </div>

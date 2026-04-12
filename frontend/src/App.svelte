@@ -6,6 +6,8 @@
   import Personal from './routes/Personal.svelte'
   import Data from './routes/Data.svelte'
 
+  import {BrowserOpenURL} from "../wailsjs/runtime";
+
   import { House, User, Settings2, NotebookText } from 'lucide-svelte';
 </script>
 
@@ -27,5 +29,8 @@
 />
 
 <div class="footer">
-  <p>Made with: Wails, Svelte, Lucide. <a href="https://github.com/sajax88/bumashtina" target="_blank">GitHub</a></p><!-- TODO: link-->
+  <p>Made with: Wails, Svelte, Lucide. <a 
+  href="#" 
+  on:click={() => BrowserOpenURL('https://github.com/sajax88/bumashtina')}
+  >GitHub</a></p>
 </div>
