@@ -9,7 +9,7 @@
    } from "../../wailsjs/go/main/App.js";
 
 
-  import {BrowserOpenURL} from "../wailsjs/runtime";
+  import {BrowserOpenURL} from "../../wailsjs/runtime";
 
   import { onMount } from 'svelte';
 
