@@ -38,6 +38,8 @@ export namespace main {
 	    DayEnd: number;
 	    DayStart: number;
 	    WorkDaysTotal: number;
+	    WorkDaysReal: number;
+	    WorkDaysSickLeave: number;
 	    TaxesToPayCents: number;
 	    SocialSecurityToPayCents: number;
 	    TaxesConfig: TaxesConfig;
@@ -55,6 +57,8 @@ export namespace main {
 	        this.DayEnd = source["DayEnd"];
 	        this.DayStart = source["DayStart"];
 	        this.WorkDaysTotal = source["WorkDaysTotal"];
+	        this.WorkDaysReal = source["WorkDaysReal"];
+	        this.WorkDaysSickLeave = source["WorkDaysSickLeave"];
 	        this.TaxesToPayCents = source["TaxesToPayCents"];
 	        this.SocialSecurityToPayCents = source["SocialSecurityToPayCents"];
 	        this.TaxesConfig = this.convertValues(source["TaxesConfig"], TaxesConfig);

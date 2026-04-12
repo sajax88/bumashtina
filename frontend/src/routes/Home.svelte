@@ -21,7 +21,8 @@
     TaxedIncome: "",
     DayStart: 0,
     DayEnd: 0,
-    WorkDaysTotal: 0
+    WorkDaysTotal: 0,
+    WorkDaysSickLeave: 0,
   }
   let configUser
   let configSettings
@@ -50,7 +51,31 @@
   }
 
   function saveIncome(): void {
+    if (form.WorkDaysSickLeave > form.WorkDaysTotal) {
+      alert("Дните в болничен не могат да надвишават общите работни дни.");
+      return;
+    }
+   
+    if (form.DayStart > 0 && form.DayEnd > 0 && form.DayStart >= form.DayEnd) {
+      alert("Началният ден трябва да бъде преди крайния ден.");
+      return;
+    }
+
+    if (form.MonthIncome === "" || form.TaxedIncome === "" || form.Year === 0) {
+      alert("Моля, попълнете всички задължителни полета.");
+      return;
+    }
+
+    if (
+      form.TaxedIncome < configTaxes.MinInsuranceIncomeCents / configTaxes.Divider 
+      || form.TaxedIncome > configTaxes.MaxInsuranceIncomeCents / configTaxes.Divider
+     ) {
+      alert(`Осигурителният доход трябва да бъде между ${configTaxes.MinInsuranceIncomeCents / configTaxes.Divider} и ${configTaxes.MaxInsuranceIncomeCents / configTaxes.Divider}.`);
+      return;
+    }
+
     // TODO: validation
+
     let formToSave = {
       Month: parseInt(form.Month),
       Year: form.Year,
@@ -60,7 +85,7 @@
       DayEnd: form.DayEnd,
       WorkDaysTotal: form.WorkDaysTotal
     }
-    console.log(formToSave) // TODO
+   
     SaveIncomeForm(formToSave).then((result) => {
       data = result; // TODO: show success message, or error
     });
@@ -98,21 +123,21 @@
     <div class="form-row">
     <div class="form-group">
       <label for="Year">Година</label>
-      <input class="input" required id="Year" type="number" bind:value={form.Year} />
+      <input class="input" min="2026" required id="Year" type="number" bind:value={form.Year} />
     </div>
   </div>
 
   <div class="form-row">
     <div class="form-group">
       <label for="MonthIncome">Доход за месец</label>
-      <input class="input" required id="MonthIncome" type="text" bind:value={form.MonthIncome} />
+      <input class="input" min="0" required id="MonthIncome" type="text" bind:value={form.MonthIncome} />
     </div>
     </div>
 
     <div class="form-row">
     <div class="form-group">
       <label for="TaxedIncome">Осигурителен доход</label>
-      <input class="input" required id="TaxedIncome" type="text" bind:value={form.TaxedIncome} />
+      <input class="input" min="0" required id="TaxedIncome" type="text" bind:value={form.TaxedIncome} />
     
     <button class="btn btn-small" on:click={setMinIncome}>
       <span><ArrowBigDown color="#444" size="16" /> Мин</span>
@@ -127,7 +152,7 @@
   <div class="form-row">
     <div class="form-group">
       <label for="WorkDaysTotal">Общо работни дни</label>
-      <input class="input" id="WorkDaysTotal" type="number" bind:value={form.WorkDaysTotal} />
+      <input class="input" min="0" max="31" id="WorkDaysTotal" type="number" bind:value={form.WorkDaysTotal} />
 
       <!-- TODO: open url-->
       <div class="info">Провери работни дни: <a href="https://kik-info.com/spravochnik/calendar/{form.Year}" target="_blank">
@@ -138,8 +163,34 @@
 
   <div class="form-row">
     <div class="form-group checkbox-group">
+      <input id="ShowSickLeave" type="checkbox" on:change={(e) => {
+        document.getElementById('SickLeaveFieldset').style.display = e.target.checked ? 'block' : 'none';
+        if (!e.target.checked) {
+          form.WorkDaysSickLeave = 0;
+        }
+      }} />
+
+      <label class='checkbox-label' for="ShowSickLeave">Бях в болничен</label>
+    </div>
+  </div>
+
+   <fieldset id="SickLeaveFieldset" style="display: none;">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="WorkDaysSickLeave">Дни в болничен</label>
+        <input class="input" min="0" max="31" id="WorkDaysSickLeave" type="number" bind:value={form.WorkDaysSickLeave} />
+      </div>
+      </div>  
+    </fieldset>
+
+  <div class="form-row">
+    <div class="form-group checkbox-group">
       <input id="AddStartOrEnd" type="checkbox" on:change={(e) => {
         document.getElementById('AddStartOrEndFieldset').style.display = e.target.checked ? 'block' : 'none';
+        if (!e.target.checked) {
+          form.DayStart = 0;
+          form.DayEnd = 0;
+        }
       }} />
 
       <label class='checkbox-label' for="AddStartOrEnd">Приключвам или започвам дейност този месец</label>
@@ -150,7 +201,7 @@
   <div class="form-row">
     <div class="form-group">
       <label for="DayStart">Начален ден на дейност</label>
-      <input class="input" id="DayStart" type="number" bind:value={form.DayStart} />
+      <input class="input" id="DayStart" type="number" min="0" max="31" bind:value={form.DayStart} />
       <div class="info">Само ако започваш дейност през този месец</div> <!--TODO: check, Tsveta! -->
     </div>
 
@@ -159,7 +210,7 @@
     <div class="form-row">
     <div class="form-group">
       <label for="DayEnd">Краен ден на дейност</label>
-      <input class="input" id="DayEnd" type="number" bind:value={form.DayEnd} />
+      <input class="input" id="DayEnd" type="number" min="0" max="31" bind:value={form.DayEnd} />
       <div class="info">Само ако приключваш дейност през този месец</div> <!--TODO: check, Tsveta! -->
     </div>
     </div>

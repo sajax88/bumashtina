@@ -17,6 +17,7 @@
 	}
 
   async function delete_data(month: number, year: number): Promise<void> {
+    if (!confirm("Сигурен ли си, че искаш да изтриеш тези данни?")) return;
     DeleteData(month, year).then(function (result) {
         console.log(result) // TODO: to alert
         load_data()
@@ -44,7 +45,7 @@
         <th>Осигурителен доход</th>
         <th>Д.1</th>
         <th></th>
-        <!-- TODO -->
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -54,12 +55,12 @@
             <td>{row.Month} / {row.Year}</td>
             <td>{row.MonthIncomeCents / 100}</td>
             <td>{row.TaxedIncomeCents / 100}</td>
-            <!-- TODO -->
              <td>
                <button class="declaration-button" on:click={() => decl1(row.Month, row.Year)}>
                 <BookText color="#444" size="20" />
               </button>
              </td>
+             <td><!-- TODO: show all data -->></td>
              <td>
               <button class="delete-button" on:click={() => delete_data(row.Month, row.Year)}>
                 X
@@ -68,7 +69,6 @@
           </tr>
         {/each}
       {/if}
-      <!-- TODO -->
     </tbody>
   </table>
 

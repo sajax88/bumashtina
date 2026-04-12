@@ -21,6 +21,9 @@ func firstSymbol(s string) string {
 
 func MakeDeclarationOne(f IncomeForm, u UserConfig) ([]byte, error) {
 	// TODO: VALIDATE days
+
+	f.WorkDaysReal = f.WorkDaysTotal - f.WorkDaysSickLeave
+
 	initials := strings.ToUpper(firstSymbol(u.FirstName) + firstSymbol(u.MiddleName)) // TODO
 	endSymbol := ""
 
@@ -44,8 +47,8 @@ func MakeDeclarationOne(f IncomeForm, u UserConfig) ([]byte, error) {
 		"00",
 		"00",
 		fmt.Sprintf("%02d00", f.WorkDaysTotal),
-		fmt.Sprintf("%02d", f.WorkDaysTotal),
-		"00",
+		fmt.Sprintf("%02d", f.WorkDaysReal),
+		fmt.Sprintf("%02d", f.WorkDaysSickLeave),
 		"00",
 		"00",
 		"00",
