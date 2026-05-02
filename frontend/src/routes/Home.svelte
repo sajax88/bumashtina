@@ -82,8 +82,8 @@
     let formToSave = {
       Month: parseInt(form.Month),
       Year: form.Year,
-      MonthIncomeCents: parseFloat(form.MonthIncome) * configTaxes.Divider, 
-      TaxedIncomeCents: parseFloat(form.TaxedIncome) * configTaxes.Divider,
+      MonthIncomeCents: Math.ceil(parseFloat(form.MonthIncome) * configTaxes.Divider), 
+      TaxedIncomeCents: Math.ceil(parseFloat(form.TaxedIncome) * configTaxes.Divider),
       DayStart: form.DayStart,
       DayEnd: form.DayEnd,
       WorkDaysTotal: form.WorkDaysTotal
@@ -257,13 +257,12 @@
 <div id="declarations-schedule">
  <h2>Подаваме в НАП</h2>
   <ul>
-    <li>Декларация 1 за дължими осигуровки – всеки месец от 25-то число на следващия месец;</li>
-    <li>Декларация 6 за дължими осигурителни вноски – до 30.04 на следващата календарна година;</li>
-    <li>Декларация по чл. 55 от ЗДДФЛ – за първите три тримесечия, до края на следващия месец, следващ тримесечието;</li>
-    <li>Декларация по чл. 50 от ЗДДФЛ – до 30.04 на следващата календарна година;</li>
+    <li>Декларация 1 за дължими осигуровки (по Булстат) – всеки месец от 25-то число на следващия месец;</li>
+    <li>Декларация 6 за дължими осигурителни вноски (по ЕГН) – до 30.04 на следващата календарна година;</li>
+    <li>Декларация по чл. 55 от ЗДДФЛ (по ЕГН) – за първите три тримесечия, до края на следващия месец, следващ тримесечието;</li>
+    <li>Декларация по чл. 50 от ЗДДФЛ (по ЕГН) – до 30.04 на следващата календарна година;</li>
     <li>При ДДС регистрация – ежемесечни ДДС декларации до 15-то число на следващия месец.</li>
   </ul>
-
   </div>
 </main>
 

@@ -43,8 +43,8 @@
         <th>Месец</th>
         <th>Доход</th>
         <th>Осигурителен доход</th>
-        <th>Д.1</th>
         <th></th>
+        <th>Д.1</th>
         <th></th>
       </tr>
     </thead>
@@ -55,12 +55,12 @@
             <td>{row.Month} / {row.Year}</td>
             <td>{row.MonthIncomeCents / 100}</td>
             <td>{row.TaxedIncomeCents / 100}</td>
+             <td><!-- TODO: show all data --></td>
              <td>
                <button class="declaration-button" on:click={() => decl1(row.Month, row.Year)}>
                 <BookText color="#444" size="20" />
               </button>
              </td>
-             <td><!-- TODO: show all data -->></td>
              <td>
               <button class="delete-button" on:click={() => delete_data(row.Month, row.Year)}>
                 X
