@@ -24,7 +24,7 @@ func MakeDeclarationOne(f IncomeForm, u UserConfig) ([]byte, error) {
 
 	f.WorkDaysReal = f.WorkDaysTotal - f.WorkDaysSickLeave
 
-	initials := strings.ToUpper(firstSymbol(u.FirstName) + firstSymbol(u.MiddleName)) // TODO
+	initials := strings.ToUpper(firstSymbol(u.FirstName) + firstSymbol(u.MiddleName))
 	endSymbol := ""
 
 	fiedls := []string{
@@ -115,7 +115,7 @@ func toWindows1251(utf8String string) (string, error) {
 }
 
 func fromWindows1251(bytes []byte) (string, error) {
-	// TODO
+	// TODO: do we need this?
 	return "", nil
 	// decoder := charmap.Windows1251.NewDecoder()
 	// decodedReader := transform.NewReader(bytes, decoder)

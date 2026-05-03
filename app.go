@@ -26,7 +26,7 @@ func (a *App) startup(ctx context.Context) {
 
 func (a *App) SaveUserConfig(c UserConfig) string {
 	if !c.IsValid() {
-		return "Invalid config" // TODO: BG localization
+		return "Грешна конфигурация"
 	}
 	a.config.User = c
 	err := SaveConfigToFile(a.config)
@@ -92,10 +92,11 @@ func (a *App) LoadAllIncomeData() []IncomeForm {
 
 func (a *App) SaveIncomeForm(f IncomeForm) string {
 	// TODO: validation
+
 	// TODO: calculate taxes and social security, save them together with the form
 	// TaxesToPayCents          int64
 	// SocialSecurityToPayCents int64
-	// TODO: possibility to save really paid taxes and social security
+
 	f.TaxesConfig = GetTaxesConfig()
 	err := SaveDataToFile(f)
 	if err != nil {
@@ -144,8 +145,7 @@ func (a *App) GenerateDeclarationOne(month int, year int) string {
 
 	// TODO a.log LogPrint(ctx, err.Error()), MessageDialog
 
-	// TODO: update message
-	return fmt.Sprintf("Success, %d bytes writen to %s", len(content), saveFilePath)
+	return fmt.Sprintf("Успешно, файлът беше записан в %s", saveFilePath)
 }
 
 func (a *App) GenerateDeclarationSix() string {

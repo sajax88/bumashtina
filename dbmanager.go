@@ -10,8 +10,6 @@ import (
 
 // We don't have a real database, so we just store the data in the file for now.
 
-// TODO: save income and paid social security and calculated taxes for each month
-
 func getDataPath() (string, error) {
 	homeDir, dirErr := os.UserConfigDir()
 
@@ -123,6 +121,9 @@ func GetAllDataFromFile() ([]IncomeForm, error) {
 	if len(savedData) > 0 {
 		var rows []IncomeForm
 		json.Unmarshal(savedData, &rows)
+
+		// Sort the rows by month and year
+
 		return rows, nil
 	}
 

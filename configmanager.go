@@ -97,7 +97,7 @@ func SaveConfigToFile(c Config) error {
 	return os.WriteFile(configPath, config, 0600)
 }
 
-// Money is stored with Divider (100) to avoid floating point issues.
+// Money is stored with Divider = 100 to avoid floating point issues.
 // E.g. 550,66 euro is stored as 55066.
 type TaxesConfig struct {
 	MinInsuranceIncomeCents      int32
@@ -109,7 +109,6 @@ type TaxesConfig struct {
 	PregnancyInsurancePercentage float32
 	PensionPercentagePartOne     float32
 	PensionPercentagePartTwo     float32
-	Divider                      int32 // TODO: move somewhere global
 }
 
 func GetTaxesConfig() TaxesConfig {
@@ -123,8 +122,6 @@ func GetTaxesConfig() TaxesConfig {
 		PregnancyInsurancePercentage: 3.5,    // 3,5% за фонд „Майчинство“ - see Settings.IsPregnancyInsuranceEnabled
 		PensionPercentagePartOne:     14.8,   // Използва се в Декларация 1
 		PensionPercentagePartTwo:     5.0,    // Използва се в Декларация 1
-
-		Divider: MONEY_DIVIDER, // TODO: use const everywhere
 	}
 }
 

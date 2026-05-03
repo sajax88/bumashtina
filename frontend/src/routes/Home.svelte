@@ -34,6 +34,9 @@
   let res = ""
   let data // TODO
 
+
+  const MONEY_DIVIDER = 100;
+
   async function load_configs(): Promise<void> {
     const [user, settings, taxes] = await Promise.all([
       LoadUserConfig(),
@@ -46,11 +49,11 @@
   }
 
   function setMinIncome(): void {
-    form.TaxedIncome = String(configTaxes.MinInsuranceIncomeCents / configTaxes.Divider);
+    form.TaxedIncome = String(configTaxes.MinInsuranceIncomeCents / MONEY_DIVIDER);
   }
 
   function setMaxIncome(): void {
-    form.TaxedIncome = String(configTaxes.MaxInsuranceIncomeCents / configTaxes.Divider);
+    form.TaxedIncome = String(configTaxes.MaxInsuranceIncomeCents / MONEY_DIVIDER);
   }
 
   function saveIncome(): void {
@@ -70,10 +73,10 @@
     }
 
     if (
-      form.TaxedIncome < configTaxes.MinInsuranceIncomeCents / configTaxes.Divider 
-      || form.TaxedIncome > configTaxes.MaxInsuranceIncomeCents / configTaxes.Divider
+      parseFloat(form.TaxedIncome) * MONEY_DIVIDER < configTaxes.MinInsuranceIncomeCents
+      || parseFloat(form.TaxedIncome) * MONEY_DIVIDER > configTaxes.MaxInsuranceIncomeCents
      ) {
-      alert(`Осигурителният доход трябва да бъде между ${configTaxes.MinInsuranceIncomeCents / configTaxes.Divider} и ${configTaxes.MaxInsuranceIncomeCents / configTaxes.Divider}.`);
+      alert(`Осигурителният доход трябва да бъде между ${configTaxes.MinInsuranceIncomeCents / MONEY_DIVIDER} и ${configTaxes.MaxInsuranceIncomeCents / MONEY_DIVIDER}.`);
       return;
     }
 
@@ -82,11 +85,12 @@
     let formToSave = {
       Month: parseInt(form.Month),
       Year: form.Year,
-      MonthIncomeCents: Math.ceil(parseFloat(form.MonthIncome) * configTaxes.Divider), 
-      TaxedIncomeCents: Math.ceil(parseFloat(form.TaxedIncome) * configTaxes.Divider),
+      MonthIncomeCents: Math.ceil(parseFloat(form.MonthIncome) * MONEY_DIVIDER),
+      TaxedIncomeCents: Math.ceil(parseFloat(form.TaxedIncome) * MONEY_DIVIDER),
       DayStart: form.DayStart,
       DayEnd: form.DayEnd,
-      WorkDaysTotal: form.WorkDaysTotal
+      WorkDaysTotal: form.WorkDaysTotal,
+      WorkDaysSickLeave: form.WorkDaysSickLeave,
     }
    
     SaveIncomeForm(formToSave).then((result) => {
@@ -157,9 +161,7 @@
       <label for="WorkDaysTotal">Общо работни дни</label>
       <input class="input" min="0" max="31" id="WorkDaysTotal" type="number" bind:value={form.WorkDaysTotal} />
 
-      <!-- TODO: open url-->
-      <div class="info">Провери работни дни: <a 
-      href="#" 
+      <div class="info">Провери работни дни: <a href="#"
       on:click={() => BrowserOpenURL('https://kik-info.com/spravochnik/calendar/' + form.Year)}
       >
         https://kik-info.com/spravochnik/calendar/{form.Year}
@@ -208,7 +210,7 @@
     <div class="form-group">
       <label for="DayStart">Начален ден на дейност</label>
       <input class="input" id="DayStart" type="number" min="0" max="31" bind:value={form.DayStart} />
-      <div class="info">Само ако започваш дейност през този месец</div> <!--TODO: check, Tsveta! -->
+      <div class="info">Само ако започваш дейност през този месец</div>
     </div>
 
     </div>  
@@ -217,7 +219,7 @@
     <div class="form-group">
       <label for="DayEnd">Краен ден на дейност</label>
       <input class="input" id="DayEnd" type="number" min="0" max="31" bind:value={form.DayEnd} />
-      <div class="info">Само ако приключваш дейност през този месец</div> <!--TODO: check, Tsveta! -->
+      <div class="info">Само ако приключваш дейност през този месец</div>
     </div>
     </div>
     </fieldset> 
@@ -247,9 +249,9 @@
     </div>
 
     {/if}
-    <!-- TODO
+    <!-- TODO: for the previous year
     <button class="btn">
-      <span><BookText color="#444" size="20" /> Генерирай Декларация 6</span> 
+      <span><BookText color="#444" size="20" /> Генерирай Декларация 6 за </span>
     </button>
     <div></div>-->
   </div>

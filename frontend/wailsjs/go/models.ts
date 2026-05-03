@@ -10,7 +10,6 @@ export namespace main {
 	    PregnancyInsurancePercentage: number;
 	    PensionPercentagePartOne: number;
 	    PensionPercentagePartTwo: number;
-	    Divider: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new TaxesConfig(source);
@@ -27,7 +26,6 @@ export namespace main {
 	        this.PregnancyInsurancePercentage = source["PregnancyInsurancePercentage"];
 	        this.PensionPercentagePartOne = source["PensionPercentagePartOne"];
 	        this.PensionPercentagePartTwo = source["PensionPercentagePartTwo"];
-	        this.Divider = source["Divider"];
 	    }
 	}
 	export class IncomeForm {
