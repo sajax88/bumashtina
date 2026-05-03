@@ -1,7 +1,9 @@
 package main
 
 import (
+	"cmp"
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -40,8 +42,8 @@ func SaveDataToFile(f IncomeForm) error {
 		return err
 	}
 
-	// TODO: sort?
 	allData = append(allData, f)
+	allData = sortRows(allData)
 
 	// TODO
 	data, err := json.Marshal(allData)
@@ -120,12 +122,25 @@ func GetAllDataFromFile() ([]IncomeForm, error) {
 
 	if len(savedData) > 0 {
 		var rows []IncomeForm
-		json.Unmarshal(savedData, &rows)
+		err := json.Unmarshal(savedData, &rows)
+		if err != nil {
+			return nil, err
+		}
 
-		// Sort the rows by month and year
+		rows = sortRows(rows)
 
 		return rows, nil
 	}
 
 	return []IncomeForm{}, nil
+}
+
+func sortRows(rows []IncomeForm) []IncomeForm {
+	compareByMonthAndYear := func(a, b IncomeForm) int {
+		return -cmp.Compare(fmt.Sprintf("%d%d", a.Year, a.Month), fmt.Sprintf("%d%d", b.Year, b.Month))
+	}
+	// Sort the rows by month and year
+	slices.SortFunc(rows, compareByMonthAndYear)
+
+	return rows
 }
