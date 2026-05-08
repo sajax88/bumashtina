@@ -1,12 +1,11 @@
 <script lang="ts">
-    import {DeleteData, GenerateDeclarationOne, LoadAllIncomeData} from "../../wailsjs/go/main/App.js";
-    import {BookText, ChevronLeft, ChevronsLeft, ChevronRight, ChevronsRight} from 'lucide-svelte';
+    import {DeleteData, LoadAllIncomeData} from "../../wailsjs/go/main/App.js";
+    import {ChevronLeft, ChevronsLeft, ChevronRight, ChevronsRight, View, Trash2} from 'lucide-svelte';
     import {onMount} from 'svelte';
 
-    let res;
     let data;
     let currentPage = 1;
-    let itemsPerPage = 10;
+    let itemsPerPage = 12;
 
     $: totalPages = data ? Math.ceil(data.length / itemsPerPage) : 0;
     $: paginatedData = data ? data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : [];
@@ -35,21 +34,13 @@
             load_data()
         });
     }
-
-    function decl1(month, year): void {
-        GenerateDeclarationOne(month, year).then(function (result) {
-            console.log(result)
-            // TODO: show success message, or error
-            res = result
-        });
-    }
 </script>
 
 <main>
     <div class="input-box" id="input-box">
         <h2>Въведени данни</h2>
 
-        {#if data && data.length > 0}
+        {#if data && data.length > 0 && totalPages > 1}
             <div class="pagination">
                 <button class="pagination-button" on:click={() => changePage(1)} disabled={currentPage === 1}>
                     <ChevronsLeft size="20"/>
@@ -77,7 +68,6 @@
                 <th>Доход</th>
                 <th>Осигурителен доход</th>
                 <th></th>
-                <th>Д.1</th>
                 <th></th>
             </tr>
             </thead>
@@ -88,15 +78,12 @@
                         <td>{row.Month} / {row.Year}</td>
                         <td>{row.MonthIncomeCents / 100}</td>
                         <td>{row.TaxedIncomeCents / 100}</td>
-                        <td><!-- TODO: show all data --></td>
-                        <td>
-                            <button class="declaration-button" on:click={() => decl1(row.Month, row.Year)}>
-                                <BookText color="#444" size="20"/>
-                            </button>
+                        <td class="btn-col">
+                            <a href="#/data-single/{row.Year}/{row.Month}" ><View color="#444" size="20"/></a>
                         </td>
-                        <td>
+                        <td class="btn-col">
                             <button class="delete-button" on:click={() => delete_data(row.Month, row.Year)}>
-                                X
+                                <Trash2 color="#d13708" size="20"/>
                             </button>
                         </td>
                     </tr>
@@ -105,7 +92,7 @@
             </tbody>
         </table>
 
-        {#if data && data.length > 0}
+        {#if data && data.length > 0 && totalPages > 1}
             <div class="pagination">
                 <button class="pagination-button" on:click={() => changePage(1)} disabled={currentPage === 1}>
                     <ChevronsLeft size="20"/>
@@ -137,11 +124,8 @@
         cursor: pointer;
     }
 
-    .declaration-button {
-        background-color: transparent;
-        border: none;
-        color: #444;
-        cursor: pointer;
+    .btn-col {
+       text-align: center;
     }
 
     .pagination {

@@ -5,6 +5,7 @@
   import Settings from './routes/Settings.svelte'
   import Personal from './routes/Personal.svelte'
   import Data from './routes/Data.svelte'
+  import DataSingleItem from "./routes/DataSingleItem.svelte";
 
   import {BrowserOpenURL} from "../wailsjs/runtime";
 
@@ -25,6 +26,7 @@
         "/settings": Settings,
         "/personal": Personal,
         "/data": Data,
+        "/data-single/:year/:month": DataSingleItem,
     }}
 />
 
