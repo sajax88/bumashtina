@@ -26,7 +26,7 @@
         "/settings": Settings,
         "/personal": Personal,
         "/data": Data,
-        "/data-single/:year/:month": DataSingleItem,
+        "/item-single/:year/:month": DataSingleItem,
     }}
 />
 

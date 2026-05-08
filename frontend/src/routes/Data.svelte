@@ -84,7 +84,7 @@
                         <td>{row.MonthIncomeCents / 100}</td>
                         <td>{row.TaxedIncomeCents / 100}</td>
                         <td class="btn-col">
-                            <a href="#/data-single/{row.Year}/{row.Month}" ><View color="#444" size="20"/></a>
+                            <a href="#/item-single/{row.Year}/{row.Month}" ><View color="#444" size="20"/></a>
                         </td>
                         <td class="btn-col">
                             <button class="delete-button" on:click={() => delete_data(row.Month, row.Year)}>
