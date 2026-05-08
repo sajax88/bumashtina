@@ -40,6 +40,11 @@
     <div class="input-box" id="input-box">
         <h2>Въведени данни</h2>
 
+        {#if data}
+            <!-- TODO: Advance tax for previous quarter -->
+            <!-- TODO: Declaration 6 for previous year -->
+        {/if}
+
         {#if data && data.length > 0 && totalPages > 1}
             <div class="pagination">
                 <button class="pagination-button" on:click={() => changePage(1)} disabled={currentPage === 1}>

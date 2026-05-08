@@ -18,6 +18,10 @@ export function LoadAllIncomeData() {
   return window['go']['main']['App']['LoadAllIncomeData']();
 }
 
+export function LoadIncomeDataForMonth(arg1, arg2) {
+  return window['go']['main']['App']['LoadIncomeDataForMonth'](arg1, arg2);
+}
+
 export function LoadSettingsConfig() {
   return window['go']['main']['App']['LoadSettingsConfig']();
 }

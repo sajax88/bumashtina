@@ -10,6 +10,8 @@ export function GenerateDeclarationSix():Promise<string>;
 
 export function LoadAllIncomeData():Promise<Array<main.IncomeForm>>;
 
+export function LoadIncomeDataForMonth(arg1:number,arg2:number):Promise<main.IncomeForm>;
+
 export function LoadSettingsConfig():Promise<main.Settings>;
 
 export function LoadTaxesConfig():Promise<main.TaxesConfig>;

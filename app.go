@@ -90,10 +90,18 @@ func (a *App) LoadAllIncomeData() []IncomeForm {
 	return rows
 }
 
+func (a *App) LoadIncomeDataForMonth(month int, year int) IncomeForm {
+	row, err := GetDataFromFileForMonth(month, year)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return row
+}
+
 func (a *App) SaveIncomeForm(f IncomeForm) string {
 	// TODO: validation
 
-	// TODO: calculate taxes and social security, save them together with the form
+	// TODO: calculate taxes and social security, save them together with the form?
 	// TaxesToPayCents          int64
 	// SocialSecurityToPayCents int64
 
@@ -115,7 +123,7 @@ func (a *App) DeleteData(month int, year int) string {
 }
 
 func (a *App) GenerateDeclarationOne(month int, year int) string {
-	incomeForm, err := GetDataFromFile(month, year)
+	incomeForm, err := GetDataFromFileForMonth(month, year)
 	if err != nil {
 		return err.Error()
 	}

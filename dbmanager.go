@@ -56,7 +56,7 @@ func SaveDataToFile(f IncomeForm) error {
 	return os.WriteFile(dataPath, data, 0600)
 }
 
-func GetDataFromFile(month int, year int) (IncomeForm, error) {
+func GetDataFromFileForMonth(month int, year int) (IncomeForm, error) {
 	row, err := GetAllDataFromFile()
 	if err != nil {
 		log.Fatal(err)
