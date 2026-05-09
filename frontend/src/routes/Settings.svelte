@@ -3,7 +3,7 @@
         LoadSettingsConfig,
         LoadTaxesConfig,
         LoadTaxesConfigLabels,
-        SaveSettingsConfig,
+        SaveSettingsConfig, SaveTaxesConfig,
     } from "../../wailsjs/go/main/App.js";
 
     import {onMount} from 'svelte';
@@ -16,23 +16,28 @@
 
     const MONEY_DIVIDER = 100;
     let res = ""
-    let config;
-    let taxes_config;
-    let taxes_labels;
+    let resTaxes = ""
+    let settingsConfig;
+    let taxesConfig;
+    let taxesLabels;
 
-    function saveConfig(): void {
-        SaveSettingsConfig(config).then((result) => (res = result));
+    function saveSettingsConfig(): void {
+        SaveSettingsConfig(settingsConfig).then((result) => (res = result));
+    }
+
+    function saveTaxesConfig(): void {
+        SaveTaxesConfig(taxesConfig).then((result) => (resTaxes = result));
     }
 
     function load_config(): void {
         LoadSettingsConfig().then(function (result) {
-            config = result
+            settingsConfig = result
         });
         LoadTaxesConfig().then(function (result) {
-            taxes_config = result
+            taxesConfig = result
         });
         LoadTaxesConfigLabels().then(function (result) {
-            taxes_labels = result
+            taxesLabels = result
         });
     }
 </script>
@@ -41,18 +46,18 @@
     <div class="input-box" id="input-box-settings">
         <h2>Настройки</h2>
 
-        {#if config}
+        {#if settingsConfig}
             <div class="form-row">
                 <div class="form-group checkbox-group">
                     <input class="checkbox" id="IsPregnancyInsuranceEnabled"
-                           bind:checked={config.IsPregnancyInsuranceEnabled} type="checkbox"/>
+                           bind:checked={settingsConfig.IsPregnancyInsuranceEnabled} type="checkbox"/>
                     <label class="checkbox-label" for="IsPregnancyInsuranceEnabled">Общо заболяване и майчинство</label>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group submit-group">
-                    <button class="btn btn-large" on:click={saveConfig}>
+                    <button class="btn btn-large" on:click={saveSettingsConfig}>
                         <span><Save color="#444" size="20"/> Запази</span>
                     </button>
                 </div>
@@ -67,23 +72,44 @@
         {/if}
 
         <h2>Данъци и осигуровки, 2026</h2>
-        {#if taxes_config && taxes_labels}
+        {#if taxesConfig && taxesLabels}
             <table class="table">
                 <tbody>
-                {#each Object.entries(taxes_config) as [key, value]}
+                {#each Object.entries(taxesConfig) as [key, value]}
                     <tr>
-                        <td>{taxes_labels[Object.keys(taxes_config).indexOf(key)]}</td>
+                        <td>{taxesLabels[Object.keys(taxesConfig).indexOf(key)]}</td>
                         <td>
-                            {#if Object.keys(taxes_config).indexOf(key) < 2}
+                            {#if Object.keys(taxesConfig).indexOf(key) < 2}
                                 {value / MONEY_DIVIDER}
                             {:else}
                                 {value} %
                             {/if}
+
+                            <!-- TODO: edit button:
+                            <input class="input taxes-config-input" id={key} type="text"
+                                   bind:value={taxesConfigInputValues[key]}
+                                   on:input={() => updateTaxesConfigValue(key, index)}/>
+                            {#if !isMoneyField(index)}
+                                <span class="taxes-config-unit">%</span>
+                            {/if}
+                            -->
                         </td>
                     </tr>
                 {/each}
                 </tbody>
             </table>
+
+            <div class="submit-group">
+                <button class="btn btn-large" on:click={saveTaxesConfig}>
+                    <span><Save color="#444" size="20"/> Запази</span>
+                </button>
+            </div>
+
+            {#if resTaxes}
+                <div class="alert success">
+                    <CircleCheck color="#748733" size="20"/> {resTaxes}
+                </div>
+            {/if}
         {/if}
     </div>
 </main>

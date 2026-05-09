@@ -1,5 +1,17 @@
 export namespace main {
 	
+	export class Settings {
+	    IsPregnancyInsuranceEnabled: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new Settings(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.IsPregnancyInsuranceEnabled = source["IsPregnancyInsuranceEnabled"];
+	    }
+	}
 	export class TaxesConfig {
 	    MinInsuranceIncomeCents: number;
 	    MaxInsuranceIncomeCents: number;
@@ -41,6 +53,7 @@ export namespace main {
 	    TaxesToPayCents: number;
 	    SocialSecurityToPayCents: number;
 	    TaxesConfig: TaxesConfig;
+	    Settings: Settings;
 	
 	    static createFrom(source: any = {}) {
 	        return new IncomeForm(source);
@@ -60,6 +73,7 @@ export namespace main {
 	        this.TaxesToPayCents = source["TaxesToPayCents"];
 	        this.SocialSecurityToPayCents = source["SocialSecurityToPayCents"];
 	        this.TaxesConfig = this.convertValues(source["TaxesConfig"], TaxesConfig);
+	        this.Settings = this.convertValues(source["Settings"], Settings);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -80,18 +94,7 @@ export namespace main {
 		    return a;
 		}
 	}
-	export class Settings {
-	    IsPregnancyInsuranceEnabled: boolean;
 	
-	    static createFrom(source: any = {}) {
-	        return new Settings(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.IsPregnancyInsuranceEnabled = source["IsPregnancyInsuranceEnabled"];
-	    }
-	}
 	
 	export class UserConfig {
 	    FirstName: string;

@@ -46,6 +46,10 @@ export function SaveSettingsConfig(arg1) {
   return window['go']['main']['App']['SaveSettingsConfig'](arg1);
 }
 
+export function SaveTaxesConfig(arg1) {
+  return window['go']['main']['App']['SaveTaxesConfig'](arg1);
+}
+
 export function SaveUserConfig(arg1) {
   return window['go']['main']['App']['SaveUserConfig'](arg1);
 }

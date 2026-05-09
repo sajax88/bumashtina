@@ -23,8 +23,9 @@ type Settings struct {
 }
 
 type Config struct {
-	User     UserConfig
-	Settings Settings
+	User        UserConfig
+	Settings    Settings
+	TaxesConfig TaxesConfig
 }
 
 func (c UserConfig) IsValid() bool {
@@ -60,8 +61,9 @@ func getConfigPath() (string, error) {
 }
 
 func LoadConfigFromFile() (Config, error) {
-	s := Settings{IsPregnancyInsuranceEnabled: true} // TODO: default settings
-	c := Config{User: UserConfig{}, Settings: s}
+	s := Settings{IsPregnancyInsuranceEnabled: true} // Default
+	t := GetDefaultTaxesConfig()
+	c := Config{User: UserConfig{}, Settings: s, TaxesConfig: t}
 
 	configPath, err := getConfigPath()
 	if err != nil {
@@ -77,6 +79,8 @@ func LoadConfigFromFile() (Config, error) {
 	if len(savedConfig) > 0 {
 		json.Unmarshal(savedConfig, &c)
 	}
+
+	// TODO: if no Taxes Config?
 
 	return c, nil
 }
@@ -111,7 +115,7 @@ type TaxesConfig struct {
 	PensionPercentagePartTwo     float32
 }
 
-func GetTaxesConfig() TaxesConfig {
+func GetDefaultTaxesConfig() TaxesConfig {
 	return TaxesConfig{
 		MinInsuranceIncomeCents:      55066,  // 550,66 euro
 		MaxInsuranceIncomeCents:      211164, // 2111,64 euro

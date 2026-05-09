@@ -15,6 +15,7 @@ type IncomeForm struct {
 	SocialSecurityToPayCents int64
 
 	TaxesConfig TaxesConfig
+	Settings    Settings
 }
 
 func CalculateSocialSecurity(f IncomeForm, settings Settings) int32 {
@@ -34,9 +35,18 @@ func CalculateTaxForMonth(f IncomeForm, insurance int32) int32 {
 	return (int32(f.MonthIncomeCents) - expenses - insurance) * int32(f.TaxesConfig.TaxPercentage) / 100
 }
 
-func CalculateAdvanceTaxForThreeMonths(f IncomeForm, insurance int32) int32 {
+func CalculateAdvanceTaxForThreeMonths(forms []IncomeForm, paidInsuranceCents int32) float32 {
 	// За да определите авансовия си данък за тримесечието
 	// следва да извадите от доход за 3 месеца признатите разходи 25%
 	// и платените осигуровки за трите месеца. Данък 10%
-	return 0 // TODO
+	var incomeTotalCents int64
+	var taxPercent float32
+	for _, f := range forms {
+		incomeTotalCents += f.MonthIncomeCents
+		taxPercent = f.TaxesConfig.TaxPercentage
+	}
+
+	incomeWithDeductions := float32(incomeTotalCents) - float32(incomeTotalCents)*0.25 - float32(paidInsuranceCents)
+
+	return incomeWithDeductions * taxPercent / 100 / MONEY_DIVIDER
 }

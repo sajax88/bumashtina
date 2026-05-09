@@ -48,6 +48,17 @@ func (a *App) SaveSettingsConfig(c Settings) string {
 	return "Успешно запазено"
 }
 
+func (a *App) SaveTaxesConfig(t TaxesConfig) string {
+	// TODO: validation
+	a.config.TaxesConfig = t
+	err := SaveConfigToFile(a.config)
+	if err != nil {
+		return err.Error()
+	}
+
+	return "Успешно запазено"
+}
+
 func (a *App) LoadUserConfig() UserConfig {
 	if a.config != (Config{}) { // TODO
 		return a.config.User
@@ -75,7 +86,16 @@ func (a *App) LoadSettingsConfig() Settings {
 }
 
 func (a *App) LoadTaxesConfig() TaxesConfig {
-	return GetTaxesConfig()
+	if a.config != (Config{}) { // TODO
+		return a.config.TaxesConfig
+	}
+
+	c, err := LoadConfigFromFile()
+	if err != nil {
+		log.Fatal(err)
+	}
+	a.config = c
+	return c.TaxesConfig
 }
 
 func (a *App) LoadTaxesConfigLabels() []string {
@@ -101,11 +121,12 @@ func (a *App) LoadIncomeDataForMonth(month int, year int) IncomeForm {
 func (a *App) SaveIncomeForm(f IncomeForm) string {
 	// TODO: validation
 
-	// TODO: calculate taxes and social security, save them together with the form?
+	// TODO: calculate approximate taxes and social security, save them together with the form?
 	// TaxesToPayCents          int64
 	// SocialSecurityToPayCents int64
 
-	f.TaxesConfig = GetTaxesConfig()
+	f.TaxesConfig = a.LoadTaxesConfig()
+	f.Settings = a.LoadSettingsConfig()
 	err := SaveDataToFile(f)
 	if err != nil {
 		return err.Error()

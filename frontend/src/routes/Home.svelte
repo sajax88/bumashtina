@@ -105,6 +105,9 @@
 
 <main>
   <div class="input-box" id="input-box">
+
+  <!-- TODO: what do we do this month -->
+
   <h2>Въведи данни за доходи</h2>
 
   <div class="form-row">
