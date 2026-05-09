@@ -125,6 +125,8 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 	// TaxesToPayCents          int64
 	// SocialSecurityToPayCents int64
 
+	// TODO: check if we're trying to override, ask to delete the previos value first
+
 	f.TaxesConfig = a.LoadTaxesConfig()
 	f.Settings = a.LoadSettingsConfig()
 	err := SaveDataToFile(f)

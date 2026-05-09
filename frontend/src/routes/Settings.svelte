@@ -8,7 +8,7 @@
 
     import {onMount} from 'svelte';
 
-    import {CircleCheck, Save} from 'lucide-svelte';
+    import {CircleCheck, Edit, Save} from 'lucide-svelte';
 
     onMount(() => {
         load_config()
@@ -26,7 +26,16 @@
     }
 
     function saveTaxesConfig(): void {
-        SaveTaxesConfig(taxesConfig).then((result) => (resTaxes = result));
+        let taxesConfigToSave = {}
+        for(const k in taxesConfig) {
+            if (k > 1) {
+                taxesConfigToSave[k] = parseInt(taxesConfig[k])
+            } else {
+                taxesConfigToSave[k] = parseFloat(taxesConfig[k])
+            }
+        }
+        SaveTaxesConfig(taxesConfigToSave).then((result) => (resTaxes = result));
+        // TODO: hide inputs
     }
 
     function load_config(): void {
@@ -39,6 +48,11 @@
         LoadTaxesConfigLabels().then(function (result) {
             taxesLabels = result
         });
+    }
+
+    function showEditInput(key) {
+        document.getElementById(`taxes-config-input-${key}`).style.display = "block";
+        document.getElementById(`taxes-config-display-value-${key}`).style.display = "none";
     }
 </script>
 
@@ -79,20 +93,22 @@
                     <tr>
                         <td>{taxesLabels[Object.keys(taxesConfig).indexOf(key)]}</td>
                         <td>
+                            <span class="taxes-config-display-value" id="taxes-config-display-value-{key}">
                             {#if Object.keys(taxesConfig).indexOf(key) < 2}
                                 {value / MONEY_DIVIDER}
                             {:else}
                                 {value} %
                             {/if}
+                            </span>
 
-                            <!-- TODO: edit button:
-                            <input class="input taxes-config-input" id={key} type="text"
-                                   bind:value={taxesConfigInputValues[key]}
-                                   on:input={() => updateTaxesConfigValue(key, index)}/>
-                            {#if !isMoneyField(index)}
-                                <span class="taxes-config-unit">%</span>
-                            {/if}
-                            -->
+                            <input style="display: none" id="taxes-config-input-{key}" class="input taxes-config-input" type="text"
+                                   bind:value={taxesConfig[key]}
+                            />
+                        </td>
+                        <td>
+                            <button  class="btn btn-small" on:click="{() => showEditInput(key)}">
+                                <Edit color="#444" size="20"/>
+                            </button>
                         </td>
                     </tr>
                 {/each}

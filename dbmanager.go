@@ -108,6 +108,8 @@ func DeleteDataFromFile(month int, year int) error {
 }
 
 func GetAllDataFromFile() ([]IncomeForm, error) {
+	// TODO: cache in app once it was read?
+
 	dataPath, err := getDataPath()
 	if err != nil {
 		log.Fatal(err)
@@ -135,11 +137,11 @@ func GetAllDataFromFile() ([]IncomeForm, error) {
 	return []IncomeForm{}, nil
 }
 
+// Sort the rows by month and year
 func sortRows(rows []IncomeForm) []IncomeForm {
 	compareByMonthAndYear := func(a, b IncomeForm) int {
 		return -cmp.Compare(fmt.Sprintf("%d%d", a.Year, a.Month), fmt.Sprintf("%d%d", b.Year, b.Month))
 	}
-	// Sort the rows by month and year
 	slices.SortFunc(rows, compareByMonthAndYear)
 
 	return rows
