@@ -1,5 +1,23 @@
 export namespace main {
 	
+	export class CalculatedTax {
+	    TotalIncomeCents: number;
+	    TaxCents: number;
+	    Quarter: number;
+	    Year: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new CalculatedTax(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.TotalIncomeCents = source["TotalIncomeCents"];
+	        this.TaxCents = source["TaxCents"];
+	        this.Quarter = source["Quarter"];
+	        this.Year = source["Year"];
+	    }
+	}
 	export class Settings {
 	    IsPregnancyInsuranceEnabled: boolean;
 	

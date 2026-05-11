@@ -158,6 +158,10 @@ body {
     background-color: #edb18a;
   }
 
+  .alert-info {
+      background-color: #f0fcff;
+  }
+
   div.info {
     font-size: small;
     padding-left:210px;

@@ -20,6 +20,13 @@ type IncomeForm struct {
 	Settings    Settings
 }
 
+type CalculatedTax struct {
+	TotalIncomeCents int64
+	TaxCents         int64
+	Quarter          int
+	Year             int
+}
+
 func CalculateSocialSecurity(f IncomeForm, settings Settings) int32 {
 	insurancePercent := f.TaxesConfig.PensionPercentage + f.TaxesConfig.HealthInsurancePercentage
 	if settings.IsPregnancyInsuranceEnabled {
@@ -38,7 +45,7 @@ func CalculateTaxForMonth(f IncomeForm, insurance int32) int32 {
 }
 
 func CalculateIncomeForThreeMonths(forms []IncomeForm) (int64, error) {
-	if len(forms) != 3 {
+	if len(forms) > 3 {
 		return 0, fmt.Errorf("Очаквах данни за 3 месеца, получих %d", len(forms))
 	}
 	var incomeTotalCents int64
@@ -48,8 +55,9 @@ func CalculateIncomeForThreeMonths(forms []IncomeForm) (int64, error) {
 	return incomeTotalCents, nil
 }
 
+// TODO: pass actually paid insurance if present, otherwise calculated
 func CalculateAdvanceTaxForThreeMonths(forms []IncomeForm, paidInsuranceCents int32) (float32, error) {
-	if len(forms) != 3 {
+	if len(forms) > 3 {
 		return 0, fmt.Errorf("Очаквах данни за 3 месеца, получих %d", len(forms))
 	}
 

@@ -124,6 +124,7 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 	// TODO: calculate approximate taxes and social security, save them together with the form?
 	// TaxesToPayCents          int64
 	// SocialSecurityToPayCents int64
+	// TODO: update and save actually paid?
 
 	// TODO: check if we're trying to override, ask to delete the previos value first
 
@@ -177,6 +178,16 @@ func (a *App) GenerateDeclarationOne(month int, year int) string {
 	// TODO a.log LogPrint(ctx, err.Error()), MessageDialog
 
 	return fmt.Sprintf("Успешно, файлът беше записан в %s", saveFilePath)
+}
+
+func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
+	// TODO
+	return CalculatedTax{
+		TotalIncomeCents: 1000000,
+		TaxCents:         1000,
+		Quarter:          quarter,
+		Year:             year,
+	}
 }
 
 func (a *App) GenerateDeclarationSix() string {

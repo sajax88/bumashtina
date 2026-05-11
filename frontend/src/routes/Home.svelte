@@ -5,17 +5,11 @@
         LoadSettingsConfig,
         LoadTaxesConfig,
         LoadUserConfig,
-        SaveIncomeForm
+        SaveIncomeForm,
+        CalculateTaxForQuarter
     } from "../../wailsjs/go/main/App.js";
-
-
     import {BrowserOpenURL} from "../../wailsjs/runtime";
-
     import {onMount} from 'svelte';
-
-    onMount(async () => {
-        await load_configs()
-    });
 
     let form = {
         Month: String(new Date().getMonth()), // We want a previous month
@@ -27,6 +21,16 @@
         WorkDaysTotal: 0,
         WorkDaysSickLeave: 0,
     }
+
+    let taxCalculatorForm = {
+        Quarter: Math.floor((new Date().getMonth() + 3) / 3).toString(),
+        Year: new Date().getFullYear(),
+    }
+
+    let declarationSixForm = {
+        Year: new Date().getFullYear(),
+    }
+
     let configUser
     let configSettings
     let configTaxes
@@ -34,8 +38,13 @@
     let res = ""
     let data // TODO
     let thisMonthActions;
+    let taxCalculationResult;
 
     const MONEY_DIVIDER = 100;
+
+    onMount(async () => {
+        await load_configs()
+    });
 
     async function load_configs(): Promise<void> {
         const [user, settings, taxes] = await Promise.all([
@@ -98,8 +107,12 @@
         });
     }
 
-    function decl1(): void {
+    function generateDeclaration1(): void {
         GenerateDeclarationOne(parseInt(form.Month), form.Year).then((result) => (res = result));
+    }
+
+    function calculateTaxForQuarter() {
+        CalculateTaxForQuarter(parseInt(taxCalculatorForm.Quarter), taxCalculatorForm.Year).then((result) => (taxCalculationResult = result));
     }
 </script>
 
@@ -108,13 +121,12 @@
 
         <!-- TODO: what do we do this month -->
         {#if thisMonthActions}
-            <div class="alert alert-success">
+            <div class="alert success">
 
             </div>
         {/if}
 
         <h2>Въведи данни за доходи</h2>
-
 
         <div id="block-right">
             <!-- TODO: Count tax for selected quarter (I, II, III, IV) -->
@@ -124,20 +136,24 @@
                         <span><Calculator color="#444" size="20"/> Изчисли данък за тримесечие</span>
                     </button>
                     <div id="tax-calculator-block" class="hidden-form-block" style="display: none;">
-                        <!-- TODO: current quarter -->
-                        <select id="tax-calculator-quarter">
+                        <select id="tax-calculator-quarter" bind:value={taxCalculatorForm.Quarter}>
                             <option value="1">Първо</option>
                             <option value="2">Второ</option>
                             <option value="3">Трето</option>
                             <option value="4">Четвърто</option>
                         </select>
 
-                        <!-- TODO: current year -->
-                        <input type="number" id="tax-calculator-year" value="2026"/>
+                        <input type="number" id="tax-calculator-year" bind:value={taxCalculatorForm.Year}/>
 
-                        <button class="btn btn-small" on:click={() => {}}>
+                        <button class="btn btn-small" on:click={() => {calculateTaxForQuarter()}}>
                             <span><Check color="#444" size="20"/></span>
                         </button>
+                        {#if taxCalculationResult}
+                            <div class="alert alert-info">
+                                 Доход: {taxCalculationResult.TotalIncomeCents / MONEY_DIVIDER} EUR<br>
+                                 Данък: {taxCalculationResult.TaxCents / MONEY_DIVIDER} EUR
+                            </div>
+                        {/if}
                     </div>
                 </div>
             </div>
@@ -149,8 +165,7 @@
                         <span><BookText color="#444" size="20"/> Генерирай Декларация 6</span>
                     </button>
                     <div id="declaration-six-block" class="hidden-form-block" style="display: none;">
-                        <!-- TODO: current year -->
-                        <input type="number" id="tax-calculator-year" value="2026"/>
+                        <input type="number" id="tax-calculator-year" bind:value={declarationSixForm.Year} />
 
                         <button class="btn btn-small" on:click={() => {}}>
                             <span><Check color="#444" size="20"/></span>
@@ -214,7 +229,7 @@
                 <label for="WorkDaysTotal">Общо работни дни</label>
                 <input class="input" min="0" max="31" id="WorkDaysTotal" type="number" bind:value={form.WorkDaysTotal}/>
 
-                <div class="info">Провери работни дни: <a href="#"
+                <div class="info">Провери работни дни: <a href=""
                                                           on:click={() => BrowserOpenURL('https://kik-info.com/spravochnik/calendar/' + form.Year)}
                 >
                     https://kik-info.com/spravochnik/calendar/{form.Year}
@@ -292,7 +307,7 @@
             </div>
 
             <div>
-                <button class="btn" on:click={decl1}>
+                <button class="btn" on:click={generateDeclaration1}>
                     <span><BookText color="#444" size="20"/> Генерирай Декларация 1</span>
                 </button>
             </div>
