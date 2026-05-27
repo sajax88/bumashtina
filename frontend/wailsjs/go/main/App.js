@@ -57,3 +57,7 @@ export function SaveTaxesConfig(arg1) {
 export function SaveUserConfig(arg1) {
   return window['go']['main']['App']['SaveUserConfig'](arg1);
 }
+
+export function UpdateForm(arg1) {
+  return window['go']['main']['App']['UpdateForm'](arg1);
+}

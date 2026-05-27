@@ -31,12 +31,14 @@ type IncomeForm struct {
 }
 
 type CalculatedTax struct {
-	TotalIncomeCents int64
-	TaxCents         int64
-	Quarter          int
-	Year             int
-	MonthStart       int
-	MonthEnd         int
+	TotalIncomeCents   int64
+	TaxCents           int64
+	ExpensesCents      int64
+	PaidInsuranceCents int64
+	Quarter            int
+	Year               int
+	MonthStart         int
+	MonthEnd           int
 }
 
 func CalculateSocialSecurity(f IncomeForm) int64 {
@@ -73,7 +75,7 @@ func CalculateIncomeForThreeMonths(forms []IncomeForm) (int64, error) {
 	return incomeTotalCents, nil
 }
 
-func CalculateAdvanceTaxForThreeMonths(forms []IncomeForm) (int64, error) {
+func CalculateAdvanceTaxForThreeMonths(forms []IncomeForm, result *CalculatedTax) (int64, error) {
 	if len(forms) > 3 {
 		return 0, fmt.Errorf("Очаквах данни за 3 месеца, получих %d", len(forms))
 	}
@@ -95,6 +97,9 @@ func CalculateAdvanceTaxForThreeMonths(forms []IncomeForm) (int64, error) {
 	// (total income for 3 months - expenses - insurances) * taxPercentage
 	incomeWithDeductions := float32(incomeTotalCents) - float32(incomeTotalCents)*expensesPercent/100 - float32(paidInsuranceCents)
 	advanceTax := incomeWithDeductions * taxPercent / 100
+
+	result.PaidInsuranceCents = paidInsuranceCents
+	result.ExpensesCents = int64(math.Round(float64(float32(incomeTotalCents) * expensesPercent / 100)))
 
 	return int64(math.Round(float64(advanceTax))), nil
 }

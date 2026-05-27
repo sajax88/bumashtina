@@ -28,7 +28,7 @@
     }
 
     async function delete_data(month: number, year: number): Promise<void> {
-        if (!confirm("Сигурен ли си, че искаш да изтриеш данните за " + month + "/" + year + " ?")) return;
+        if (!confirm("Сигурни ли сте, че искате да изтриете данните за " + month + "/" + year + "? Изтритите данни не се възстановяват!")) return;
         DeleteData(month, year).then(function (result) {
             console.log(result) // TODO: to alert, some common error message
             load_data()

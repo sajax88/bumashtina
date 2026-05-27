@@ -106,7 +106,7 @@
                             />
                         </td>
                         <td>
-                            <button  class="btn btn-small" on:click="{() => showEditInput(key)}">
+                            <button class="btn btn-small" on:click="{() => showEditInput(key)}">
                                 <Edit color="#444" size="20"/>
                             </button>
                         </td>

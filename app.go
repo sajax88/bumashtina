@@ -145,6 +145,35 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 	return "Успешно запазено"
 }
 
+func (a *App) UpdateForm(f IncomeForm) string {
+	// TODO: validation
+
+	existingForm, err := GetDataFromFileForMonth(int(f.Month), int(f.Year))
+	if err != nil {
+		return err.Error()
+	}
+
+	if existingForm.Month > 0 {
+		// Allow to update only some values
+		existingForm.SocialSecurityReallyPaidCents = f.SocialSecurityReallyPaidCents
+	} else {
+		return "Не найдено" // TODO: return err object?
+	}
+
+	// Remove previous record and save the new one
+	err = DeleteDataFromFile(int(f.Month), int(f.Year))
+	if err != nil {
+		return err.Error()
+	}
+
+	err = SaveDataToFile(existingForm)
+	if err != nil {
+		return err.Error()
+	}
+
+	return "Успешно запазено"
+}
+
 func (a *App) DeleteData(month int, year int) string {
 	err := DeleteDataFromFile(month, year)
 	if err != nil {
@@ -214,7 +243,7 @@ func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
 	}
 
 	// TODO: if really paid insurance was not entered, add notification?
-	result.TaxCents, err = CalculateAdvanceTaxForThreeMonths(rows)
+	result.TaxCents, err = CalculateAdvanceTaxForThreeMonths(rows, &result)
 	if err != nil {
 
 		log.Fatal(err)

@@ -1,12 +1,12 @@
 <script lang="ts">
     import {ArrowBigDown, ArrowBigUp, BookText, Calculator, Check, CircleCheck, Save} from 'lucide-svelte';
     import {
+        CalculateTaxForQuarter,
         GenerateDeclarationOne,
         LoadSettingsConfig,
         LoadTaxesConfig,
         LoadUserConfig,
-        SaveIncomeForm,
-        CalculateTaxForQuarter
+        SaveIncomeForm
     } from "../../wailsjs/go/main/App.js";
     import {BrowserOpenURL} from "../../wailsjs/runtime";
     import {onMount} from 'svelte';
@@ -128,56 +128,6 @@
         {/if}
 
         <h2>Въведи данни за доходи</h2>
-
-        <div id="block-right">
-            <div class="form-row">
-                <div class="form-group">
-                    <button class="btn" on:click={() => {document.getElementById('tax-calculator-block').style.display = 'block';}}>
-                        <span><Calculator color="#444" size="20"/> Изчисли данък за тримесечие</span>
-                    </button>
-                    <div id="tax-calculator-block" class="hidden-form-block" style="display: none;">
-                        <select id="tax-calculator-quarter" bind:value={taxCalculatorForm.Quarter}>
-                            <option value="1">Първо</option>
-                            <option value="2">Второ</option>
-                            <option value="3">Трето</option>
-                            <option value="4">Четвърто</option>
-                        </select>
-
-                        <input type="number" id="tax-calculator-year" bind:value={taxCalculatorForm.Year}/>
-
-                        <button class="btn btn-small" on:click={() => {calculateTaxForQuarter()}}>
-                            <span><Check color="#444" size="20"/></span>
-                        </button>
-                        {#if taxCalculationResult}
-                            <div class="alert alert-info" id="tax-calculator-result">
-                                 Месеци: {taxCalculationResult.MonthStart}-{taxCalculationResult.MonthEnd}<br>
-                                 Доход: {taxCalculationResult.TotalIncomeCents / MONEY_DIVIDER} EUR<br>
-                                 Данък: {taxCalculationResult.TaxCents / MONEY_DIVIDER} EUR
-                            </div>
-                            <!-- TODO: warn if not entered
-                            <small><i>Точният данък зависи от фактически платени осигуровки</i></small>
-                            -->
-                        {/if}
-                    </div>
-                </div>
-            </div>
-
-            <!-- TODO: Declaration 6 for selected year -->
-            <div class="form-row">
-                <div class="form-group">
-                    <button class="btn" on:click={() => {document.getElementById('declaration-six-block').style.display = 'block';}}>
-                        <span><BookText color="#444" size="20"/> Генерирай Декларация 6</span>
-                    </button>
-                    <div id="declaration-six-block" class="hidden-form-block" style="display: none;">
-                        <input type="number" id="tax-calculator-year" bind:value={declarationSixForm.Year} />
-
-                        <button class="btn btn-small" on:click={() => {}}>
-                            <span><Check color="#444" size="20"/></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="form-row">
             <div class="form-group">
@@ -317,6 +267,65 @@
             </div>
 
         {/if}
+
+        <!-- TODO: move these somehow -->
+
+        <div id="declaration-six-box">
+            <!-- TODO: Declaration 6 for selected year -->
+            <div class="form-row">
+                <div class="form-group">
+                    <button class="btn"
+                            on:click={() => {document.getElementById('declaration-six-block').style.display = 'block';}}>
+                        <span><BookText color="#444" size="20"/> Генерирай Декларация 6</span>
+                    </button>
+                    <div id="declaration-six-block" class="hidden-form-block" style="display: none;">
+                        <input type="number" id="tax-calculator-year" bind:value={declarationSixForm.Year}/>
+
+                        <button class="btn btn-small" on:click={() => {}}>
+                            <span><Check color="#444" size="20"/></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tax-calculator-box">
+            <div class="form-row">
+                <div class="form-group">
+                    <button class="btn"
+                            on:click={() => {document.getElementById('tax-calculator-block').style.display = 'block';}}>
+                        <span><Calculator color="#444" size="20"/> Изчисли данък за тримесечие</span>
+                    </button>
+                    <div id="tax-calculator-block" class="hidden-form-block" style="display: none;">
+                        <select id="tax-calculator-quarter" bind:value={taxCalculatorForm.Quarter}>
+                            <option value="1">Първо</option>
+                            <option value="2">Второ</option>
+                            <option value="3">Трето</option>
+                            <option value="4">Четвърто</option>
+                        </select>
+
+                        <input type="number" id="tax-calculator-year" bind:value={taxCalculatorForm.Year}/>
+
+                        <button class="btn btn-small" on:click={() => {calculateTaxForQuarter()}}>
+                            <span><Check color="#444" size="20"/></span>
+                        </button>
+                        {#if taxCalculationResult}
+                            <div class="alert alert-info" id="tax-calculator-result">
+                                Месеци: {taxCalculationResult.MonthStart}-{taxCalculationResult.MonthEnd}<br>
+                                Доход: {taxCalculationResult.TotalIncomeCents / MONEY_DIVIDER} EUR<br>
+                                Приспадащи се разходи: {taxCalculationResult.ExpensesCents / MONEY_DIVIDER} EUR<br>
+                                Осигуровки: {taxCalculationResult.PaidInsuranceCents / MONEY_DIVIDER} EUR<br>
+                                Данък: {taxCalculationResult.TaxCents / MONEY_DIVIDER} EUR <!-- TODO: full formula -->
+                            </div>
+                            <!-- TODO: warn if not entered
+                            <small><i>Точният данък зависи от фактически платени осигуровки</i></small>
+                            -->
+                        {/if}
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <div id="declarations-schedule">
@@ -334,15 +343,12 @@
 </main>
 
 <style>
-    #block-right {
-        float: right;
-        width: 300px;
-        padding-left: 20px;
-        text-align: left;
+    #tax-calculator-box, #declaration-six-box {
+        padding-top:20px;
     }
 
     .hidden-form-block {
-        padding:10px 0;
+        padding: 10px 0;
     }
 
     .hidden-form-block input[type="number"] {

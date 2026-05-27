@@ -29,3 +29,5 @@ export function SaveSettingsConfig(arg1:main.Settings):Promise<string>;
 export function SaveTaxesConfig(arg1:main.TaxesConfig):Promise<string>;
 
 export function SaveUserConfig(arg1:main.UserConfig):Promise<string>;
+
+export function UpdateForm(arg1:main.IncomeForm):Promise<string>;

@@ -3,6 +3,8 @@ export namespace main {
 	export class CalculatedTax {
 	    TotalIncomeCents: number;
 	    TaxCents: number;
+	    ExpensesCents: number;
+	    PaidInsuranceCents: number;
 	    Quarter: number;
 	    Year: number;
 	    MonthStart: number;
@@ -16,6 +18,8 @@ export namespace main {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.TotalIncomeCents = source["TotalIncomeCents"];
 	        this.TaxCents = source["TaxCents"];
+	        this.ExpensesCents = source["ExpensesCents"];
+	        this.PaidInsuranceCents = source["PaidInsuranceCents"];
 	        this.Quarter = source["Quarter"];
 	        this.Year = source["Year"];
 	        this.MonthStart = source["MonthStart"];
