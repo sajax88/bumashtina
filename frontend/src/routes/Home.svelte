@@ -103,7 +103,8 @@
         }
 
         SaveIncomeForm(formToSave).then((result) => {
-            data = result; // TODO: show success message, or error
+            data = result; // TODO: show success message, or error.
+            // TODO Hide after a few seconds
         });
     }
 

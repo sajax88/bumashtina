@@ -28,9 +28,9 @@
     }
 
     async function delete_data(month: number, year: number): Promise<void> {
-        if (!confirm("Сигурен ли си, че искаш да изтриеш тези данни?")) return;
+        if (!confirm("Сигурен ли си, че искаш да изтриеш данните за " + month + "/" + year + " ?")) return;
         DeleteData(month, year).then(function (result) {
-            console.log(result) // TODO: to alert
+            console.log(result) // TODO: to alert, some common error message
             load_data()
         });
     }
@@ -87,6 +87,7 @@
                             </button>
                         </td>
                     </tr>
+                    <!-- TODO: really paid tax, enter -->
                 {/each}
             {/if}
             </tbody>

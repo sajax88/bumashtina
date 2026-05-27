@@ -39,21 +39,27 @@ type CalculatedTax struct {
 	MonthEnd         int
 }
 
-func CalculateSocialSecurity(f IncomeForm, settings Settings) int32 {
+func CalculateSocialSecurity(f IncomeForm) int64 {
 	insurancePercent := f.TaxesConfig.PensionPercentage + f.TaxesConfig.HealthInsurancePercentage
-	if settings.IsPregnancyInsuranceEnabled {
+	if f.Settings.IsPregnancyInsuranceEnabled {
 		insurancePercent += f.TaxesConfig.PregnancyInsurancePercentage
 	}
 
-	res := float32(f.TaxedIncomeCents) * insurancePercent / 100
+	insuranceCents := float32(f.TaxedIncomeCents) * insurancePercent / 100
 
-	return int32(res)
+	return int64(math.Round(float64(insuranceCents)))
 }
 
-func CalculateTaxForMonth(f IncomeForm, insurance int32) int32 {
-	expenses := int32(float32(f.MonthIncomeCents) * f.TaxesConfig.ExpensesPercentage / 100)
+func CalculateTaxForMonth(f IncomeForm) int64 {
+	expenses := math.Round(float64(f.MonthIncomeCents) * float64(f.TaxesConfig.ExpensesPercentage) / 100)
+	var insurance float64
+	if f.SocialSecurityReallyPaidCents > 0 {
+		insurance = float64(f.SocialSecurityReallyPaidCents)
+	} else {
+		insurance = float64(f.SocialSecurityToPayCents)
+	}
 
-	return (int32(f.MonthIncomeCents) - expenses - insurance) * int32(f.TaxesConfig.TaxPercentage) / 100
+	return int64(math.Round(math.Round(float64(f.MonthIncomeCents)-expenses-insurance) * float64(f.TaxesConfig.TaxPercentage) / 100))
 }
 
 func CalculateIncomeForThreeMonths(forms []IncomeForm) (int64, error) {
@@ -80,14 +86,15 @@ func CalculateAdvanceTaxForThreeMonths(forms []IncomeForm) (int64, error) {
 	var expensesPercent float32
 	var paidInsuranceCents int64
 	for _, f := range forms {
-		incomeTotalCents += f.MonthIncomeCents
 		taxPercent = f.TaxesConfig.TaxPercentage
 		expensesPercent = f.TaxesConfig.ExpensesPercentage
+
+		incomeTotalCents += f.MonthIncomeCents
 		paidInsuranceCents += f.SocialSecurityReallyPaidCents // TODO: use calculated insurance if no really paid
 	}
 	// (total income for 3 months - expenses - insurances) * taxPercentage
 	incomeWithDeductions := float32(incomeTotalCents) - float32(incomeTotalCents)*expensesPercent/100 - float32(paidInsuranceCents)
 	advanceTax := incomeWithDeductions * taxPercent / 100
 
-	return int64(math.Ceil(float64(advanceTax))), nil
+	return int64(math.Round(float64(advanceTax))), nil
 }

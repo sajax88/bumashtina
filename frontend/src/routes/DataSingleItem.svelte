@@ -1,7 +1,7 @@
 <script lang="ts">
     import {GenerateDeclarationOne, LoadIncomeDataForMonth, LoadTaxesConfigLabels} from "../../wailsjs/go/main/App.js";
     import {onMount} from 'svelte';
-    import {BookText, Eye, EyeOff} from "lucide-svelte";
+    import {BookText, Eye, EyeOff, CircleArrowLeft} from "lucide-svelte";
 
     export let params;
 
@@ -36,6 +36,8 @@
 
 <main>
     <div class="input-box" id="input-box">
+        <a href="#/data"><CircleArrowLeft color="#444" size="20"/></a>
+
         <h2>Въведени данни за {month}/{year}</h2>
         {#if dataSingle}
             <div id="data-single-buttons-block">
@@ -61,8 +63,12 @@
                     <td>{dataSingle.TaxesToPayCents / MONEY_DIVIDER}</td>
                 </tr>
                 <tr>
-                    <td>Осигуровки</td>
+                    <td>Изчислени осигуровки</td>
                     <td>{dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER}</td>
+                </tr>
+                <tr>
+                    <td>Платени осигуровки</td>
+                    <td>{dataSingle.SocialSecurityReallyPaidCents / MONEY_DIVIDER}</td>
                 </tr>
                 <tr>
                     <td>Работни дни</td>

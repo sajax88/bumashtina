@@ -121,16 +121,23 @@ func (a *App) LoadIncomeDataForMonth(month int, year int) IncomeForm {
 func (a *App) SaveIncomeForm(f IncomeForm) string {
 	// TODO: validation
 
-	// TODO: calculate approximate taxes and social security, save them together with the form?
-	// TaxesToPayCents          int64
-	// SocialSecurityToPayCents int64
-	// TODO: update and save actually paid?
+	existingForm, err := GetDataFromFileForMonth(int(f.Month), int(f.Year))
+	if err != nil {
+		return err.Error()
+	}
 
-	// TODO: check if we're trying to override, ask to delete the previos value first
+	if existingForm.Month > 0 {
+		return fmt.Sprintf("Данните за %d/%d вече съществуват, изтрийте ги за да въведете нови", f.Month, f.Year)
+	}
 
 	f.TaxesConfig = a.LoadTaxesConfig()
 	f.Settings = a.LoadSettingsConfig()
-	err := SaveDataToFile(f)
+
+	// Calculate approximate taxes and social security, save them together with the form
+	f.SocialSecurityToPayCents = CalculateSocialSecurity(f)
+	f.TaxesToPayCents = CalculateTaxForMonth(f)
+
+	err = SaveDataToFile(f)
 	if err != nil {
 		return err.Error()
 	}
