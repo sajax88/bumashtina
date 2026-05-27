@@ -72,6 +72,29 @@ func GetDataFromFileForMonth(month int, year int) (IncomeForm, error) {
 	return IncomeForm{}, nil
 }
 
+func GetDataFromFileForQuarter(quarter int, year int, result *CalculatedTax) ([]IncomeForm, error) {
+	row, err := GetAllDataFromFile()
+	if err != nil {
+		log.Fatal(err)
+		return []IncomeForm{}, err
+	}
+
+	monthStart := (quarter-1)*3 + 1
+	monthEnd := monthStart + 2
+
+	var rows []IncomeForm
+	for _, f := range row {
+		if (f.Month >= int16(monthStart) && f.Month <= int16(monthEnd)) && f.Year == int16(year) {
+			rows = append(rows, f)
+		}
+	}
+
+	result.MonthStart = monthStart
+	result.MonthEnd = monthEnd
+
+	return rows, nil
+}
+
 func DeleteDataFromFile(month int, year int) error {
 	dataPath, err := getDataPath()
 	if err != nil {
@@ -108,7 +131,7 @@ func DeleteDataFromFile(month int, year int) error {
 }
 
 func GetAllDataFromFile() ([]IncomeForm, error) {
-	// TODO: cache in app once it was read?
+	// TODO: cache in app once it was read? Refresh the cache when written!
 
 	dataPath, err := getDataPath()
 	if err != nil {

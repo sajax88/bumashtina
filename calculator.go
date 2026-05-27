@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 type IncomeForm struct {
 	Month             int16
@@ -13,8 +16,15 @@ type IncomeForm struct {
 	WorkDaysReal      int16
 	WorkDaysSickLeave int16
 
+	// Calculated
+	// TODO
 	TaxesToPayCents          int64
 	SocialSecurityToPayCents int64
+
+	// Actually paid
+	// TODO
+	TaxesReallyPaidCents          int64
+	SocialSecurityReallyPaidCents int64
 
 	TaxesConfig TaxesConfig
 	Settings    Settings
@@ -25,6 +35,8 @@ type CalculatedTax struct {
 	TaxCents         int64
 	Quarter          int
 	Year             int
+	MonthStart       int
+	MonthEnd         int
 }
 
 func CalculateSocialSecurity(f IncomeForm, settings Settings) int32 {
@@ -55,8 +67,7 @@ func CalculateIncomeForThreeMonths(forms []IncomeForm) (int64, error) {
 	return incomeTotalCents, nil
 }
 
-// TODO: pass actually paid insurance if present, otherwise calculated
-func CalculateAdvanceTaxForThreeMonths(forms []IncomeForm, paidInsuranceCents int32) (float32, error) {
+func CalculateAdvanceTaxForThreeMonths(forms []IncomeForm) (int64, error) {
 	if len(forms) > 3 {
 		return 0, fmt.Errorf("Очаквах данни за 3 месеца, получих %d", len(forms))
 	}
@@ -67,14 +78,16 @@ func CalculateAdvanceTaxForThreeMonths(forms []IncomeForm, paidInsuranceCents in
 	var incomeTotalCents int64
 	var taxPercent float32
 	var expensesPercent float32
+	var paidInsuranceCents int64
 	for _, f := range forms {
 		incomeTotalCents += f.MonthIncomeCents
 		taxPercent = f.TaxesConfig.TaxPercentage
 		expensesPercent = f.TaxesConfig.ExpensesPercentage
+		paidInsuranceCents += f.SocialSecurityReallyPaidCents // TODO: use calculated insurance if no really paid
 	}
 	// (total income for 3 months - expenses - insurances) * taxPercentage
-	incomeWithDeductions := float32(incomeTotalCents) - float32(incomeTotalCents)*expensesPercent - float32(paidInsuranceCents)
-	advanceTax := incomeWithDeductions * taxPercent / 100 / MONEY_DIVIDER
+	incomeWithDeductions := float32(incomeTotalCents) - float32(incomeTotalCents)*expensesPercent/100 - float32(paidInsuranceCents)
+	advanceTax := incomeWithDeductions * taxPercent / 100
 
-	return advanceTax, nil
+	return int64(math.Ceil(float64(advanceTax))), nil
 }

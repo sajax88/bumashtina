@@ -129,7 +129,6 @@
         <h2>Въведи данни за доходи</h2>
 
         <div id="block-right">
-            <!-- TODO: Count tax for selected quarter (I, II, III, IV) -->
             <div class="form-row">
                 <div class="form-group">
                     <button class="btn" on:click={() => {document.getElementById('tax-calculator-block').style.display = 'block';}}>
@@ -150,10 +149,13 @@
                         </button>
                         {#if taxCalculationResult}
                             <div class="alert alert-info" id="tax-calculator-result">
+                                 Месеци: {taxCalculationResult.MonthStart}-{taxCalculationResult.MonthEnd}<br>
                                  Доход: {taxCalculationResult.TotalIncomeCents / MONEY_DIVIDER} EUR<br>
                                  Данък: {taxCalculationResult.TaxCents / MONEY_DIVIDER} EUR
                             </div>
+                            <!-- TODO: warn if not entered
                             <small><i>Точният данък зависи от фактически платени осигуровки</i></small>
+                            -->
                         {/if}
                     </div>
                 </div>

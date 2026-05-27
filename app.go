@@ -181,13 +181,39 @@ func (a *App) GenerateDeclarationOne(month int, year int) string {
 }
 
 func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
-	// TODO
-	return CalculatedTax{
-		TotalIncomeCents: 1000000,
-		TaxCents:         1000,
+	// TODO: validate
+
+	result := CalculatedTax{
+		TotalIncomeCents: 0,
+		TaxCents:         0,
 		Quarter:          quarter,
 		Year:             year,
 	}
+
+	rows, err := GetDataFromFileForQuarter(quarter, year, &result)
+	if err != nil {
+
+		log.Fatal(err)
+	}
+
+	if len(rows) == 0 {
+		return result
+	}
+
+	result.TotalIncomeCents, err = CalculateIncomeForThreeMonths(rows)
+	if err != nil {
+
+		log.Fatal(err)
+	}
+
+	// TODO: if really paid insurance was not entered, add notification?
+	result.TaxCents, err = CalculateAdvanceTaxForThreeMonths(rows)
+	if err != nil {
+
+		log.Fatal(err)
+	}
+
+	return result
 }
 
 func (a *App) GenerateDeclarationSix() string {

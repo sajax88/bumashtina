@@ -5,6 +5,8 @@ export namespace main {
 	    TaxCents: number;
 	    Quarter: number;
 	    Year: number;
+	    MonthStart: number;
+	    MonthEnd: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new CalculatedTax(source);
@@ -16,6 +18,8 @@ export namespace main {
 	        this.TaxCents = source["TaxCents"];
 	        this.Quarter = source["Quarter"];
 	        this.Year = source["Year"];
+	        this.MonthStart = source["MonthStart"];
+	        this.MonthEnd = source["MonthEnd"];
 	    }
 	}
 	export class Settings {
@@ -70,6 +74,8 @@ export namespace main {
 	    WorkDaysSickLeave: number;
 	    TaxesToPayCents: number;
 	    SocialSecurityToPayCents: number;
+	    TaxesReallyPaidCents: number;
+	    SocialSecurityReallyPaidCents: number;
 	    TaxesConfig: TaxesConfig;
 	    Settings: Settings;
 	
@@ -90,6 +96,8 @@ export namespace main {
 	        this.WorkDaysSickLeave = source["WorkDaysSickLeave"];
 	        this.TaxesToPayCents = source["TaxesToPayCents"];
 	        this.SocialSecurityToPayCents = source["SocialSecurityToPayCents"];
+	        this.TaxesReallyPaidCents = source["TaxesReallyPaidCents"];
+	        this.SocialSecurityReallyPaidCents = source["SocialSecurityReallyPaidCents"];
 	        this.TaxesConfig = this.convertValues(source["TaxesConfig"], TaxesConfig);
 	        this.Settings = this.convertValues(source["Settings"], Settings);
 	    }
