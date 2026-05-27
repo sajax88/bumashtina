@@ -120,6 +120,8 @@ export namespace main {
 	    LastName: string;
 	    Egn: string;
 	    Bulstat: string;
+	    Phone: string;
+	    Email: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new UserConfig(source);
@@ -132,6 +134,8 @@ export namespace main {
 	        this.LastName = source["LastName"];
 	        this.Egn = source["Egn"];
 	        this.Bulstat = source["Bulstat"];
+	        this.Phone = source["Phone"];
+	        this.Email = source["Email"];
 	    }
 	}
 

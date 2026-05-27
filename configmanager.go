@@ -16,6 +16,8 @@ type UserConfig struct {
 	LastName   string
 	Egn        string
 	Bulstat    string
+	Phone      string
+	Email      string
 }
 
 type Settings struct {

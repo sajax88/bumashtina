@@ -149,10 +149,11 @@
                             <span><Check color="#444" size="20"/></span>
                         </button>
                         {#if taxCalculationResult}
-                            <div class="alert alert-info">
+                            <div class="alert alert-info" id="tax-calculator-result">
                                  Доход: {taxCalculationResult.TotalIncomeCents / MONEY_DIVIDER} EUR<br>
                                  Данък: {taxCalculationResult.TaxCents / MONEY_DIVIDER} EUR
                             </div>
+                            <small><i>Точният данък зависи от фактически платени осигуровки</i></small>
                         {/if}
                     </div>
                 </div>
@@ -338,7 +339,7 @@
     }
 
     .hidden-form-block {
-        padding:20px 0;
+        padding:10px 0;
     }
 
     .hidden-form-block input[type="number"] {
@@ -348,5 +349,9 @@
     #declarations-schedule {
         padding: 0 20px;
         text-align: left;
+    }
+
+    #tax-calculator-result {
+        margin: 10px 0;
     }
 </style>

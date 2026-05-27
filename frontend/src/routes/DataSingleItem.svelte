@@ -100,7 +100,7 @@
 
                 {#if showTaxesConfig}
                 <tr id="data-single-taxes-config">
-                    <td>Настройки, данъци и осигуровки</td>
+                    <td>Данъци и осигуровки за {month}/{year}</td>
                     <td>
                         <table class="table inner-table">
                             <tbody>
