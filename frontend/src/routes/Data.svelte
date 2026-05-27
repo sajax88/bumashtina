@@ -1,6 +1,6 @@
 <script lang="ts">
     import {DeleteData, LoadAllIncomeData} from "../../wailsjs/go/main/App.js";
-    import {ChevronLeft, ChevronsLeft, ChevronRight, ChevronsRight, View, Trash2} from 'lucide-svelte';
+    import {ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Trash2, View} from 'lucide-svelte';
     import {onMount} from 'svelte';
 
     let data;
@@ -74,12 +74,30 @@
             <tbody>
             {#if paginatedData && paginatedData.length > 0}
                 {#each paginatedData as row}
-                <tr>
+
+                    {#if row.Month % 3 === 0}
+                        <!-- TODO: first, second? Year -->
+                        <!-- TODO: advance or for the year -->
+                        <!-- TODO: calculate tax -->
+                        <!-- TODO: enter really paid tax TaxesReallyPaidCents-->
+
+                        <!-- TODO: uncomment -->
+                        <!--
+                        <tr>
+                            <td colspan="5">
+                                Данък за тримесечието
+                            </td>
+                        </tr>
+                        -->
+                    {/if}
+                    <tr>
                         <td>{row.Month} / {row.Year}</td>
                         <td>{row.MonthIncomeCents / 100}</td>
                         <td>{row.TaxedIncomeCents / 100}</td>
                         <td class="btn-col">
-                            <a href="#/item-single/{row.Year}/{row.Month}" ><View color="#444" size="20"/></a>
+                            <a href="#/item-single/{row.Year}/{row.Month}">
+                                <View color="#444" size="20"/>
+                            </a>
                         </td>
                         <td class="btn-col">
                             <button class="delete-button" on:click={() => delete_data(row.Month, row.Year)}>
@@ -87,7 +105,6 @@
                             </button>
                         </td>
                     </tr>
-                    <!-- TODO: really paid tax, enter -->
                 {/each}
             {/if}
             </tbody>
@@ -126,7 +143,7 @@
     }
 
     .btn-col {
-       text-align: center;
+        text-align: center;
     }
 
     .pagination {

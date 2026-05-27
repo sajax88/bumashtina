@@ -8,7 +8,7 @@ export function DeleteData(arg1:number,arg2:number):Promise<string>;
 
 export function GenerateDeclarationOne(arg1:number,arg2:number):Promise<string>;
 
-export function GenerateDeclarationSix():Promise<string>;
+export function GenerateDeclarationSix(arg1:number):Promise<string>;
 
 export function LoadAllIncomeData():Promise<Array<main.IncomeForm>>;
 
@@ -19,6 +19,8 @@ export function LoadSettingsConfig():Promise<main.Settings>;
 export function LoadTaxesConfig():Promise<main.TaxesConfig>;
 
 export function LoadTaxesConfigLabels():Promise<Array<string>>;
+
+export function LoadThisMonthActions():Promise<string>;
 
 export function LoadUserConfig():Promise<main.UserConfig>;
 

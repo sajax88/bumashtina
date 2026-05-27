@@ -1,11 +1,13 @@
 <script lang="ts">
-    import {ArrowBigDown, ArrowBigUp, BookText, Calculator, Check, CircleCheck, Save} from 'lucide-svelte';
+    import {ArrowBigDown, ArrowBigUp, BookText, Calculator, Check, CircleCheck, CloudAlert, Save} from 'lucide-svelte';
     import {
         CalculateTaxForQuarter,
         GenerateDeclarationOne,
+        GenerateDeclarationSix,
         LoadSettingsConfig,
         LoadTaxesConfig,
         LoadUserConfig,
+        LoadThisMonthActions,
         SaveIncomeForm
     } from "../../wailsjs/go/main/App.js";
     import {BrowserOpenURL} from "../../wailsjs/runtime";
@@ -47,14 +49,16 @@
     });
 
     async function load_configs(): Promise<void> {
-        const [user, settings, taxes] = await Promise.all([
+        const [user, settings, taxes, actions] = await Promise.all([
             LoadUserConfig(),
             LoadSettingsConfig(),
-            LoadTaxesConfig()
+            LoadTaxesConfig(),
+            LoadThisMonthActions()
         ]);
         configUser = user;
         configSettings = settings;
         configTaxes = taxes;
+        thisMonthActions = actions;
     }
 
     function setMinIncome(): void {
@@ -108,8 +112,12 @@
         });
     }
 
-    function generateDeclaration1(): void {
+    function generateDeclarationOne(): void {
         GenerateDeclarationOne(parseInt(form.Month), form.Year).then((result) => (res = result));
+    }
+
+    function generateDeclarationSix(): void {
+        GenerateDeclarationSix(declarationSixForm.Year).then((result) => (res = result));
     }
 
     function calculateTaxForQuarter() {
@@ -120,10 +128,9 @@
 <main>
     <div class="input-box" id="input-box">
 
-        <!-- TODO: what do we do this month -->
         {#if thisMonthActions}
             <div class="alert success">
-
+                <CloudAlert color="#778a3b" size="28" /> {thisMonthActions}
             </div>
         {/if}
 
@@ -261,7 +268,7 @@
             </div>
 
             <div>
-                <button class="btn" on:click={generateDeclaration1}>
+                <button class="btn" on:click={generateDeclarationOne}>
                     <span><BookText color="#444" size="20"/> Генерирай Декларация 1</span>
                 </button>
             </div>
@@ -281,7 +288,7 @@
                     <div id="declaration-six-block" class="hidden-form-block" style="display: none;">
                         <input type="number" id="tax-calculator-year" bind:value={declarationSixForm.Year}/>
 
-                        <button class="btn btn-small" on:click={() => {}}>
+                        <button class="btn btn-small" on:click={generateDeclarationSix}>
                             <span><Check color="#444" size="20"/></span>
                         </button>
                     </div>
@@ -331,7 +338,7 @@
     <div id="declarations-schedule">
         <h2>Подаваме в НАП</h2>
         <ul>
-            <li>Декларация 1 за дължими осигуровки (по Булстат) – всеки месец от 25-то число на следващия месец;</li>
+            <li>Декларация 1 за дължими осигуровки (по Булстат) – всеки месец до 25-то число на следващия месец;</li>
             <li>Декларация 6 за дължими осигурителни вноски (по ЕГН) – до 30.04 на следващата календарна година;</li>
             <li>Декларация по чл. 55 от ЗДДФЛ (по ЕГН) – за първите три тримесечия, до края на месеца, следващ
                 тримесечието;

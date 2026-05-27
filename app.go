@@ -118,6 +118,17 @@ func (a *App) LoadIncomeDataForMonth(month int, year int) IncomeForm {
 	return row
 }
 
+func (a *App) LoadThisMonthActions() string {
+	return "" // TODO
+
+	// TODO
+	//- Декларация 1 за дължими осигуровки (по Булстат) – всеки месец до 25-то число на следващия месец;
+	//- Декларация 6 за дължими осигурителни вноски (по ЕГН) – до 30.04 на следващата календарна година;
+	//- Декларация по чл. 55 от ЗДДФЛ (по ЕГН) – за първите три тримесечия, до края на месеца, следващ
+	//тримесечието;
+	// - Декларация по чл. 50 от ЗДДФЛ (по ЕГН) – до 30.04 на следващата календарна година;
+}
+
 func (a *App) SaveIncomeForm(f IncomeForm) string {
 	// TODO: validation
 
@@ -252,7 +263,7 @@ func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
 	return result
 }
 
-func (a *App) GenerateDeclarationSix() string {
-	// TODO
-	return "TODO"
+func (a *App) GenerateDeclarationSix(year int) string {
+	// TODO: similar to one
+	return fmt.Sprintf("TODO %d", year)
 }

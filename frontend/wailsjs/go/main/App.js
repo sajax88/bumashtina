@@ -14,8 +14,8 @@ export function GenerateDeclarationOne(arg1, arg2) {
   return window['go']['main']['App']['GenerateDeclarationOne'](arg1, arg2);
 }
 
-export function GenerateDeclarationSix() {
-  return window['go']['main']['App']['GenerateDeclarationSix']();
+export function GenerateDeclarationSix(arg1) {
+  return window['go']['main']['App']['GenerateDeclarationSix'](arg1);
 }
 
 export function LoadAllIncomeData() {
@@ -36,6 +36,10 @@ export function LoadTaxesConfig() {
 
 export function LoadTaxesConfigLabels() {
   return window['go']['main']['App']['LoadTaxesConfigLabels']();
+}
+
+export function LoadThisMonthActions() {
+  return window['go']['main']['App']['LoadThisMonthActions']();
 }
 
 export function LoadUserConfig() {
