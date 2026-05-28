@@ -46,6 +46,10 @@ export function LoadUserConfig() {
   return window['go']['main']['App']['LoadUserConfig']();
 }
 
+export function SaveDeclarationToFile(arg1, arg2) {
+  return window['go']['main']['App']['SaveDeclarationToFile'](arg1, arg2);
+}
+
 export function SaveIncomeForm(arg1) {
   return window['go']['main']['App']['SaveIncomeForm'](arg1);
 }

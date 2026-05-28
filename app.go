@@ -194,6 +194,8 @@ func (a *App) DeleteData(month int, year int) string {
 }
 
 func (a *App) GenerateDeclarationOne(month int, year int) string {
+	var res string
+
 	incomeForm, err := GetDataFromFileForMonth(month, year)
 	if err != nil {
 		return err.Error()
@@ -206,25 +208,57 @@ func (a *App) GenerateDeclarationOne(month int, year int) string {
 		return err.Error()
 	}
 
-	var options runtime.SaveDialogOptions
-	options.DefaultFilename = fmt.Sprintf("Declaration1_%d_%02d.txt", year, month)
-	options.DefaultDirectory, err = os.UserHomeDir()
+	res, err = a.SaveDeclarationToFile(content, fmt.Sprintf("Declaration_1_%d_%02d", year, month))
 	if err != nil {
 		return err.Error()
 	}
-	saveFilePath, err := runtime.SaveFileDialog(a.ctx, options)
+
+	return res
+}
+
+func (a *App) GenerateDeclarationSix(year int) string {
+	var res string
+
+	personalData := a.LoadUserConfig()
+
+	// TODO: calculate insurances to pay
+	// TODO: display them to the user for correction if needed, then submit and actually make the declaration?
+
+	content, err := MakeDeclarationSix(year, personalData)
 	if err != nil {
 		return err.Error()
+	}
+
+	res, err = a.SaveDeclarationToFile(content, fmt.Sprintf("Declaration_6_%d", year))
+	if err != nil {
+		return err.Error()
+	}
+
+	return res
+}
+
+func (a *App) SaveDeclarationToFile(content []byte, filename string) (string, error) {
+	var err error
+	var options runtime.SaveDialogOptions
+
+	options.DefaultFilename = fmt.Sprintf("%s.txt", filename)
+	options.DefaultDirectory, err = os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	saveFilePath, err := runtime.SaveFileDialog(a.ctx, options)
+	if err != nil {
+		return "", err
 	}
 
 	saveFilePath, err = SaveDeclaration(saveFilePath, content)
 	if err != nil {
-		return err.Error()
+		return "", err
 	}
 
 	// TODO a.log LogPrint(ctx, err.Error()), MessageDialog
 
-	return fmt.Sprintf("Успешно, файлът беше записан в %s", saveFilePath)
+	return fmt.Sprintf("Успешно, файлът беше записан в %s", saveFilePath), nil
 }
 
 func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
@@ -261,9 +295,4 @@ func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
 	}
 
 	return result
-}
-
-func (a *App) GenerateDeclarationSix(year int) string {
-	// TODO: similar to one
-	return fmt.Sprintf("TODO %d", year)
 }

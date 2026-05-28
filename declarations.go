@@ -27,7 +27,7 @@ func MakeDeclarationOne(f IncomeForm, u UserConfig) ([]byte, error) {
 	initials := strings.ToUpper(firstSymbol(u.FirstName) + firstSymbol(u.MiddleName))
 	endSymbol := ""
 
-	fiedls := []string{
+	fields := []string{
 		fmt.Sprintf("%d", f.Month),
 		fmt.Sprintf("%d", f.Year),
 		u.Bulstat,
@@ -83,7 +83,8 @@ func MakeDeclarationOne(f IncomeForm, u UserConfig) ([]byte, error) {
 		"NRAD12008",
 	}
 
-	result := joinFields(fiedls, ",") + "\r\n" + endSymbol
+	withQuotes := []int{2, 3, 5, 6, 18, 28, 30}
+	result := joinFields(fields, ",", withQuotes) + "\r\n" + endSymbol
 
 	result, err := toWindows1251(result)
 	if err != nil {
@@ -93,9 +94,47 @@ func MakeDeclarationOne(f IncomeForm, u UserConfig) ([]byte, error) {
 	return []byte(result), nil
 }
 
-func joinFields(fields []string, separator string) string {
+func MakeDeclarationSix(year int, u UserConfig) ([]byte, error) {
+	// TODO: VALIDATE year
+
+	endSymbol := ""
+	// TODO:  + u.MiddleName + " " ?
+	fullName := strings.ToUpper(u.FirstName + " " + u.LastName)
+
+	fields := []string{
+		u.Egn,
+		fullName,
+		"0",
+		strings.ToUpper(u.Email),
+		u.Phone,
+		u.Phone,
+		"13",
+		fmt.Sprintf("%d", year),
+		"",
+		"0",
+		"",
+		"1500.50", // TODO - which field is it, re-check the fields in NAP program
+		"",
+		"1200.34", // TODO - which field is it, re-check the fields in NAP program
+		"",
+		"1200.00", // TODO - which field is it, re-check the fields in NAP program
+	}
+	fields = append(fields, make([]string, 42)...)
+	fields = append(fields, "NRAD62007")
+
+	withQuotes := []int{0, 1, 3, 4, 5}
+	result := joinFields(fields, ",", withQuotes) + "\r\n" + endSymbol
+
+	result, err := toWindows1251(result)
+	if err != nil {
+		return nil, err
+	}
+
+	return []byte(result), nil
+}
+
+func joinFields(fields []string, separator string, withQuotes []int) string {
 	result := ""
-	withQuotes := []int{2, 3, 5, 6, 18, 28, 30}
 	for i, field := range fields {
 		if slices.Contains(withQuotes, i) || i == len(fields)-1 {
 			field = `"` + field + `"`
