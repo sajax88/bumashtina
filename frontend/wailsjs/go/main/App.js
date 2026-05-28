@@ -54,6 +54,10 @@ export function SaveIncomeForm(arg1) {
   return window['go']['main']['App']['SaveIncomeForm'](arg1);
 }
 
+export function SavePaidTaxForQuarter(arg1, arg2, arg3) {
+  return window['go']['main']['App']['SavePaidTaxForQuarter'](arg1, arg2, arg3);
+}
+
 export function SaveSettingsConfig(arg1) {
   return window['go']['main']['App']['SaveSettingsConfig'](arg1);
 }

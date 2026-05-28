@@ -28,6 +28,8 @@ export function SaveDeclarationToFile(arg1:Array<number>,arg2:string):Promise<st
 
 export function SaveIncomeForm(arg1:main.IncomeForm):Promise<string>;
 
+export function SavePaidTaxForQuarter(arg1:number,arg2:number,arg3:number):Promise<string>;
+
 export function SaveSettingsConfig(arg1:main.Settings):Promise<string>;
 
 export function SaveTaxesConfig(arg1:main.TaxesConfig):Promise<string>;

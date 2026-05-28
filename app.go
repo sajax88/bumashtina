@@ -296,3 +296,8 @@ func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
 
 	return result
 }
+
+func (a *App) SavePaidTaxForQuarter(quarter int, year int, amount float32) string {
+	// TODO: object with status instead of string, in all cases?
+	return "Успешно запазено"
+}

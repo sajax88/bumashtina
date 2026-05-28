@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {ArrowBigDown, ArrowBigUp, BookText, Calculator, Check, CircleCheck, CloudAlert, Save} from 'lucide-svelte';
+    import {ArrowBigDown, ArrowBigUp, BookText, Calculator, Check, CircleCheck, CloudAlert, Save, Plus} from 'lucide-svelte';
     import {
         CalculateTaxForQuarter,
         GenerateDeclarationOne,
@@ -8,7 +8,8 @@
         LoadTaxesConfig,
         LoadUserConfig,
         LoadThisMonthActions,
-        SaveIncomeForm
+        SaveIncomeForm,
+        SavePaidTaxForQuarter
     } from "../../wailsjs/go/main/App.js";
     import {BrowserOpenURL} from "../../wailsjs/runtime";
     import {onMount} from 'svelte';
@@ -24,9 +25,24 @@
         WorkDaysSickLeave: 0,
     }
 
+
+    // Todo: move all this into a separate component
+    let previousQuarter = Math.floor((new Date().getMonth() + 3) / 3) - 1;
+    let taxFormYear = new Date().getFullYear();
+    if (previousQuarter < 1) {
+        previousQuarter = 4;
+        taxFormYear -= 1
+    }
+
     let taxCalculatorForm = {
-        Quarter: Math.floor((new Date().getMonth() + 3) / 3).toString(),
-        Year: new Date().getFullYear(),
+        Quarter: previousQuarter.toString(),
+        Year: taxFormYear,
+    }
+
+    let taxEnterForm = {
+        Quarter: previousQuarter.toString(),
+        Year: taxFormYear,
+        AmountPaid: 0.0,
     }
 
     let declarationSixForm = {
@@ -121,7 +137,23 @@
     }
 
     function calculateTaxForQuarter() {
-        CalculateTaxForQuarter(parseInt(taxCalculatorForm.Quarter), taxCalculatorForm.Year).then((result) => (taxCalculationResult = result));
+        CalculateTaxForQuarter(parseInt(taxCalculatorForm.Quarter), taxCalculatorForm.Year).then(
+            function (result) {
+                taxCalculationResult = result
+                taxEnterForm.AmountPaid = result.TaxCents / MONEY_DIVIDER;
+                taxEnterForm.Quarter = taxCalculatorForm.Quarter;
+                taxEnterForm.Year = taxCalculatorForm.Year;
+            }
+        );
+    }
+
+    let taxEnterResult = "";
+    function savePaidTaxForQuarter(): void {
+        SavePaidTaxForQuarter(
+            parseInt(taxEnterForm.Quarter),
+            taxEnterForm.Year,
+            parseFloat(taxEnterForm.AmountPaid)
+        ).then((result) => (taxEnterResult = result)); // TODO: result
     }
 </script>
 
@@ -305,10 +337,10 @@
                     </button>
                     <div id="tax-calculator-block" class="hidden-form-block" style="display: none;">
                         <select id="tax-calculator-quarter" bind:value={taxCalculatorForm.Quarter}>
-                            <option value="1">Първо</option>
-                            <option value="2">Второ</option>
-                            <option value="3">Трето</option>
-                            <option value="4">Четвърто</option>
+                            <option value="1">I</option>
+                            <option value="2">II</option>
+                            <option value="3">III</option>
+                            <option value="4">IV</option>
                         </select>
 
                         <input type="number" id="tax-calculator-year" bind:value={taxCalculatorForm.Year}/>
@@ -327,6 +359,39 @@
                             <!-- TODO: warn if not entered
                             <small><i>Точният данък зависи от фактически платени осигуровки</i></small>
                             -->
+                        {/if}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tax-calculator-box">
+            <div class="form-row">
+                <div class="form-group">
+                    <button class="btn"
+                            on:click={() => {document.getElementById('tax-enter-form').style.display = 'block';}}>
+                        <span><Plus color="#444" size="20"/> Въведи платен данък</span>
+                    </button>
+                    <div id="tax-enter-form" class="hidden-form-block" style="display: none;">
+                        <select id="tax-enter-form-quarter" bind:value={taxEnterForm.Quarter}>
+                            <option value="1">I</option>
+                            <option value="2">II</option>
+                            <option value="3">III</option>
+                            <option value="4">IV</option>
+                        </select>
+
+                        <input type="number" id="tax-enter-form-year" bind:value={taxEnterForm.Year}/>
+
+                        <input type="text" id="tax-enter-form-amount" bind:value={taxEnterForm.AmountPaid}/> EUR
+
+                        <button class="btn btn-small" on:click={() => {savePaidTaxForQuarter()}}>
+                            <span><Check color="#444" size="20"/></span>
+                        </button>
+
+                        {#if taxEnterResult}
+                            <div class="alert success" id="tax-enter-form-result">
+                                {taxEnterResult}
+                            </div>
                         {/if}
                     </div>
                 </div>

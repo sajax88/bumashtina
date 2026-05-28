@@ -22,7 +22,7 @@ type IncomeForm struct {
 	SocialSecurityToPayCents int64
 
 	// Actually paid
-	// TODO
+	// TODO: only for the last month in quarter
 	TaxesReallyPaidCents          int64
 	SocialSecurityReallyPaidCents int64
 
