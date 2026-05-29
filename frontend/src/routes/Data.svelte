@@ -3,6 +3,8 @@
     import {ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Trash2, View} from 'lucide-svelte';
     import {onMount} from 'svelte';
 
+    const MONEY_DIVIDER = 100;
+
     let data;
     let currentPage = 1;
     let itemsPerPage = 12;
@@ -67,6 +69,8 @@
                 <th>Месец</th>
                 <th>Доход</th>
                 <th>Осигурителен доход</th>
+                <th>Платени осигуровки</th>
+                <th>Платен данък</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -76,24 +80,25 @@
                 {#each paginatedData as row}
 
                     {#if row.Month % 3 === 0}
-                        <!-- TODO: first, second? Year -->
-                        <!-- TODO: advance or for the year -->
-                        <!-- TODO: calculate tax -->
-                        <!-- TODO: enter really paid tax TaxesReallyPaidCents-->
 
-                        <!-- TODO: uncomment -->
-                        <!--
                         <tr>
-                            <td colspan="5">
-                                Данък за тримесечието
+                            <!-- TODO: roman numbers -->
+                            <td>{Math.floor((row.Month + 2) / 3)} тримесечие</td>
+                            <td colspan="3">
+                            <td>
+                                {row.TaxesReallyPaidCents / MONEY_DIVIDER}
                             </td>
+                            <td></td>
+                            <td></td><!-- TODO: edit/delete-->
                         </tr>
-                        -->
+
                     {/if}
                     <tr>
                         <td>{row.Month} / {row.Year}</td>
-                        <td>{row.MonthIncomeCents / 100}</td>
-                        <td>{row.TaxedIncomeCents / 100}</td>
+                        <td>{row.MonthIncomeCents / MONEY_DIVIDER}</td>
+                        <td>{row.TaxedIncomeCents / MONEY_DIVIDER}</td>
+                        <td>{row.SocialSecurityReallyPaidCents / MONEY_DIVIDER}</td>
+                        <td></td>
                         <td class="btn-col">
                             <a href="#/item-single/{row.Year}/{row.Month}">
                                 <View color="#444" size="20"/>
