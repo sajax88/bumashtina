@@ -167,8 +167,9 @@ func (a *App) UpdateForm(f IncomeForm) string {
 	if existingForm.Month > 0 {
 		// Allow to update only some values
 		existingForm.SocialSecurityReallyPaidCents = f.SocialSecurityReallyPaidCents
+		existingForm.TaxesReallyPaidCents = f.TaxesReallyPaidCents
 	} else {
-		return "Не найдено" // TODO: return err object?
+		return fmt.Sprintf("Данните за месец %d не са намерени", existingForm.Month) // TODO: return err object?
 	}
 
 	// Remove previous record and save the new one
@@ -299,5 +300,15 @@ func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
 
 func (a *App) SavePaidTaxForQuarter(quarter int, year int, amount float32) string {
 	// TODO: object with status instead of string, in all cases?
-	return "Успешно запазено"
+	// Find the last month in the quarter and save the paid tax there
+	lastMonth := (quarter-1)*3 + 3
+	row, err := GetDataFromFileForMonth(lastMonth, year)
+	if err != nil {
+		return err.Error()
+	}
+	if row.Month != int16(lastMonth) {
+		return "Въведете данните за трите месеца за да запазите платения данък за тримесечието"
+	}
+	row.TaxesReallyPaidCents = int64(amount * MONEY_DIVIDER)
+	return a.UpdateForm(row)
 }
