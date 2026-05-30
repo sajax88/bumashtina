@@ -106,13 +106,18 @@
                 {#each paginatedData as row}
 
                     {#if row.Month % 3 === 0}
-                        <tr>
+                        <tr class="dark-row">
                             <!-- TODO: roman numbers -->
                             <td>{Math.floor((row.Month + 2) / 3)} тримесечие</td>
-                            <td colspan="3">
+                            <td></td>
+                            <td></td>
+                            <td></td>
                             <td>
                             <span id="paid-taxes-{row.Month}{row.Year}">{row.TaxesReallyPaidCents / MONEY_DIVIDER}</span>
-                            <input style="display: none" id="paid-taxes-input-{row.Month}{row.Year}" type="text" value="{row.TaxesReallyPaidCents / MONEY_DIVIDER}"
+                            <input
+                                    style="display: none" id="paid-taxes-input-{row.Month}{row.Year}" type="text"
+                                    class="paid-taxes-input" placeholder="0.00"
+                                    value="{row.TaxesReallyPaidCents / MONEY_DIVIDER}"
                             />
                             <button style="display: none" class="btn btn-small" id="paid-taxes-save-button-{row.Month}{row.Year}"
                                     on:click="{() => savePaidTaxes(row)}">
@@ -216,5 +221,12 @@
         font-size: 14px;
         color: #444;
         font-weight: bold;
+    }
+
+    .paid-taxes-input {
+        width: 100px;
+        padding: 6px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
     }
 </style>

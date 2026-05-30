@@ -50,136 +50,148 @@ body {
 
 .input-box {
     background-color: #ebe4d5;
-    padding:30px;
+    padding: 30px;
     text-align: left;
 }
 
 .input-box .btn {
     line-height: 20px;
-    border-radius: 2px;
+    border-radius: 4px;
     border: none;
     padding: 8px 10px;
     cursor: pointer;
     background-color: #c9c1ad;
     vertical-align: middle;
-  } 
+}
 
-  .input-box span {
+.input-box span {
     display: flex;
     align-items: center;
-  }
+}
 
-  .input-box .btn svg {
+.input-box .btn svg {
     margin-right: 4px;
-  }
-
+}
 
 .input-box .btn:hover {
     background-color: #d4ccb8;
-  }
+}
 
-  .input-box .input:focus {
+.input-box .input:focus {
     border: none;
     background-color: rgba(255, 255, 255, 1);
-  }
-
+}
 
 .input-box .btn-small {
     line-height: 20px;
-    padding: 4px 6px;
+    padding: 4px 8px;
     margin-left: 10px;
-  }
+}
 
-  .form-row {
+.form-row {
     margin-bottom: 5px;
-  }
+}
 
 .input-box label {
-    display:inline-block;
-    width:200px;
+    display: inline-block;
+    width: 200px;
     text-align: right;
-    padding-right:10px;
-  }
+    padding-right: 10px;
+}
 
-  .input-box .checkbox-group {
-    padding-left:210px;
-  }
+.input-box .checkbox-group {
+    padding-left: 210px;
+}
 
-  #input-box-settings .checkbox-group {
-    padding-left:0;
-  }
+#input-box-settings .checkbox-group {
+    padding-left: 0;
+}
 
-  #input-box-settings .submit-group {
+#input-box-settings .submit-group {
     padding: 10px 0 0 0;
-  }
+}
 
-  .input-box .checkbox-group input[type="checkbox"] {
+.input-box .checkbox-group input[type="checkbox"] {
     width: 18px;
     height: 18px;
     vertical-align: middle;
-  }
+}
 
-  .input-box label.checkbox-label {
+.input-box label.checkbox-label {
     vertical-align: middle;
-    display:inline-block;
-    padding-right:0;
+    display: inline-block;
+    padding-right: 0;
     text-align: left;
-    width:auto;
-  }
+    width: auto;
+}
 
-  .submit-group {
+.submit-group {
     padding: 10px 0 0 210px;
-  }
+}
 
-  .footer {
+.footer {
     text-align: center;
     padding: 10px 0;
     margin-top: 20px;
     font-size: small;
-  }
+}
 
-  .alert {
+.alert {
     margin: 20px 0;
     padding: 15px;
     border-radius: 3px;
     display: flex;
     align-items: center;
-  }
+}
 
-  .alert svg {
+.alert svg {
     margin-right: 10px;
-  }
+}
 
-  .success {
+.success {
     background-color: #c6d498;
-  }
+}
 
-  .error {
+.error {
     background-color: #edb18a;
-  }
+}
 
-  .alert-info {
-      background-color: #f0fcff;
-  }
+.alert-info {
+    background-color: #f0fcff;
+}
 
-  div.info {
+input[type="text"], input[type="number"], input[type="email"] {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+div.info {
     font-size: small;
-    padding-left:210px;
-    padding:5px 0 5px 210px;
-  }
+    padding-left: 210px;
+    padding: 5px 0 5px 210px;
+}
 
-  .table {
+.table {
     border-collapse: collapse;
     width: 100%;
     margin-top: 20px;
-  }
+}
 
-  .table th, .table td {
+.table th, .table td {
     border: 1px solid #c9c1ad;
     padding: 8px;
     text-align: left;
-  }
+}
 
-    .table th {
-        background-color: #c9c1ad;
-    }
+.table th {
+    background-color: #c9c1ad;
+}
+
+table .dark-row td {
+    background-color: #dfd6c1;
+}
+
+.clearfix {
+    clear: both;
+}
