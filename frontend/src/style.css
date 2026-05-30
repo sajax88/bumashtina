@@ -1,5 +1,5 @@
 html {
-    background-color: #dbd0b8;
+    background-color: #ebe4d5;
     text-align: center;
 }
 
@@ -49,8 +49,7 @@ body {
 }
 
 .input-box {
-    background-color: #ebe4d5;
-    padding: 30px;
+    padding: 20px 30px;
     text-align: left;
 }
 
@@ -131,9 +130,9 @@ body {
 
 .footer {
     text-align: center;
-    padding: 10px 0;
-    margin-top: 20px;
+    padding: 20px 0;
     font-size: small;
+    background-color: #dbd0b8;
 }
 
 .alert {

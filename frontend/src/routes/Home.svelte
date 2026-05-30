@@ -6,7 +6,6 @@
         Calculator,
         Check,
         CircleCheck,
-        CloudAlert,
         Plus,
         Save
     } from 'lucide-svelte';
@@ -14,15 +13,16 @@
         CalculateTaxForQuarter,
         GenerateDeclarationOne,
         GenerateDeclarationSix,
-        LoadSettingsConfig,
         LoadTaxesConfig,
         LoadThisMonthActions,
-        LoadUserConfig,
         SaveIncomeForm,
         SavePaidTaxForQuarter
     } from "../../wailsjs/go/main/App.js";
     import {BrowserOpenURL} from "../../wailsjs/runtime";
     import {onMount} from 'svelte';
+
+    import Info from "../components/Info.svelte"
+    import ActionsBanner from "../components/ActionsBanner.svelte";
 
     let form = {
         Month: String(new Date().getMonth()), // We want a previous month
@@ -58,14 +58,10 @@
     let declarationSixForm = {
         Year: new Date().getFullYear(),
     }
-
-    let configUser
-    let configSettings
     let configTaxes
 
-    let res = ""
+    let res = "" // TODO
     let data // TODO
-    let thisMonthActions;
     let taxCalculationResult;
 
     const MONEY_DIVIDER = 100;
@@ -75,16 +71,10 @@
     });
 
     async function load_configs(): Promise<void> {
-        const [user, settings, taxes, actions] = await Promise.all([
-            LoadUserConfig(),
-            LoadSettingsConfig(),
+        const [taxes] = await Promise.all([
             LoadTaxesConfig(),
-            LoadThisMonthActions()
         ]);
-        configUser = user;
-        configSettings = settings;
         configTaxes = taxes;
-        thisMonthActions = actions;
     }
 
     function setMinIncome(): void {
@@ -169,6 +159,9 @@
 </script>
 
 <main>
+
+    <ActionsBanner />
+
     <div id="home-page-block-right" class="input-box">
 
         <!-- TODO: this and tax - to Data page? -->
@@ -261,13 +254,7 @@
             </div>
         </div>
     </div>
-
     <div class="input-box" id="home-page-input-box">
-        {#if thisMonthActions}
-            <div class="alert success">
-                <CloudAlert color="#778a3b" size="28"/> {thisMonthActions}
-            </div>
-        {/if}
 
         <h2>Въведи данни за доходи</h2>
 
@@ -413,18 +400,7 @@
 
     <div class="clearfix"></div>
 
-    <div id="declarations-schedule">
-        <h2>Подаваме в НАП</h2>
-        <ul>
-            <li>Декларация 1 за дължими осигуровки (по Булстат) – всеки месец до 25-то число на следващия месец;</li>
-            <li>Декларация 6 за дължими осигурителни вноски (по ЕГН) – до 30.04 на следващата календарна година;</li>
-            <li>Декларация по чл. 55 от ЗДДФЛ (по ЕГН) – за първите три тримесечия, до края на месеца, следващ
-                тримесечието;
-            </li>
-            <li>Декларация по чл. 50 от ЗДДФЛ (по ЕГН) – до 30.04 на следващата календарна година;</li>
-            <li>При ДДС регистрация – ежемесечни ДДС декларации до 15-то число на следващия месец.</li>
-        </ul>
-    </div>
+   <Info />
 </main>
 
 <style>
@@ -461,11 +437,6 @@
 
     .hidden-form-block input[type="number"] {
         width: 100px;
-    }
-
-    #declarations-schedule {
-        padding: 0 20px;
-        text-align: left;
     }
 
     #tax-calculator-result {
