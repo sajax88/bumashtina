@@ -23,6 +23,7 @@
 
     import Info from "../components/Info.svelte"
     import ActionsBanner from "../components/ActionsBanner.svelte";
+    import DeclarationSix from "../components/DeclarationSix.svelte";
 
     let form = {
         Month: String(new Date().getMonth()), // We want a previous month
@@ -55,9 +56,7 @@
         AmountPaid: 0.0,
     }
 
-    let declarationSixForm = {
-        Year: new Date().getFullYear(),
-    }
+
     let configTaxes
 
     let res = "" // TODO
@@ -132,10 +131,6 @@
         GenerateDeclarationOne(parseInt(form.Month), form.Year).then((result) => (res = result));
     }
 
-    function generateDeclarationSix(): void {
-        GenerateDeclarationSix(declarationSixForm.Year).then((result) => (res = result));
-    }
-
     function calculateTaxForQuarter() {
         CalculateTaxForQuarter(parseInt(taxCalculatorForm.Quarter), taxCalculatorForm.Year).then(
             function (result) {
@@ -165,24 +160,11 @@
     <div id="home-page-block-right" class="input-box">
 
         <!-- TODO: this and tax - to Data page? -->
-        <div id="declaration-six-box">
-            <div class="form-row">
-                <div class="form-group">
-                    <button class="btn"
-                            on:click={() => {document.getElementById('declaration-six-block').style.display = 'block';}}>
-                        <span><BookText color="#444" size="20"/> Генерирай Декларация 6</span>
-                    </button>
-                    <div id="declaration-six-block" class="hidden-form-block" style="display: none;">
-                        <input type="number" id="tax-calculator-year" bind:value={declarationSixForm.Year}/>
 
-                        <button class="btn btn-small" on:click={generateDeclarationSix}>
-                            <span><Check color="#444" size="20"/></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <DeclarationSix />
 
+
+        <!-- TODO: to a separate component -->
         <div id="tax-calculator-box">
             <div class="form-row">
                 <div class="form-group">
@@ -198,7 +180,7 @@
                             <option value="4">IV</option>
                         </select>
 
-                        <input type="number" id="tax-calculator-year" bind:value={taxCalculatorForm.Year}/>
+                        <input type="number" id="tax-calculator-year" class="year-input" bind:value={taxCalculatorForm.Year}/>
 
                         <button class="btn btn-small" on:click={() => {calculateTaxForQuarter()}}>
                             <span><Check color="#444" size="20"/></span>
@@ -221,7 +203,9 @@
             </div>
         </div>
 
-        <div id="tax-calculator-box">
+
+        <!-- TODO: to a separate component -->
+        <div id="tax-enter-form-box">
             <div class="form-row">
                 <div class="form-group">
                     <button class="btn"
@@ -236,7 +220,7 @@
                             <option value="4">IV</option>
                         </select>
 
-                        <input type="number" id="tax-enter-form-year" bind:value={taxEnterForm.Year}/>
+                        <input type="number" id="tax-enter-form-year" class="year-input" bind:value={taxEnterForm.Year}/>
 
                         <input type="text" id="tax-enter-form-amount" bind:value={taxEnterForm.AmountPaid}/> EUR
 
@@ -254,6 +238,8 @@
             </div>
         </div>
     </div>
+
+
     <div class="input-box" id="home-page-input-box">
 
         <h2>Въведи данни за доходи</h2>
@@ -427,7 +413,7 @@
     }
 
 
-    #tax-calculator-box, #declaration-six-box {
+    #tax-calculator-box, #tax-enter-form-box {
         padding-top: 20px;
     }
 

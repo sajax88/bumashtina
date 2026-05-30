@@ -165,6 +165,10 @@ input[type="text"], input[type="number"], input[type="email"] {
     border-radius: 4px;
 }
 
+.year-input {
+    width: 60px;
+}
+
 div.info {
     font-size: small;
     padding-left: 210px;
