@@ -1,7 +1,9 @@
 <script lang="ts">
-    import {DeleteData, LoadAllIncomeData} from "../../wailsjs/go/main/App.js";
-    import {ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Trash2, View} from 'lucide-svelte';
+    import {DeleteData, LoadAllIncomeData, UpdateForm} from "../../wailsjs/go/main/App.js";
+    import {ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Trash2, View, Edit, Save} from 'lucide-svelte';
     import {onMount} from 'svelte';
+    import {main} from "../../wailsjs/go/models";
+    import IncomeForm = main.IncomeForm;
 
     const MONEY_DIVIDER = 100;
 
@@ -13,10 +15,10 @@
     $: paginatedData = data ? data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : [];
 
     onMount(async () => {
-        await load_data()
+        await loadData()
     });
 
-    async function load_data(): Promise<void> {
+    async function loadData(): Promise<void> {
         LoadAllIncomeData().then(function (result) {
             data = result
             currentPage = 1;
@@ -29,11 +31,35 @@
         }
     }
 
-    async function delete_data(month: number, year: number): Promise<void> {
+    async function deleteData(month: number, year: number): Promise<void> {
         if (!confirm("Сигурни ли сте, че искате да изтриете данните за " + month + "/" + year + "? Изтритите данни не се възстановяват!")) return;
         DeleteData(month, year).then(function (result) {
             console.log(result) // TODO: to alert, some common error message
-            load_data()
+            loadData()
+        });
+    }
+
+    function showPaidTaxesEditInput(month: number, year:number) {
+        let id = `${month}${year}`
+        document.getElementById('paid-taxes-input-' + id).style.display = "inline-block";
+        document.getElementById('paid-taxes-save-button-' + id).style.display = "inline-block";
+
+        document.getElementById('paid-taxes-' + id).style.display = "none";
+    }
+
+    function savePaidTaxes(row:IncomeForm) {
+        let id = `${row.Month}${row.Year}`
+        let amount = document.getElementById('paid-taxes-input-' + id).value
+
+        document.getElementById('paid-taxes-input-' + id).style.display = "none";
+        document.getElementById('paid-taxes-save-button-' + id).style.display = "none";
+
+        document.getElementById('paid-taxes-' + id).style.display = "inline";
+        document.getElementById('paid-taxes-' + id).innerHTML = amount
+
+        row.TaxesReallyPaidCents = parseInt(Math.ceil(parseFloat(amount) * MONEY_DIVIDER));
+        UpdateForm(row).then(function (result) {
+            console.log(result) // TODO
         });
     }
 </script>
@@ -80,19 +106,28 @@
                 {#each paginatedData as row}
 
                     {#if row.Month % 3 === 0}
-
                         <tr>
                             <!-- TODO: roman numbers -->
                             <td>{Math.floor((row.Month + 2) / 3)} тримесечие</td>
                             <td colspan="3">
                             <td>
-                                {row.TaxesReallyPaidCents / MONEY_DIVIDER}
+                            <span id="paid-taxes-{row.Month}{row.Year}">{row.TaxesReallyPaidCents / MONEY_DIVIDER}</span>
+                            <input style="display: none" id="paid-taxes-input-{row.Month}{row.Year}" type="text" value="{row.TaxesReallyPaidCents / MONEY_DIVIDER}"
+                            />
+                            <button style="display: none" class="btn btn-small" id="paid-taxes-save-button-{row.Month}{row.Year}"
+                                    on:click="{() => savePaidTaxes(row)}">
+                                <Save color="#444" size="20"/>
+                            </button>
+                            </td>
+                            <td class="btn-col">
+                                <button class="btn btn-small"  on:click="{() => showPaidTaxesEditInput(row.Month, row.Year)}">
+                                    <Edit color="#444" size="20"/>
+                                </button>
                             </td>
                             <td></td>
-                            <td></td><!-- TODO: edit/delete-->
                         </tr>
-
                     {/if}
+
                     <tr>
                         <td>{row.Month} / {row.Year}</td>
                         <td>{row.MonthIncomeCents / MONEY_DIVIDER}</td>
@@ -105,7 +140,7 @@
                             </a>
                         </td>
                         <td class="btn-col">
-                            <button class="delete-button" on:click={() => delete_data(row.Month, row.Year)}>
+                            <button class="delete-button" on:click={() => deleteData(row.Month, row.Year)}>
                                 <Trash2 color="#d13708" size="20"/>
                             </button>
                         </td>
