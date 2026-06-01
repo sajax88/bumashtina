@@ -126,8 +126,8 @@ func GetDefaultTaxesConfig() TaxesConfig {
 		PensionPercentage:            19.8,   // За фонд „Пенсии“
 		HealthInsurancePercentage:    8.0,    // За фонд „Здравно осигуряване“
 		PregnancyInsurancePercentage: 3.5,    // За фонд „Майчинство“ - see Settings.IsPregnancyInsuranceEnabled
-		PensionPercentagePartOne:     14.8,   // Използва се в Декларация 1
-		PensionPercentagePartTwo:     5.0,    // Използва се в Декларация 1
+		PensionPercentagePartOne:     14.8,   // Използва се в Декларация 1, 6
+		PensionPercentagePartTwo:     5.0,    // Използва се в Декларация 1, 6
 	}
 }
 
