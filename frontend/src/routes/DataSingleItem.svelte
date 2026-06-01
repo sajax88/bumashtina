@@ -84,15 +84,26 @@
                     <td>Осигурителен доход</td>
                     <td colspan="2">{dataSingle.TaxedIncomeCents / MONEY_DIVIDER}</td>
                 </tr>
-
-                <!-- TODO: not populated yet, re-check -->
                 <tr>
-                    <td>Приблизителен данък (авансов данък се изчислява за 3 месеца)</td>
-                    <td colspan="2">{dataSingle.TaxesToPayCents / MONEY_DIVIDER}</td>
+                    <td>Изчислен данък<br></td>
+                    <td>{dataSingle.TaxesToPayCents / MONEY_DIVIDER}</td>
+                    <td>
+                        <small>
+                            <!-- TODO: paid insurance if entered, take all this from BE? -->
+                            ({dataSingle.MonthIncomeCents / MONEY_DIVIDER} - {dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER} -
+                            {dataSingle.MonthIncomeCents / MONEY_DIVIDER} * 0.25) * 0.1 = {dataSingle.TaxesToPayCents / MONEY_DIVIDER} EUR
+                        </small>
+                    </td>
+                    <!-- TODO: % from settings, see CalculateTaxForMonth -->
                 </tr>
                 <tr>
                     <td>Изчислени осигуровки</td>
-                    <td colspan="2">{dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER}</td>
+                    <td>{dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER}</td>
+                    <td>
+                        <small>
+                            {dataSingle.TaxedIncomeCents / MONEY_DIVIDER} * 0.278 = {dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER} EUR
+                        </small><!-- TODO: % from settings, see CalculateSocialSecurity -->
+                    </td>
                 </tr>
                 <tr>
                     <td>Платени осигуровки</td>

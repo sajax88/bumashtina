@@ -1,29 +1,15 @@
 <script lang="ts">
-    import {
-        ArrowBigDown,
-        ArrowBigUp,
-        BookText,
-        Calculator,
-        Check,
-        CircleCheck,
-        Plus,
-        Save
-    } from 'lucide-svelte';
-    import {
-        CalculateTaxForQuarter,
-        GenerateDeclarationOne,
-        GenerateDeclarationSix,
-        LoadTaxesConfig,
-        LoadThisMonthActions,
-        SaveIncomeForm,
-        SavePaidTaxForQuarter
-    } from "../../wailsjs/go/main/App.js";
+    import {ArrowBigDown, ArrowBigUp, BookText, CircleCheck, Save} from 'lucide-svelte';
+    import {GenerateDeclarationOne, LoadTaxesConfig, SaveIncomeForm,} from "../../wailsjs/go/main/App.js";
     import {BrowserOpenURL} from "../../wailsjs/runtime";
     import {onMount} from 'svelte';
 
     import Info from "../components/Info.svelte"
     import ActionsBanner from "../components/ActionsBanner.svelte";
     import DeclarationSix from "../components/DeclarationSix.svelte";
+    import Taxes from "../components/Taxes.svelte";
+    import {main} from "../../wailsjs/go/models";
+    import IncomeForm = main.IncomeForm;
 
     let form = {
         Month: String(new Date().getMonth()), // We want a previous month
@@ -37,31 +23,10 @@
     }
 
 
-    // Todo: move all this into a separate component
-    let previousQuarter = Math.floor((new Date().getMonth() + 3) / 3) - 1;
-    let taxFormYear = new Date().getFullYear();
-    if (previousQuarter < 1) {
-        previousQuarter = 4;
-        taxFormYear -= 1
-    }
-
-    let taxCalculatorForm = {
-        Quarter: previousQuarter.toString(),
-        Year: taxFormYear,
-    }
-
-    let taxEnterForm = {
-        Quarter: previousQuarter.toString(),
-        Year: taxFormYear,
-        AmountPaid: 0.0,
-    }
-
-
     let configTaxes
 
     let res = "" // TODO
     let data // TODO
-    let taxCalculationResult;
 
     const MONEY_DIVIDER = 100;
 
@@ -110,7 +75,7 @@
 
         // TODO: validation
 
-        let formToSave = {
+        let formToSave = new IncomeForm({
             Month: parseInt(form.Month),
             Year: form.Year,
             MonthIncomeCents: Math.ceil(parseFloat(form.MonthIncome) * MONEY_DIVIDER),
@@ -119,7 +84,7 @@
             DayEnd: form.DayEnd,
             WorkDaysTotal: form.WorkDaysTotal,
             WorkDaysSickLeave: form.WorkDaysSickLeave,
-        }
+        })
 
         SaveIncomeForm(formToSave).then((result) => {
             data = result; // TODO: show success message, or error.
@@ -130,115 +95,20 @@
     function generateDeclarationOne(): void {
         GenerateDeclarationOne(parseInt(form.Month), form.Year).then((result) => (res = result));
     }
-
-    function calculateTaxForQuarter() {
-        CalculateTaxForQuarter(parseInt(taxCalculatorForm.Quarter), taxCalculatorForm.Year).then(
-            function (result) {
-                taxCalculationResult = result
-                taxEnterForm.AmountPaid = result.TaxCents / MONEY_DIVIDER;
-                taxEnterForm.Quarter = taxCalculatorForm.Quarter;
-                taxEnterForm.Year = taxCalculatorForm.Year;
-            }
-        );
-    }
-
-    let taxEnterResult = "";
-
-    function savePaidTaxForQuarter(): void {
-        SavePaidTaxForQuarter(
-            parseInt(taxEnterForm.Quarter),
-            taxEnterForm.Year,
-            parseFloat(taxEnterForm.AmountPaid)
-        ).then((result) => (taxEnterResult = result)); // TODO: result
-    }
 </script>
 
 <main>
 
-    <ActionsBanner />
+    <ActionsBanner/>
 
     <div id="home-page-block-right" class="input-box">
 
         <!-- TODO: this and tax - to Data page? -->
 
-        <DeclarationSix />
+        <DeclarationSix/>
 
-
-        <!-- TODO: to a separate component -->
-        <div id="tax-calculator-box">
-            <div class="form-row">
-                <div class="form-group">
-                    <button class="btn"
-                            on:click={() => {document.getElementById('tax-calculator-block').style.display = 'block';}}>
-                        <span><Calculator color="#444" size="20"/> Изчисли данък за тримесечие</span>
-                    </button>
-                    <div id="tax-calculator-block" class="hidden-form-block" style="display: none;">
-                        <select id="tax-calculator-quarter" bind:value={taxCalculatorForm.Quarter}>
-                            <option value="1">I</option>
-                            <option value="2">II</option>
-                            <option value="3">III</option>
-                            <option value="4">IV</option>
-                        </select>
-
-                        <input type="number" id="tax-calculator-year" class="year-input" bind:value={taxCalculatorForm.Year}/>
-
-                        <button class="btn btn-small" on:click={() => {calculateTaxForQuarter()}}>
-                            <span><Check color="#444" size="20"/></span>
-                        </button>
-                        {#if taxCalculationResult}
-                            <div class="alert alert-info" id="tax-calculator-result">
-                                Месеци: {taxCalculationResult.MonthStart}-{taxCalculationResult.MonthEnd}<br>
-                                Доход: {taxCalculationResult.TotalIncomeCents / MONEY_DIVIDER} EUR<br>
-                                Приспадащи се разходи: {taxCalculationResult.ExpensesCents / MONEY_DIVIDER} EUR<br>
-                                Осигуровки: {taxCalculationResult.PaidInsuranceCents / MONEY_DIVIDER} EUR<br>
-                                Данък: {taxCalculationResult.TaxCents / MONEY_DIVIDER} EUR
-                                <!-- TODO: full formula -->
-                            </div>
-                            <!-- TODO: warn if not entered
-                            <small><i>Точният данък зависи от фактически платени осигуровки</i></small>
-                            -->
-                        {/if}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- TODO: to a separate component -->
-        <div id="tax-enter-form-box">
-            <div class="form-row">
-                <div class="form-group">
-                    <button class="btn"
-                            on:click={() => {document.getElementById('tax-enter-form').style.display = 'block';}}>
-                        <span><Plus color="#444" size="20"/> Въведи платен данък</span>
-                    </button>
-                    <div id="tax-enter-form" class="hidden-form-block" style="display: none;">
-                        <select id="tax-enter-form-quarter" bind:value={taxEnterForm.Quarter}>
-                            <option value="1">I</option>
-                            <option value="2">II</option>
-                            <option value="3">III</option>
-                            <option value="4">IV</option>
-                        </select>
-
-                        <input type="number" id="tax-enter-form-year" class="year-input" bind:value={taxEnterForm.Year}/>
-
-                        <input type="text" id="tax-enter-form-amount" bind:value={taxEnterForm.AmountPaid}/> EUR
-
-                        <button class="btn btn-small" on:click={() => {savePaidTaxForQuarter()}}>
-                            <span><Check color="#444" size="20"/></span>
-                        </button>
-
-                        {#if taxEnterResult}
-                            <div class="alert success" id="tax-enter-form-result">
-                                {taxEnterResult}
-                            </div>
-                        {/if}
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Taxes/>
     </div>
-
 
     <div class="input-box" id="home-page-input-box">
 
@@ -298,8 +168,8 @@
                 <label for="WorkDaysTotal">Общо работни дни</label>
                 <input class="input" min="0" max="31" id="WorkDaysTotal" type="number" bind:value={form.WorkDaysTotal}/>
 
-                <div class="info">Провери работни дни: <a href=""
-                                                          on:click={() => BrowserOpenURL('https://kik-info.com/spravochnik/calendar/' + form.Year)}
+                <div class="info">Провери работни дни: <a href="#"
+                                                          on:click={function(e){ BrowserOpenURL('https://kik-info.com/spravochnik/calendar/' + form.Year); e.preventDefault();}}
                 >
                     https://kik-info.com/spravochnik/calendar/{form.Year}
                 </a></div>
@@ -386,14 +256,14 @@
 
     <div class="clearfix"></div>
 
-   <Info />
+    <Info/>
 </main>
 
 <style>
     #home-page-block-right {
-        float:right;
-        padding-left:20px;
-        width: 350px;
+        float: right;
+        padding-left: 20px;
+        width: 35%;
     }
 
     #home-page-input-box label {
@@ -410,26 +280,5 @@
 
     #home-page-input-box label.checkbox-label {
         width: auto;
-    }
-
-
-    #tax-calculator-box, #tax-enter-form-box {
-        padding-top: 20px;
-    }
-
-    .hidden-form-block {
-        padding: 10px 0;
-    }
-
-    .hidden-form-block input[type="number"] {
-        width: 100px;
-    }
-
-    #tax-calculator-result {
-        margin: 10px 0;
-    }
-
-    #tax-enter-form-amount {
-        width:70px;
     }
 </style>

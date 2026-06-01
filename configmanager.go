@@ -119,13 +119,13 @@ type TaxesConfig struct {
 
 func GetDefaultTaxesConfig() TaxesConfig {
 	return TaxesConfig{
-		MinInsuranceIncomeCents:      55066,  // 550,66 euro
-		MaxInsuranceIncomeCents:      211164, // 2111,64 euro
-		ExpensesPercentage:           25.0,   // 25% признати разходи
-		TaxPercentage:                10.0,   // 10% данък върху дохода
-		PensionPercentage:            19.8,   // 19,8% за фонд „Пенсии“
-		HealthInsurancePercentage:    8.0,    // 8% за фонд „Здравно осигуряване“
-		PregnancyInsurancePercentage: 3.5,    // 3,5% за фонд „Майчинство“ - see Settings.IsPregnancyInsuranceEnabled
+		MinInsuranceIncomeCents:      55066,  // Euro cents
+		MaxInsuranceIncomeCents:      211164, // Euro cents
+		ExpensesPercentage:           25.0,   // Признати разходи
+		TaxPercentage:                10.0,   // Данък върху дохода
+		PensionPercentage:            19.8,   // За фонд „Пенсии“
+		HealthInsurancePercentage:    8.0,    // За фонд „Здравно осигуряване“
+		PregnancyInsurancePercentage: 3.5,    // За фонд „Майчинство“ - see Settings.IsPregnancyInsuranceEnabled
 		PensionPercentagePartOne:     14.8,   // Използва се в Декларация 1
 		PensionPercentagePartTwo:     5.0,    // Използва се в Декларация 1
 	}

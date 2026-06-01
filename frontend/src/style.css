@@ -63,11 +63,6 @@ body {
     vertical-align: middle;
 }
 
-.input-box span {
-    display: flex;
-    align-items: center;
-}
-
 .input-box .btn svg {
     margin-right: 4px;
 }
@@ -139,24 +134,31 @@ body {
     margin: 20px 0;
     padding: 15px;
     border-radius: 3px;
-    display: flex;
-    align-items: center;
 }
 
 .alert svg {
     margin-right: 10px;
 }
 
+ .alert p {
+     margin-block-start: 0.5em;
+     margin-block-end: 0.5em;
+ }
+
 .success {
     background-color: #c6d498;
 }
-
 .error {
     background-color: #edb18a;
 }
 
 .alert-info {
     background-color: #f0fcff;
+}
+
+button span {
+    display: flex;
+    align-items: center;
 }
 
 input[type="text"], input[type="number"], input[type="email"] {
