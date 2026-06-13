@@ -110,7 +110,6 @@ type TaxesConfig struct {
 	MaxInsuranceIncomeCents      int32
 	ExpensesPercentage           float32
 	TaxPercentage                float32
-	PensionPercentage            float32
 	HealthInsurancePercentage    float32
 	PregnancyInsurancePercentage float32
 	PensionPercentagePartOne     float32
@@ -123,11 +122,10 @@ func GetDefaultTaxesConfig() TaxesConfig {
 		MaxInsuranceIncomeCents:      211164, // Euro cents
 		ExpensesPercentage:           25.0,   // Признати разходи
 		TaxPercentage:                10.0,   // Данък върху дохода
-		PensionPercentage:            19.8,   // За фонд „Пенсии“
 		HealthInsurancePercentage:    8.0,    // За фонд „Здравно осигуряване“
-		PregnancyInsurancePercentage: 3.5,    // За фонд „Майчинство“ - see Settings.IsPregnancyInsuranceEnabled
-		PensionPercentagePartOne:     14.8,   // Използва се в Декларация 1, 6
-		PensionPercentagePartTwo:     5.0,    // Използва се в Декларация 1, 6
+		PregnancyInsurancePercentage: 3.5,    // За фонд „Общо заболяване и майчинство“ - see Settings.IsPregnancyInsuranceEnabled
+		PensionPercentagePartOne:     14.8,   // Фонд "Пенсии", ДОО, използва се в Декларация 1, 6
+		PensionPercentagePartTwo:     5.0,    // Фонд "Пенсии", ДЗПО, използва се в Декларация 1, 6
 	}
 }
 
@@ -139,7 +137,7 @@ func GetLabelsForTaxesConfig() []string {
 		"Данъчна ставка",
 		"Процент за фонд „Пенсии“",
 		"Процент за фонд „Здравно осигуряване“",
-		"Процент за фонд „Майчинство“",
+		"Процент за фонд „Общо заболяване и майчинство“",
 		"Процент за фонд „Пенсии“ – за родените след 31 декември 1959 г.",
 		"Процент за ДЗПО – Универсален пенсионен фонд за родените след 31 декември 1959 г.",
 	}

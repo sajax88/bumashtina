@@ -26,7 +26,12 @@
     async function load_data_for_month(): Promise<void> {
         LoadIncomeDataForMonth(month, year).then(function (result) {
             dataSingle = result
-            paidInsuranceValue = dataSingle.SocialSecurityReallyPaidCents / MONEY_DIVIDER
+            if (dataSingle.SocialSecurityReallyPaidCents) {
+                paidInsuranceValue = dataSingle.SocialSecurityReallyPaidCents / MONEY_DIVIDER
+            } else {
+                // Set to calculated sum
+                paidInsuranceValue = dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER
+            }
         });
         LoadTaxesConfigLabels().then(function (result) {
             taxesLabels = result
@@ -98,11 +103,13 @@
                 </tr>
                 <tr>
                     <td>Изчислени осигуровки</td>
-                    <td>{dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER}</td>
+                    <td>{dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER}</td> <!-- TODO: details -->
                     <td>
                         <small>
                             {dataSingle.TaxedIncomeCents / MONEY_DIVIDER} * 0.278 = {dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER} EUR
-                        </small><!-- TODO: % from settings, see CalculateSocialSecurity -->
+                        </small>
+                        <!-- TODO: detailed, from parts - DOO etc -->
+                        <!-- TODO: % from settings, see CalculateSocialSecurity -->
                     </td>
                 </tr>
                 <tr>

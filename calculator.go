@@ -17,17 +17,25 @@ type IncomeForm struct {
 	WorkDaysSickLeave int16
 
 	// Calculated
-	// TODO
 	TaxesToPayCents          int64
 	SocialSecurityToPayCents int64
+	SocialSecurityToPayParts SocialSecurityParts
 
-	// Actually paid
-	// TODO: only for the last month in quarter
+	// Actually paid (vs calculated)
+	// Taxes - only for the last month in the quarter
 	TaxesReallyPaidCents          int64
 	SocialSecurityReallyPaidCents int64
+	// TODO: optionally?
+	SocialSecurityReallyPaidParts SocialSecurityParts // Used in Declaration 6 if entered, otherwise use calculated
 
 	TaxesConfig TaxesConfig
 	Settings    Settings
+}
+
+type SocialSecurityParts struct {
+	PensionPartOneCents  int64
+	PensionPartTwoCents  int64
+	HealthInsuranceCents int64
 }
 
 type CalculatedTax struct {
@@ -41,14 +49,30 @@ type CalculatedTax struct {
 	MonthEnd           int
 }
 
-func CalculateSocialSecurity(f IncomeForm) int64 {
-	insurancePercent := f.TaxesConfig.PensionPercentage + f.TaxesConfig.HealthInsurancePercentage
+func CalculateSocialSecurity(f *IncomeForm) {
+	// ДОО
+	pensionPartOne := calculateInsuranceFromPercentage(f.TaxedIncomeCents, f.TaxesConfig.PensionPercentagePartOne)
 	if f.Settings.IsPregnancyInsuranceEnabled {
-		insurancePercent += f.TaxesConfig.PregnancyInsurancePercentage
+		// Общо заболяване и майчинство
+		pensionPartOne += calculateInsuranceFromPercentage(f.TaxedIncomeCents, f.TaxesConfig.PregnancyInsurancePercentage)
 	}
 
-	insuranceCents := float32(f.TaxedIncomeCents) * insurancePercent / 100
+	// ДЗПО
+	pensionPartTwo := calculateInsuranceFromPercentage(f.TaxedIncomeCents, f.TaxesConfig.PensionPercentagePartTwo)
+	// НЗОК
+	healthInsurance := calculateInsuranceFromPercentage(f.TaxedIncomeCents, f.TaxesConfig.HealthInsurancePercentage)
 
+	f.SocialSecurityToPayParts = SocialSecurityParts{
+		PensionPartOneCents:  pensionPartOne,
+		PensionPartTwoCents:  pensionPartTwo,
+		HealthInsuranceCents: healthInsurance,
+	}
+
+	f.SocialSecurityToPayCents = pensionPartOne + pensionPartTwo + healthInsurance
+}
+
+func calculateInsuranceFromPercentage(taxedIncomeCents int64, insurancePercent float32) int64 {
+	insuranceCents := float32(taxedIncomeCents) * insurancePercent / 100
 	return int64(math.Round(float64(insuranceCents)))
 }
 

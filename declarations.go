@@ -19,15 +19,18 @@ func firstSymbol(s string) string {
 	return s
 }
 
-func MakeDeclarationOne(f IncomeForm, u UserConfig) ([]byte, error) {
+func MakeDeclarationOne(f IncomeForm, u UserConfig, s Settings) ([]byte, error) {
 	// TODO: VALIDATE days
-
-	// TODO: pass Settings, add 3.5% PregnancyInsurancePercentage to Psrt One
 
 	f.WorkDaysReal = f.WorkDaysTotal - f.WorkDaysSickLeave
 
 	initials := strings.ToUpper(firstSymbol(u.FirstName) + firstSymbol(u.MiddleName))
 	endSymbol := ""
+
+	pensionPercentage := f.TaxesConfig.PensionPercentagePartOne
+	if s.IsPregnancyInsuranceEnabled {
+		pensionPercentage += f.TaxesConfig.PregnancyInsurancePercentage
+	}
 
 	fields := []string{
 		fmt.Sprintf("%d", f.Month),
@@ -65,7 +68,7 @@ func MakeDeclarationOne(f IncomeForm, u UserConfig) ([]byte, error) {
 		"0.00",
 		fmt.Sprintf("%.2f", (float32(f.TaxedIncomeCents) / float32(MONEY_DIVIDER))),
 		"0.00",
-		fmt.Sprintf("%.2f", f.TaxesConfig.PensionPercentagePartOne), // TODO: + 3.5 % PregnancyInsurancePercentage if enabled!
+		fmt.Sprintf("%.2f", pensionPercentage),
 		"0.00",
 		fmt.Sprintf("%.2f", f.TaxesConfig.HealthInsurancePercentage),
 		"0.00",
@@ -96,7 +99,7 @@ func MakeDeclarationOne(f IncomeForm, u UserConfig) ([]byte, error) {
 	return []byte(result), nil
 }
 
-func MakeDeclarationSix(year int, u UserConfig) ([]byte, error) {
+func MakeDeclarationSix(year int, u UserConfig, sums []float64) ([]byte, error) {
 	// TODO: VALIDATE year
 
 	endSymbol := ""
@@ -114,11 +117,11 @@ func MakeDeclarationSix(year int, u UserConfig) ([]byte, error) {
 		"",
 		"0",
 		"",
-		"1500.50", // TODO - 14.8 % PensionPercentagePartOne OR + 3.5% = 18.3% for PregnancyInsurancePercentage
+		fmt.Sprintf("%.2f", sums[0]),
 		"",
-		"1200.34", // TODO - 5% PensionPercentagePartTwo
+		fmt.Sprintf("%.2f", sums[1]),
 		"",
-		"1200.00", // TODO - 8% HealthInsurancePercentage
+		fmt.Sprintf("%.2f", sums[2]),
 	}
 	fields = append(fields, make([]string, 42)...)
 	fields = append(fields, "NRAD62007")

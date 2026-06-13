@@ -46,6 +46,10 @@ export function LoadUserConfig() {
   return window['go']['main']['App']['LoadUserConfig']();
 }
 
+export function PreviewDeclarationSix(arg1) {
+  return window['go']['main']['App']['PreviewDeclarationSix'](arg1);
+}
+
 export function SaveDeclarationToFile(arg1, arg2) {
   return window['go']['main']['App']['SaveDeclarationToFile'](arg1, arg2);
 }

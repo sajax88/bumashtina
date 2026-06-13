@@ -95,7 +95,7 @@
                 <th>Месец</th>
                 <th>Доход</th>
                 <th>Осигурителен доход</th>
-                <th>Платени осигуровки</th>
+                <th>Осигуровки (платени/изчислени)</th>
                 <th>Платен данък</th>
                 <th></th>
                 <th></th>
@@ -137,8 +137,8 @@
                         <td>{row.Month} / {row.Year}</td>
                         <td>{row.MonthIncomeCents / MONEY_DIVIDER}</td>
                         <td>{row.TaxedIncomeCents / MONEY_DIVIDER}</td>
-                        <td>{row.SocialSecurityReallyPaidCents / MONEY_DIVIDER}</td>
-                        <td></td>
+                        <td>{row.SocialSecurityReallyPaidCents / MONEY_DIVIDER}/{row.SocialSecurityToPayCents / MONEY_DIVIDER}</td>
+                        <td>-</td>
                         <td class="btn-col">
                             <a href="#/item-single/{row.Year}/{row.Month}">
                                 <View color="#444" size="20"/>

@@ -29,13 +29,14 @@
         let taxesConfigToSave = {}
         for(const k in taxesConfig) {
             if (k > 1) {
+                // Percentage
                 taxesConfigToSave[k] = parseInt(taxesConfig[k])
             } else {
                 taxesConfigToSave[k] = parseFloat(taxesConfig[k])
             }
         }
         SaveTaxesConfig(taxesConfigToSave).then((result) => (resTaxes = result));
-        // TODO: hide inputs
+        // TODO: hide inputs!
     }
 
     function load_config(): void {
@@ -51,6 +52,7 @@
     }
 
     function showEditInput(key) {
+        // TODO: money divider for k < 2
         document.getElementById(`taxes-config-input-${key}`).style.display = "block";
         document.getElementById(`taxes-config-display-value-${key}`).style.display = "none";
     }

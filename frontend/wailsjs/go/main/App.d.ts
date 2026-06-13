@@ -24,6 +24,8 @@ export function LoadThisMonthActions():Promise<string>;
 
 export function LoadUserConfig():Promise<main.UserConfig>;
 
+export function PreviewDeclarationSix(arg1:number):Promise<string>;
+
 export function SaveDeclarationToFile(arg1:Array<number>,arg2:string):Promise<string>;
 
 export function SaveIncomeForm(arg1:main.IncomeForm):Promise<string>;

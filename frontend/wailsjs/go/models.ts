@@ -43,7 +43,6 @@ export namespace main {
 	    MaxInsuranceIncomeCents: number;
 	    ExpensesPercentage: number;
 	    TaxPercentage: number;
-	    PensionPercentage: number;
 	    HealthInsurancePercentage: number;
 	    PregnancyInsurancePercentage: number;
 	    PensionPercentagePartOne: number;
@@ -59,11 +58,26 @@ export namespace main {
 	        this.MaxInsuranceIncomeCents = source["MaxInsuranceIncomeCents"];
 	        this.ExpensesPercentage = source["ExpensesPercentage"];
 	        this.TaxPercentage = source["TaxPercentage"];
-	        this.PensionPercentage = source["PensionPercentage"];
 	        this.HealthInsurancePercentage = source["HealthInsurancePercentage"];
 	        this.PregnancyInsurancePercentage = source["PregnancyInsurancePercentage"];
 	        this.PensionPercentagePartOne = source["PensionPercentagePartOne"];
 	        this.PensionPercentagePartTwo = source["PensionPercentagePartTwo"];
+	    }
+	}
+	export class SocialSecurityParts {
+	    PensionPartOneCents: number;
+	    PensionPartTwoCents: number;
+	    HealthInsuranceCents: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new SocialSecurityParts(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.PensionPartOneCents = source["PensionPartOneCents"];
+	        this.PensionPartTwoCents = source["PensionPartTwoCents"];
+	        this.HealthInsuranceCents = source["HealthInsuranceCents"];
 	    }
 	}
 	export class IncomeForm {
@@ -78,8 +92,10 @@ export namespace main {
 	    WorkDaysSickLeave: number;
 	    TaxesToPayCents: number;
 	    SocialSecurityToPayCents: number;
+	    SocialSecurityToPayParts: SocialSecurityParts;
 	    TaxesReallyPaidCents: number;
 	    SocialSecurityReallyPaidCents: number;
+	    SocialSecurityReallyPaidParts: SocialSecurityParts;
 	    TaxesConfig: TaxesConfig;
 	    Settings: Settings;
 	
@@ -100,8 +116,10 @@ export namespace main {
 	        this.WorkDaysSickLeave = source["WorkDaysSickLeave"];
 	        this.TaxesToPayCents = source["TaxesToPayCents"];
 	        this.SocialSecurityToPayCents = source["SocialSecurityToPayCents"];
+	        this.SocialSecurityToPayParts = this.convertValues(source["SocialSecurityToPayParts"], SocialSecurityParts);
 	        this.TaxesReallyPaidCents = source["TaxesReallyPaidCents"];
 	        this.SocialSecurityReallyPaidCents = source["SocialSecurityReallyPaidCents"];
+	        this.SocialSecurityReallyPaidParts = this.convertValues(source["SocialSecurityReallyPaidParts"], SocialSecurityParts);
 	        this.TaxesConfig = this.convertValues(source["TaxesConfig"], TaxesConfig);
 	        this.Settings = this.convertValues(source["Settings"], Settings);
 	    }
@@ -124,6 +142,7 @@ export namespace main {
 		    return a;
 		}
 	}
+	
 	
 	
 	export class UserConfig {

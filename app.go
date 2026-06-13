@@ -145,7 +145,7 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 	f.Settings = a.LoadSettingsConfig()
 
 	// Calculate approximate taxes and social security, save them together with the form
-	f.SocialSecurityToPayCents = CalculateSocialSecurity(f)
+	CalculateSocialSecurity(&f)
 	f.TaxesToPayCents = CalculateTaxForMonth(f)
 
 	err = SaveDataToFile(f)
@@ -197,14 +197,17 @@ func (a *App) DeleteData(month int, year int) string {
 func (a *App) GenerateDeclarationOne(month int, year int) string {
 	var res string
 
+	// TODO: check that personal data is entered!
+
 	incomeForm, err := GetDataFromFileForMonth(month, year)
 	if err != nil {
 		return err.Error()
 	}
 
 	personalData := a.LoadUserConfig()
+	settings := a.LoadSettingsConfig()
 
-	content, err := MakeDeclarationOne(incomeForm, personalData)
+	content, err := MakeDeclarationOne(incomeForm, personalData, settings)
 	if err != nil {
 		return err.Error()
 	}
@@ -217,15 +220,34 @@ func (a *App) GenerateDeclarationOne(month int, year int) string {
 	return res
 }
 
-func (a *App) GenerateDeclarationSix(year int) string {
-	var res string
+func (a *App) PreviewDeclarationSix(year int) string {
 
-	personalData := a.LoadUserConfig()
+	// TODO: check that personal data is entered!
 
 	// TODO: calculate insurances to pay
 	// TODO: display them to the user for correction if needed, then submit and actually make the declaration?
 
-	content, err := MakeDeclarationSix(year, personalData)
+	// TODO: calc for total year - 14.8 % PensionPercentagePartOne OR + 3.5% = 18.3% for PregnancyInsurancePercentage
+	// TODO: calc for total year - 5% PensionPercentagePartTwo
+	// TODO: calc for total year - 8% HealthInsurancePercentage
+
+	return "" // TODO
+}
+
+// TODO: pass sums []float64
+func (a *App) GenerateDeclarationSix(year int) string {
+	var res string
+
+	// TODO: check that personal data is entered!
+
+	personalData := a.LoadUserConfig()
+
+	sums := []float64{1500.50, 1200.34, 1200.00}
+	if len(sums) != 3 {
+		return "Неверни данни"
+	}
+
+	content, err := MakeDeclarationSix(year, personalData, sums)
 	if err != nil {
 		return err.Error()
 	}

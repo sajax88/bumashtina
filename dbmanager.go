@@ -3,6 +3,7 @@ package main
 import (
 	"cmp"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -141,6 +142,10 @@ func GetAllDataFromFile() ([]IncomeForm, error) {
 
 	savedData, err := os.ReadFile(dataPath)
 	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return []IncomeForm{}, nil
+		}
+		// TODO: check these places with Fatal, we need to show err instead of exiting
 		log.Fatal(err)
 		return []IncomeForm{}, err
 	}
