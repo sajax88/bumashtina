@@ -13,13 +13,20 @@
     const MONEY_DIVIDER = 100;
 
     let dataSingle;
+    let socialSecurityParts;
+    let socialSecurityPaidParts;
+
     let month = parseInt(params.month);
     let year = parseInt(params.year);
+
     let taxesLabels;
     let showTaxesConfig = false;
 
-    // TODO: separate funds
-    let paidInsuranceValue = 0;
+    let paidInsuranceValues = {
+        PensionPartOneCents: 0,
+        PensionPartTwoCents: 0,
+        HealthInsuranceCents: 0,
+    }
 
     onMount(async () => {
         await load_data_for_month()
@@ -29,11 +36,18 @@
         LoadIncomeDataForMonth(month, year).then(function (result) {
             //TODO: separate funds
             dataSingle = result
+            socialSecurityParts = dataSingle.SocialSecurityToPayParts
+            socialSecurityPaidParts = dataSingle.SocialSecurityReallyPaidParts
             if (dataSingle.SocialSecurityReallyPaidCents) {
-                paidInsuranceValue = dataSingle.SocialSecurityReallyPaidCents / MONEY_DIVIDER
+                paidInsuranceValues.PensionPartOneCents = socialSecurityPaidParts.PensionPartOneCents / MONEY_DIVIDER
+                paidInsuranceValues.PensionPartTwoCents = socialSecurityPaidParts.PensionPartTwoCents / MONEY_DIVIDER
+                paidInsuranceValues.HealthInsuranceCents = socialSecurityPaidParts.HealthInsuranceCents / MONEY_DIVIDER
+
             } else {
-                // Set to calculated sum
-                paidInsuranceValue = dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER
+                // Set to calculated sums
+                paidInsuranceValues.PensionPartOneCents = socialSecurityParts.PensionPartOneCents / MONEY_DIVIDER
+                paidInsuranceValues.PensionPartTwoCents = socialSecurityParts.PensionPartTwoCents / MONEY_DIVIDER
+                paidInsuranceValues.HealthInsuranceCents = socialSecurityParts.HealthInsuranceCents / MONEY_DIVIDER
             }
         });
         LoadTaxesConfigLabels().then(function (result) {
@@ -49,22 +63,25 @@
     }
 
     function showPaidInsuranceEditInput() {
-        document.getElementById(`paid-insurance-input`).style.display = "inline-block";
+        document.getElementById(`paid-insurance-inputs`).style.display = "inline-block";
         document.getElementById(`paid-insurance-save-button`).style.display = "inline-block";
 
         document.getElementById(`paid-insurance-value`).style.display = "none";
     }
 
-    function savePaidInsurance() {
-        document.getElementById(`paid-insurance-input`).style.display = "none";
+    async function savePaidInsurance() {
+        document.getElementById(`paid-insurance-inputs`).style.display = "none";
         document.getElementById(`paid-insurance-save-button`).style.display = "none";
 
         document.getElementById(`paid-insurance-value`).style.display = "inline";
 
-        // TODO: separate funds
-        dataSingle.SocialSecurityReallyPaidCents = parseInt(Math.ceil(parseFloat(paidInsuranceValue) * MONEY_DIVIDER));
-        UpdateForm(dataSingle).then(function (result) {
-           console.log(result) // TODO
+        // TODO: functions to turn into cents and back
+        dataSingle.SocialSecurityReallyPaidParts.PensionPartOneCents = parseInt(Math.ceil(parseFloat(paidInsuranceValues.PensionPartOneCents) * MONEY_DIVIDER));
+        dataSingle.SocialSecurityReallyPaidParts.PensionPartTwoCents = parseInt(Math.ceil(parseFloat(paidInsuranceValues.PensionPartTwoCents) * MONEY_DIVIDER));
+        dataSingle.SocialSecurityReallyPaidParts.HealthInsuranceCents = parseInt(Math.ceil(parseFloat(paidInsuranceValues.HealthInsuranceCents) * MONEY_DIVIDER));
+        await UpdateForm(dataSingle).then(async function (result) {
+            console.log(result) // TODO
+            await load_data_for_month()
         });
     }
 </script>
@@ -99,8 +116,10 @@
                     <td>
                         <small>
                             <!-- TODO: paid insurance if entered, take all this from BE? -->
-                            ({dataSingle.MonthIncomeCents / MONEY_DIVIDER} - {dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER} -
-                            {dataSingle.MonthIncomeCents / MONEY_DIVIDER} * 0.25) * 0.1 = {dataSingle.TaxesToPayCents / MONEY_DIVIDER} EUR
+                            ({dataSingle.MonthIncomeCents / MONEY_DIVIDER} доход
+                            - {dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER} осигуровки -
+                            {dataSingle.MonthIncomeCents / MONEY_DIVIDER} * 0.25 разходи) * 10%
+                            = {dataSingle.TaxesToPayCents / MONEY_DIVIDER} EUR
                         </small>
                     </td>
                     <!-- TODO: % from settings, see CalculateTaxForMonth -->
@@ -110,22 +129,43 @@
                     <td>{dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER}</td> <!-- TODO: details -->
                     <td>
                         <small>
-                            {dataSingle.TaxedIncomeCents / MONEY_DIVIDER} * 0.278 = {dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER} EUR
+                            {socialSecurityParts.PensionPartOneCents / MONEY_DIVIDER} ДОО +
+                            {socialSecurityParts.PensionPartTwoCents / MONEY_DIVIDER} ДЗПО +
+                            {socialSecurityParts.HealthInsuranceCents / MONEY_DIVIDER} НЗОК
+                            = {dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER} EUR
                         </small>
-                        <!-- TODO: detailed, from parts - DOO etc -->
                         <!-- TODO: % from settings, see CalculateSocialSecurity -->
                     </td>
                 </tr>
                 <tr>
                     <td>Платени осигуровки</td>
                     <td>
-                        <!-- TODO: separate funds -->
-                        <span id="paid-insurance-value">{dataSingle.SocialSecurityReallyPaidCents / MONEY_DIVIDER}</span>
+                        <span id="paid-insurance-value">
+                            {#if dataSingle.SocialSecurityReallyPaidCents}
+                                {socialSecurityPaidParts.PensionPartOneCents / MONEY_DIVIDER} ДОО +
+                                {socialSecurityPaidParts.PensionPartTwoCents / MONEY_DIVIDER} ДЗПО +
+                                {socialSecurityPaidParts.HealthInsuranceCents / MONEY_DIVIDER} НЗОК =
+                                {dataSingle.SocialSecurityReallyPaidCents / MONEY_DIVIDER} EUR
+                           {:else}
+                                -
+                            {/if}
+                        </span>
 
-                        <!-- TODO: separate funds -->
-                        <input style="display: none" id="paid-insurance-input" type="text"
-                               bind:value={paidInsuranceValue}
+                        <span id="paid-insurance-inputs" style="display: none">
+                        <label class="paid-insurance-label">ДОО: </label><input
+                                class="paid-insurance-input" type="text"
+                                bind:value={paidInsuranceValues.PensionPartOneCents}
+                        /><br/>
+                        <label class="paid-insurance-label">ДЗПО: </label><input
+                                class="paid-insurance-input" type="text"
+                                bind:value={paidInsuranceValues.PensionPartTwoCents}
+                        /><br/>
+                        <label class="paid-insurance-label">НЗОК: </label><input
+                                class="paid-insurance-input" type="text"
+                                bind:value={paidInsuranceValues.HealthInsuranceCents}
                         />
+                            </span><br/>
+
                         <button style="display: none" class="btn btn-small" id="paid-insurance-save-button"
                                 on:click="{() => savePaidInsurance()}">
                             <Save color="#444" size="20"/>
@@ -208,7 +248,15 @@
         margin: 20px 0;
     }
 
-    #paid-insurance-input {
-        width:60px;
+    #paid-insurance-save-button {
+        margin-left: 0;
+    }
+
+    .paid-insurance-input {
+        width: 60px;
+    }
+
+    label.paid-insurance-label {
+        width: auto;
     }
 </style>

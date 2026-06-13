@@ -163,9 +163,9 @@ func (a *App) UpdateForm(f IncomeForm) string {
 
 	if existingForm.Month > 0 {
 		// Allow to update only some values
-		existingForm.SocialSecurityReallyPaidCents = f.SocialSecurityReallyPaidCents
 		existingForm.TaxesReallyPaidCents = f.TaxesReallyPaidCents
-		// TODO: SocialSecurityReallyPaidParts
+		existingForm.SocialSecurityReallyPaidParts = f.SocialSecurityReallyPaidParts
+		existingForm.SocialSecurityReallyPaidCents = f.SocialSecurityReallyPaidParts.PensionPartOneCents + f.SocialSecurityReallyPaidParts.PensionPartTwoCents + f.SocialSecurityReallyPaidParts.HealthInsuranceCents
 	} else {
 		return fmt.Sprintf("Данните за месец %d не са намерени", existingForm.Month) // TODO: return err object?
 	}
@@ -214,6 +214,8 @@ func (a *App) GenerateDeclarationOne(month int, year int) string {
 	if err != nil {
 		return err.Error()
 	}
+
+	res += "\nСлед плащането в НАП попълнете платени осигуровки в Въведени данни за Декларацията 6"
 
 	return res
 }

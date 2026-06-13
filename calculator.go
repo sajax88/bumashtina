@@ -6,6 +6,7 @@ import (
 )
 
 type IncomeForm struct {
+	// Initial user input
 	Month             int16
 	Year              int16
 	MonthIncomeCents  int64
@@ -25,9 +26,9 @@ type IncomeForm struct {
 	// Taxes - only for the last month in the quarter
 	TaxesReallyPaidCents          int64
 	SocialSecurityReallyPaidCents int64
-	// TODO: optionally?
 	SocialSecurityReallyPaidParts SocialSecurityParts // Used in Declaration 6 if entered, otherwise use calculated
 
+	// Config at the time of saving
 	TaxesConfig TaxesConfig
 	Settings    Settings
 }
