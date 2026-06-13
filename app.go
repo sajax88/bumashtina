@@ -220,32 +220,32 @@ func (a *App) GenerateDeclarationOne(month int, year int) string {
 	return res
 }
 
-func (a *App) PreviewDeclarationSix(year int) string {
+func (a *App) PreviewDeclarationSix(year int) SocialSecurityParts {
 
 	// TODO: check that personal data is entered!
 
-	// TODO: calculate insurances to pay
-	// TODO: display them to the user for correction if needed, then submit and actually make the declaration?
+	sums := SocialSecurityParts{}
+	rows, err := GetDataFromFileForYear(year)
+	if err != nil {
+		// Error is logged in GetDataFromFileForYear
+		return sums
+	}
 
-	// TODO: calc for total year - 14.8 % PensionPercentagePartOne OR + 3.5% = 18.3% for PregnancyInsurancePercentage
-	// TODO: calc for total year - 5% PensionPercentagePartTwo
-	// TODO: calc for total year - 8% HealthInsurancePercentage
+	for _, f := range rows {
+		paidSums := f.SocialSecurityReallyPaidParts
+		sums.PensionPartOneCents += paidSums.PensionPartOneCents
+		sums.PensionPartTwoCents += paidSums.PensionPartTwoCents
+		sums.HealthInsuranceCents += paidSums.HealthInsuranceCents
+	}
 
-	return "" // TODO
+	return sums
 }
 
-// TODO: pass sums []float64
-func (a *App) GenerateDeclarationSix(year int) string {
+func (a *App) GenerateDeclarationSix(year int, sums SocialSecurityParts) string {
 	var res string
 
 	// TODO: check that personal data is entered!
-
 	personalData := a.LoadUserConfig()
-
-	sums := []float64{1500.50, 1200.34, 1200.00}
-	if len(sums) != 3 {
-		return "Неверни данни"
-	}
 
 	content, err := MakeDeclarationSix(year, personalData, sums)
 	if err != nil {

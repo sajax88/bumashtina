@@ -73,6 +73,23 @@ func GetDataFromFileForMonth(month int, year int) (IncomeForm, error) {
 	return IncomeForm{}, nil
 }
 
+func GetDataFromFileForYear(year int) ([]IncomeForm, error) {
+	row, err := GetAllDataFromFile()
+	if err != nil {
+		log.Fatal(err)
+		return []IncomeForm{}, err
+	}
+
+	var rows []IncomeForm
+	for _, f := range row {
+		if f.Year == int16(year) {
+			rows = append(rows, f)
+		}
+	}
+
+	return rows, nil
+}
+
 func GetDataFromFileForQuarter(quarter int, year int, result *CalculatedTax) ([]IncomeForm, error) {
 	row, err := GetAllDataFromFile()
 	if err != nil {

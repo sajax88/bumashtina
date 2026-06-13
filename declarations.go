@@ -99,7 +99,7 @@ func MakeDeclarationOne(f IncomeForm, u UserConfig, s Settings) ([]byte, error) 
 	return []byte(result), nil
 }
 
-func MakeDeclarationSix(year int, u UserConfig, sums []float64) ([]byte, error) {
+func MakeDeclarationSix(year int, u UserConfig, sums SocialSecurityParts) ([]byte, error) {
 	// TODO: VALIDATE year
 
 	endSymbol := ""
@@ -117,11 +117,11 @@ func MakeDeclarationSix(year int, u UserConfig, sums []float64) ([]byte, error) 
 		"",
 		"0",
 		"",
-		fmt.Sprintf("%.2f", sums[0]),
+		fmt.Sprintf("%.2f", float64(sums.PensionPartOneCents/MONEY_DIVIDER)),
 		"",
-		fmt.Sprintf("%.2f", sums[1]),
+		fmt.Sprintf("%.2f", float64(sums.PensionPartTwoCents/MONEY_DIVIDER)),
 		"",
-		fmt.Sprintf("%.2f", sums[2]),
+		fmt.Sprintf("%.2f", float64(sums.HealthInsuranceCents/MONEY_DIVIDER)),
 	}
 	fields = append(fields, make([]string, 42)...)
 	fields = append(fields, "NRAD62007")

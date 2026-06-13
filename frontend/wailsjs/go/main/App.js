@@ -14,8 +14,8 @@ export function GenerateDeclarationOne(arg1, arg2) {
   return window['go']['main']['App']['GenerateDeclarationOne'](arg1, arg2);
 }
 
-export function GenerateDeclarationSix(arg1) {
-  return window['go']['main']['App']['GenerateDeclarationSix'](arg1);
+export function GenerateDeclarationSix(arg1, arg2) {
+  return window['go']['main']['App']['GenerateDeclarationSix'](arg1, arg2);
 }
 
 export function LoadAlerts() {

@@ -1,15 +1,38 @@
 <script lang="ts">
-    import {BookText, Check} from "lucide-svelte";
-    import {GenerateDeclarationSix} from "../../wailsjs/go/main/App";
+    import {BookText, Check, Save} from "lucide-svelte";
+    import {GenerateDeclarationSix, PreviewDeclarationSix} from "../../wailsjs/go/main/App";
+    import {main} from "../../wailsjs/go/models";
+    import SocialSecurityParts = main.SocialSecurityParts;
 
-    let declarationSixResult = ""; // TODO: if err
+    // TODO: in one file?
+    const MONEY_DIVIDER = 100;
+
+    let declarationSixValues = {
+        PensionPartOne: 0,
+        PensionPartTwo: 0,
+        HealthInsurance: 0,
+    };
+    let declarationSixResult = "";
 
     let declarationSixForm = {
         Year: new Date().getFullYear(),
     }
 
+    function previewDeclarationSix(): void {
+        PreviewDeclarationSix(declarationSixForm.Year).then(function (result) {
+            declarationSixValues.PensionPartOne = result.PensionPartOneCents / MONEY_DIVIDER
+            declarationSixValues.PensionPartTwo = result.PensionPartTwoCents / MONEY_DIVIDER
+            declarationSixValues.HealthInsurance = result.HealthInsuranceCents / MONEY_DIVIDER
+        });
+    }
+
     function generateDeclarationSix(): void {
-        GenerateDeclarationSix(declarationSixForm.Year).then((result) => (declarationSixResult = result));
+        let sums = {
+            PensionPartOneCents: declarationSixValues.PensionPartOne * MONEY_DIVIDER,
+            PensionPartTwoCents: declarationSixValues.PensionPartTwo * MONEY_DIVIDER,
+            HealthInsuranceCents: declarationSixValues.HealthInsurance * MONEY_DIVIDER,
+        }
+        GenerateDeclarationSix(declarationSixForm.Year, sums).then((result) => (declarationSixResult = result)); // TODO: output
     }
 </script>
 
@@ -23,10 +46,31 @@
             <div id="declaration-six-block" class="hidden-form-block" style="display: none;">
                 Година <input type="number" id="tax-calculator-year" class="year-input" bind:value={declarationSixForm.Year}/>
 
-                <button class="btn btn-small" on:click={generateDeclarationSix}>
+                <button class="btn btn-small" on:click={previewDeclarationSix}>
                     <span><Check color="#444" size="20"/></span>
                 </button>
             </div>
+
+            {#if declarationSixValues.PensionPartOne}
+                <div class="alert alert-info" id="declaration-six-result">
+                    <label class="paid-insurance-label">ДОО: </label><input
+                        class="paid-insurance-input" type="text"
+                        bind:value={declarationSixValues.PensionPartOne}
+                /><br/>
+                    <label class="paid-insurance-label">ДЗПО: </label><input
+                        class="paid-insurance-input" type="text"
+                        bind:value={declarationSixValues.PensionPartTwo}
+                /><br/>
+                    <label class="paid-insurance-label">НЗОК: </label><input
+                        class="paid-insurance-input" type="text"
+                        bind:value={declarationSixValues.HealthInsurance}
+                />
+                    <br/>
+                    <button class="btn btn-small" id="button-generate-declaration" on:click={generateDeclarationSix}>
+                        <span><Save color="#444" size="20"/>Запази файл</span>
+                    </button>
+                </div>
+            {/if}
         </div>
     </div>
 </div>
@@ -38,5 +82,18 @@
 
     #declaration-six-block {
         padding-top: 10px;
+    }
+
+    .paid-insurance-input {
+        width: 60px;
+    }
+
+    label.paid-insurance-label {
+        width: auto;
+    }
+
+    #button-generate-declaration {
+        margin-top: 10px;
+        margin-left: 0;
     }
 </style>

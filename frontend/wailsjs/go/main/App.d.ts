@@ -8,7 +8,7 @@ export function DeleteData(arg1:number,arg2:number):Promise<string>;
 
 export function GenerateDeclarationOne(arg1:number,arg2:number):Promise<string>;
 
-export function GenerateDeclarationSix(arg1:number):Promise<string>;
+export function GenerateDeclarationSix(arg1:number,arg2:main.SocialSecurityParts):Promise<string>;
 
 export function LoadAlerts():Promise<string>;
 
@@ -24,7 +24,7 @@ export function LoadTaxesConfigLabels():Promise<Array<string>>;
 
 export function LoadUserConfig():Promise<main.UserConfig>;
 
-export function PreviewDeclarationSix(arg1:number):Promise<string>;
+export function PreviewDeclarationSix(arg1:number):Promise<main.SocialSecurityParts>;
 
 export function SaveDeclarationToFile(arg1:Array<number>,arg2:string):Promise<string>;
 
