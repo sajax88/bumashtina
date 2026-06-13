@@ -20,6 +20,13 @@ type UserConfig struct {
 	Email      string
 }
 
+func (u UserConfig) isPopulated() bool {
+	if u.FirstName == "" || u.LastName == "" || u.Egn == "" || u.Bulstat == "" || u.Phone == "" || u.Email == "" {
+		return false
+	}
+	return true
+}
+
 type Settings struct {
 	IsPregnancyInsuranceEnabled bool
 }

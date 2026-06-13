@@ -118,15 +118,12 @@ func (a *App) LoadIncomeDataForMonth(month int, year int) IncomeForm {
 	return row
 }
 
-func (a *App) LoadThisMonthActions() string {
-	return "" // TODO
-
-	// TODO
-	//- Декларация 1 за дължими осигуровки (по Булстат) – всеки месец до 25-то число на следващия месец;
-	//- Декларация 6 за дължими осигурителни вноски (по ЕГН) – до 30.04 на следващата календарна година;
-	//- Декларация по чл. 55 от ЗДДФЛ (по ЕГН) – за първите три тримесечия, до края на месеца, следващ
-	//тримесечието;
-	// - Декларация по чл. 50 от ЗДДФЛ (по ЕГН) – до 30.04 на следващата календарна година;
+func (a *App) LoadAlerts() string {
+	personalData := a.LoadUserConfig()
+	if !personalData.isPopulated() {
+		return "Попълнете личните си данни за да генерирате декларации"
+	}
+	return ""
 }
 
 func (a *App) SaveIncomeForm(f IncomeForm) string {
@@ -168,6 +165,7 @@ func (a *App) UpdateForm(f IncomeForm) string {
 		// Allow to update only some values
 		existingForm.SocialSecurityReallyPaidCents = f.SocialSecurityReallyPaidCents
 		existingForm.TaxesReallyPaidCents = f.TaxesReallyPaidCents
+		// TODO: SocialSecurityReallyPaidParts
 	} else {
 		return fmt.Sprintf("Данните за месец %d не са намерени", existingForm.Month) // TODO: return err object?
 	}

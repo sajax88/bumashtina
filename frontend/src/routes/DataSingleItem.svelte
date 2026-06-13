@@ -17,6 +17,8 @@
     let year = parseInt(params.year);
     let taxesLabels;
     let showTaxesConfig = false;
+
+    // TODO: separate funds
     let paidInsuranceValue = 0;
 
     onMount(async () => {
@@ -25,6 +27,7 @@
 
     async function load_data_for_month(): Promise<void> {
         LoadIncomeDataForMonth(month, year).then(function (result) {
+            //TODO: separate funds
             dataSingle = result
             if (dataSingle.SocialSecurityReallyPaidCents) {
                 paidInsuranceValue = dataSingle.SocialSecurityReallyPaidCents / MONEY_DIVIDER
@@ -58,6 +61,7 @@
 
         document.getElementById(`paid-insurance-value`).style.display = "inline";
 
+        // TODO: separate funds
         dataSingle.SocialSecurityReallyPaidCents = parseInt(Math.ceil(parseFloat(paidInsuranceValue) * MONEY_DIVIDER));
         UpdateForm(dataSingle).then(function (result) {
            console.log(result) // TODO
@@ -115,8 +119,10 @@
                 <tr>
                     <td>Платени осигуровки</td>
                     <td>
+                        <!-- TODO: separate funds -->
                         <span id="paid-insurance-value">{dataSingle.SocialSecurityReallyPaidCents / MONEY_DIVIDER}</span>
 
+                        <!-- TODO: separate funds -->
                         <input style="display: none" id="paid-insurance-input" type="text"
                                bind:value={paidInsuranceValue}
                         />

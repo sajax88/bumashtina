@@ -5,7 +5,7 @@
     import {onMount} from 'svelte';
 
     import Info from "../components/Info.svelte"
-    import ActionsBanner from "../components/ActionsBanner.svelte";
+    import AlertsBanner from "../components/AlertsBanner.svelte";
     import DeclarationSix from "../components/DeclarationSix.svelte";
     import Taxes from "../components/Taxes.svelte";
     import {main} from "../../wailsjs/go/models";
@@ -99,14 +99,10 @@
 
 <main>
 
-    <ActionsBanner/>
+    <AlertsBanner/>
 
     <div id="home-page-block-right" class="input-box">
-
-        <!-- TODO: this and tax - to Data page? -->
-
         <DeclarationSix/>
-
         <Taxes/>
     </div>
 

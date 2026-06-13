@@ -18,6 +18,10 @@ export function GenerateDeclarationSix(arg1) {
   return window['go']['main']['App']['GenerateDeclarationSix'](arg1);
 }
 
+export function LoadAlerts() {
+  return window['go']['main']['App']['LoadAlerts']();
+}
+
 export function LoadAllIncomeData() {
   return window['go']['main']['App']['LoadAllIncomeData']();
 }
@@ -36,10 +40,6 @@ export function LoadTaxesConfig() {
 
 export function LoadTaxesConfigLabels() {
   return window['go']['main']['App']['LoadTaxesConfigLabels']();
-}
-
-export function LoadThisMonthActions() {
-  return window['go']['main']['App']['LoadThisMonthActions']();
 }
 
 export function LoadUserConfig() {

@@ -148,8 +148,11 @@ body {
 .success {
     background-color: #c6d498;
 }
+.warning {
+    background-color: #f4b767;
+}
 .error {
-    background-color: #edb18a;
+    background-color: #eda48a;
 }
 
 .alert-info {
