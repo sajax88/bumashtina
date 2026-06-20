@@ -1,27 +1,31 @@
 <script lang="ts">
-  import Router from "svelte-spa-router";
-  import Home from './routes/Home.svelte';
+    import Router from "svelte-spa-router";
+    import Home from './routes/Home.svelte';
 
-  import Settings from './routes/Settings.svelte'
-  import Personal from './routes/Personal.svelte'
-  import Data from './routes/Data.svelte'
-  import DataSingleItem from "./routes/DataSingleItem.svelte";
+    import Settings from './routes/Settings.svelte'
+    import Personal from './routes/Personal.svelte'
+    import Data from './routes/Data.svelte'
+    import DataSingleItem from "./routes/DataSingleItem.svelte";
 
-  import {BrowserOpenURL} from "../wailsjs/runtime";
+    import {BrowserOpenURL} from "../wailsjs/runtime";
 
-  import { House, User, Settings2, NotebookText } from 'lucide-svelte';
+    import {House, NotebookText, Settings2, User} from 'lucide-svelte';
 </script>
 
 
 <div class="nav">
-    <a href="#/"><House size="16" /> Начало</a>
-    <a href="#/data"><NotebookText size="16" /> Въведени данни</a>
-    <a href="#/personal"><User size="16" /> Лични данни</a>
-    <a href="#/settings"><Settings2 size="16" /> Настройки</a>
+    <a href="#/">
+        <House size="16"/> Начало</a>
+    <a href="#/data">
+        <NotebookText size="16"/> Въведени данни</a>
+    <a href="#/personal">
+        <User size="16"/> Лични данни</a>
+    <a href="#/settings">
+        <Settings2 size="16"/> Настройки</a>
 </div>
 
 <Router
-    routes={{
+        routes={{
         "/": Home,
         "/settings": Settings,
         "/personal": Personal,
@@ -31,8 +35,8 @@
 />
 
 <div class="footer">
-  <p>Made with: Wails, Svelte, Lucide. <a 
-  href="#" 
-  on:click={() => BrowserOpenURL('https://github.com/sajax88/bumashtina')}
-  >GitHub</a></p>
+    <p>Made with: Wails2, Svelte3, Lucide. <a
+            href=""
+            on:click={function(e) {BrowserOpenURL('https://github.com/sajax88/bumashtina'); e.preventDefault();}}
+    >GitHub</a></p>
 </div>

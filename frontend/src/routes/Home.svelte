@@ -98,7 +98,6 @@
 </script>
 
 <main>
-
     <AlertsBanner/>
 
     <div id="home-page-block-right" class="input-box">
@@ -165,7 +164,10 @@
                 <input class="input" min="0" max="31" id="WorkDaysTotal" type="number" bind:value={form.WorkDaysTotal}/>
 
                 <div class="info">Провери работни дни: <a href="#"
-                                                          on:click={function(e){ BrowserOpenURL('https://kik-info.com/spravochnik/calendar/' + form.Year); e.preventDefault();}}
+                                                          on:click={function(e){
+                                                              BrowserOpenURL('https://kik-info.com/spravochnik/calendar/' + form.Year);
+                                                              e.preventDefault();
+                                                          }}
                 >
                     https://kik-info.com/spravochnik/calendar/{form.Year}
                 </a></div>

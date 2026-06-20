@@ -121,7 +121,7 @@ func (a *App) LoadIncomeDataForMonth(month int, year int) IncomeForm {
 func (a *App) LoadAlerts() string {
 	personalData := a.LoadUserConfig()
 	if !personalData.isPopulated() {
-		return "Попълнете личните си данни за да генерирате декларации"
+		return "Попълнете личните си данни за да генерирате декларации. Проверете \"Общо заболяване и майчинство\" в Настройките."
 	}
 	return ""
 }
@@ -150,6 +150,17 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 		return err.Error()
 	}
 
+	// result - to fetch selected
+	_, err = runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+		Type: runtime.InfoDialog,
+		//Title:   "Успешно",
+		Message: "Успешно запазено",
+		//DefaultButton: "No",
+	})
+	if err != nil {
+		return err.Error()
+	}
+
 	return "Успешно запазено"
 }
 
@@ -162,12 +173,13 @@ func (a *App) UpdateForm(f IncomeForm) string {
 	}
 
 	if existingForm.Month > 0 {
-		// Allow to update only some values
+		// Allow updating only some values
 		existingForm.TaxesReallyPaidCents = f.TaxesReallyPaidCents
 		existingForm.SocialSecurityReallyPaidParts = f.SocialSecurityReallyPaidParts
 		existingForm.SocialSecurityReallyPaidCents = f.SocialSecurityReallyPaidParts.PensionPartOneCents + f.SocialSecurityReallyPaidParts.PensionPartTwoCents + f.SocialSecurityReallyPaidParts.HealthInsuranceCents
 	} else {
-		return fmt.Sprintf("Данните за месец %d не са намерени", existingForm.Month) // TODO: return err object?
+		// TODO: return err object? or open error dialog?
+		return fmt.Sprintf("Данните за месец %d не са намерени", existingForm.Month)
 	}
 
 	// Remove previous record and save the new one
@@ -185,7 +197,26 @@ func (a *App) UpdateForm(f IncomeForm) string {
 }
 
 func (a *App) DeleteData(month int, year int) string {
-	err := DeleteDataFromFile(month, year)
+	answer, err := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
+		Type:  runtime.QuestionDialog,
+		Title: "Потвърдете действието",
+		Message: fmt.Sprintf(
+			"Сигурни ли сте, че искате да изтриете данните за %d/%d? Изтритите данни не се възстановяват!",
+			month,
+			year,
+		),
+		DefaultButton: "No",
+	})
+
+	if err != nil {
+		return err.Error()
+	}
+
+	if answer == "No" {
+		return ""
+	}
+
+	err = DeleteDataFromFile(month, year)
 	if err != nil {
 		return err.Error()
 	}
