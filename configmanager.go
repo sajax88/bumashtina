@@ -135,14 +135,43 @@ func SaveConfigToFile(c Config) error {
 		return err
 	}
 
+	log.Print(c) // TODO
+
 	config, err := json.Marshal(c)
-	log.Print("Saving config:", c, string(config))
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 
 	return os.WriteFile(configPath, config, 0600)
+}
+
+func (t TaxesConfig) Validate() (bool, string) {
+	if t.MinInsuranceIncomeCents <= 0 {
+		return false, "Невалиден минимален осигурителен доход"
+	}
+	if t.MaxInsuranceIncomeCents <= 0 {
+		return false, "Невалиден максимален осигурителен доход"
+	}
+	if (t.ExpensesPercentage <= 0) || (t.ExpensesPercentage > 100) {
+		return false, "Невалиден процент признати разходи"
+	}
+	if (t.TaxPercentage <= 0) || (t.TaxPercentage > 100) {
+		return false, "Невалидна данъчна ставка"
+	}
+	if (t.HealthInsurancePercentage <= 0) || (t.HealthInsurancePercentage > 100) {
+		return false, "Невалиден процент за Здравно осигуряване"
+	}
+	if (t.PregnancyInsurancePercentage <= 0) || (t.PregnancyInsurancePercentage > 100) {
+		return false, "Невалиден процент за фонд Общо заболяване и майчинство"
+	}
+	if (t.PensionPercentagePartOne <= 0) || (t.PensionPercentagePartOne > 100) {
+		return false, "Невалиден процент за ДОО"
+	}
+	if (t.PensionPercentagePartTwo <= 0) || (t.PensionPercentagePartTwo > 100) {
+		return false, "Невалиден процент за ДЗПО"
+	}
+
+	return true, ""
 }
 
 func GetDefaultTaxesConfig() TaxesConfig {

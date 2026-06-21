@@ -1,0 +1,1 @@
+export const MONEY_DIVIDER = 100;

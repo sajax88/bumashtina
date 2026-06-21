@@ -24,14 +24,14 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
 
-func (a *App) SaveUserConfig(c UserConfig) string {
-	isValid, errorMessage := c.Validate()
+func (a *App) SaveUserConfig(u UserConfig) string {
+	isValid, errorMessage := u.Validate()
 	if !isValid {
 		ShowWarningDialog(a.ctx, "Грешна конфигурация", errorMessage)
 		return ""
 	}
 
-	a.config.User = c
+	a.config.User = u
 	err := SaveConfigToFile(a.config)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "Грешка при запазване на файла", err.Error())
@@ -42,22 +42,27 @@ func (a *App) SaveUserConfig(c UserConfig) string {
 }
 
 func (a *App) SaveSettingsConfig(c Settings) string {
-	// TODO: validation
 	a.config.Settings = c
 	err := SaveConfigToFile(a.config)
 	if err != nil {
-		return err.Error()
+		ShowErrorDialog(a.ctx, "Грешка при запазване на файла", err.Error())
 	}
 
 	return "Успешно запазено"
 }
 
 func (a *App) SaveTaxesConfig(t TaxesConfig) string {
-	// TODO: validation
+	isValid, errorMessage := t.Validate()
+	if !isValid {
+		ShowWarningDialog(a.ctx, "Грешна конфигурация", errorMessage)
+		return ""
+	}
+
 	a.config.TaxesConfig = t
 	err := SaveConfigToFile(a.config)
 	if err != nil {
-		return err.Error()
+		ShowErrorDialog(a.ctx, "Грешка при запазване на файла", err.Error())
+		return ""
 	}
 
 	return "Успешно запазено"
@@ -325,7 +330,7 @@ func (a *App) SaveDeclarationToFile(content []byte, filename string) (string, er
 		return "", err
 	}
 
-	// TODO a.log LogPrint(ctx, err.Error()), MessageDialog
+	// TODO: MessageDialog
 
 	return fmt.Sprintf("Успешно, файлът беше записан в %s", saveFilePath), nil
 }

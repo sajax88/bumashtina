@@ -34,12 +34,6 @@
 
         <h2>Лични данни</h2>
 
-        {#if res}
-            <div class="alert success" in:fade={{duration:300}} out:fade={{duration:800}}>
-                <CircleCheck color="#748733" size="20"/> {res}
-            </div>
-        {/if}
-
         {#if config}
             <div class="form-row">
                 <div class="form-group">
@@ -97,6 +91,12 @@
                     </button>
                 </div>
             </div>
+
+            {#if res}
+                <div class="alert success" in:fade={{duration:300}} out:fade={{duration:800}}>
+                    <CircleCheck color="#748733" size="20"/> {res}
+                </div>
+            {/if}
         {/if}
     </div>
 </main>

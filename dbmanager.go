@@ -50,7 +50,6 @@ func SaveDataToFile(f IncomeForm) error {
 	data, err := json.Marshal(allData)
 
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 
@@ -141,7 +140,6 @@ func DeleteDataFromFile(month int, year int) error {
 	data, err := json.Marshal(allData)
 
 	if err != nil {
-		log.Print(err)
 		return err
 	}
 
