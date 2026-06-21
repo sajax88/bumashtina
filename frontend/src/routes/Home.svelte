@@ -50,31 +50,6 @@
     }
 
     function saveIncome(): void {
-        if (form.WorkDaysSickLeave > form.WorkDaysTotal) {
-            alert("Дните в болничен не могат да надвишават общите работни дни.");
-            return;
-        }
-
-        if (form.DayStart > 0 && form.DayEnd > 0 && form.DayStart >= form.DayEnd) {
-            alert("Началният ден трябва да бъде преди крайния ден.");
-            return;
-        }
-
-        if (form.MonthIncome === "" || form.TaxedIncome === "" || form.Year === 0) {
-            alert("Моля, попълнете всички задължителни полета.");
-            return;
-        }
-
-        if (
-            parseFloat(form.TaxedIncome) * MONEY_DIVIDER < configTaxes.MinInsuranceIncomeCents
-            || parseFloat(form.TaxedIncome) * MONEY_DIVIDER > configTaxes.MaxInsuranceIncomeCents
-        ) {
-            alert(`Осигурителният доход трябва да бъде между ${configTaxes.MinInsuranceIncomeCents / MONEY_DIVIDER} и ${configTaxes.MaxInsuranceIncomeCents / MONEY_DIVIDER}.`);
-            return;
-        }
-
-        // TODO: validation
-
         let formToSave = new IncomeForm({
             Month: parseInt(form.Month),
             Year: form.Year,
@@ -233,7 +208,7 @@
         <div class="form-row">
             <div class="form-group submit-group">
                 <button class="btn btn-large" on:click={saveIncome}>
-                    <span><Save color="#444" size="20"/> Запази</span>
+                    <span><Save color="#444" size="20"/> Добави</span>
                 </button>
             </div>
         </div>

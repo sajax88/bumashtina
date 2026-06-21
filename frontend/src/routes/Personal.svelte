@@ -2,6 +2,7 @@
     import {LoadUserConfig, SaveUserConfig} from "../../wailsjs/go/main/App.js";
     import {onMount} from 'svelte';
     import {CircleCheck, Save} from 'lucide-svelte';
+    import {fade} from 'svelte/transition';
 
     onMount(() => {
         loadConfig()
@@ -11,7 +12,14 @@
     let config;
 
     function saveConfig(): void {
-        SaveUserConfig(config).then((result) => (res = result));
+        SaveUserConfig(config).then(
+            function (result) {
+                res = result
+                setTimeout(() => {
+                    res = ""
+                }, 2000)
+            },
+        );
     }
 
     function loadConfig(): void {
@@ -25,6 +33,12 @@
     <div class="input-box" id="input-box">
 
         <h2>Лични данни</h2>
+
+        {#if res}
+            <div class="alert success" in:fade={{duration:300}} out:fade={{duration:800}}>
+                <CircleCheck color="#748733" size="20"/> {res}
+            </div>
+        {/if}
 
         {#if config}
             <div class="form-row">
@@ -83,11 +97,6 @@
                     </button>
                 </div>
             </div>
-            {#if res}
-                <div class="alert success">
-                    <CircleCheck color="#748733" size="20"/>  {res}
-                </div>
-            {/if}
         {/if}
     </div>
 </main>

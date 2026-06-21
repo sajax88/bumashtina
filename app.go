@@ -127,7 +127,6 @@ func (a *App) LoadAlerts() string {
 }
 
 func (a *App) SaveIncomeForm(f IncomeForm) string {
-	// TODO: validation
 
 	existingForm, err := GetDataFromFileForMonth(int(f.Month), int(f.Year))
 	if err != nil {
@@ -135,11 +134,41 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 	}
 
 	if existingForm.Month > 0 {
-		return fmt.Sprintf("Данните за %d/%d вече съществуват, изтрийте ги за да въведете нови", f.Month, f.Year)
+		ShowWarningDialog(a.ctx, "", fmt.Sprintf("Данните за %d/%d вече съществуват, изтрийте ги за да въведете нови", f.Month, f.Year))
+		return ""
 	}
 
 	f.TaxesConfig = a.LoadTaxesConfig()
 	f.Settings = a.LoadSettingsConfig()
+
+	if f.WorkDaysSickLeave > f.WorkDaysTotal {
+		ShowWarningDialog(a.ctx, "", "Дните в болничен не могат да надвишават общите работни дни")
+		return ""
+	}
+
+	if f.DayStart > 0 && f.DayEnd > 0 && f.DayStart >= f.DayEnd {
+		ShowWarningDialog(a.ctx, "", "Началният ден трябва да бъде преди крайния ден")
+		return ""
+	}
+
+	if f.MonthIncomeCents == 0 || f.TaxedIncomeCents == 0 || f.Year == 0 {
+		ShowWarningDialog(a.ctx, "", "Моля, попълнете всички задължителни полета")
+		return ""
+	}
+
+	if f.TaxedIncomeCents < f.TaxesConfig.MinInsuranceIncomeCents || f.TaxedIncomeCents > f.TaxesConfig.MaxInsuranceIncomeCents {
+		ShowWarningDialog(
+			a.ctx,
+			"",
+			fmt.Sprintf(
+				"Осигурителният доход трябва да бъде между %.2f и %.2f EUR",
+				float64(f.TaxesConfig.MinInsuranceIncomeCents)/MONEY_DIVIDER,
+				float64(f.TaxesConfig.MaxInsuranceIncomeCents)/MONEY_DIVIDER,
+			),
+		)
+	}
+
+	// TODO: validation
 
 	// Calculate approximate taxes and social security, save them together with the form
 	CalculateSocialSecurity(&f)
@@ -150,17 +179,7 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 		return err.Error()
 	}
 
-	// result - to fetch selected
-	_, err = runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-		Type: runtime.InfoDialog,
-		//Title:   "Успешно",
-		Message: "Успешно запазено",
-		//DefaultButton: "No",
-	})
-	if err != nil {
-		return err.Error()
-	}
-
+	// TODO: link to entered data
 	return "Успешно запазено"
 }
 
@@ -197,26 +216,18 @@ func (a *App) UpdateForm(f IncomeForm) string {
 }
 
 func (a *App) DeleteData(month int, year int) string {
-	answer, err := runtime.MessageDialog(a.ctx, runtime.MessageDialogOptions{
-		Type:  runtime.QuestionDialog,
-		Title: "Потвърдете действието",
-		Message: fmt.Sprintf(
-			"Сигурни ли сте, че искате да изтриете данните за %d/%d? Изтритите данни не се възстановяват!",
-			month,
-			year,
-		),
-		DefaultButton: "No",
-	})
-
-	if err != nil {
-		return err.Error()
-	}
+	question := fmt.Sprintf(
+		"Сигурни ли сте, че искате да изтриете данните за %d/%d? Изтритите данни не се възстановяват!",
+		month,
+		year,
+	)
+	answer := ShowQuestionDialog(a.ctx, "Потвърдете действието", question, "")
 
 	if answer == "No" {
 		return ""
 	}
 
-	err = DeleteDataFromFile(month, year)
+	err := DeleteDataFromFile(month, year)
 	if err != nil {
 		return err.Error()
 	}

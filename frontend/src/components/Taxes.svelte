@@ -141,8 +141,4 @@
     #tax-enter-form-amount {
         width:70px;
     }
-
-    #tax-calculator-result span {
-        display:inline;
-    }
 </style>

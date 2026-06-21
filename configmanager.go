@@ -113,8 +113,8 @@ func SaveConfigToFile(c Config) error {
 // Money is stored with Divider = 100 to avoid floating point issues.
 // E.g. 550,66 euro is stored as 55066.
 type TaxesConfig struct {
-	MinInsuranceIncomeCents      int32
-	MaxInsuranceIncomeCents      int32
+	MinInsuranceIncomeCents      int64
+	MaxInsuranceIncomeCents      int64
 	ExpensesPercentage           float32
 	TaxPercentage                float32
 	HealthInsurancePercentage    float32
