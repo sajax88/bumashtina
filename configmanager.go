@@ -3,12 +3,13 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"net/mail"
 	"os"
 	"path/filepath"
 	"strconv"
 )
 
-const MONEY_DIVIDER = 100
+const MoneyDivider = 100
 
 type UserConfig struct {
 	FirstName  string
@@ -20,15 +21,21 @@ type UserConfig struct {
 	Email      string
 }
 
-func (u UserConfig) isPopulated() bool {
-	if u.FirstName == "" || u.LastName == "" || u.Egn == "" || u.Bulstat == "" || u.Phone == "" || u.Email == "" {
-		return false
-	}
-	return true
-}
-
 type Settings struct {
 	IsPregnancyInsuranceEnabled bool
+}
+
+// TaxesConfig Money is stored with Divider = 100 to avoid floating point issues.
+// E.g., 550,66 euro is stored as "55066".
+type TaxesConfig struct {
+	MinInsuranceIncomeCents      int64
+	MaxInsuranceIncomeCents      int64
+	ExpensesPercentage           float32 // TODO: to float64?
+	TaxPercentage                float32
+	HealthInsurancePercentage    float32
+	PregnancyInsurancePercentage float32
+	PensionPercentagePartOne     float32
+	PensionPercentagePartTwo     float32
 }
 
 type Config struct {
@@ -37,11 +44,38 @@ type Config struct {
 	TaxesConfig TaxesConfig
 }
 
-func (c UserConfig) IsValid() bool {
-	// TODO: only cyrillic, number of digits for EGN and Bulstat, etc.
-	notEmpty := c.FirstName != "" && c.LastName != "" && c.Egn != "" && c.Bulstat != ""
-	numbersOnly := isDigitsOnly(c.Egn) && isDigitsOnly(c.Bulstat)
-	return notEmpty && numbersOnly
+func (u UserConfig) isPopulated() bool {
+	if u.FirstName == "" || u.LastName == "" || u.Egn == "" || u.Bulstat == "" {
+		return false
+	}
+	return true
+}
+
+func (u UserConfig) Validate() (bool, string) {
+	if !u.isPopulated() {
+		return false, "Попълнете всички полета"
+	}
+
+	if !isDigitsOnly(u.Egn) || len(u.Egn) != 10 {
+		return false, "Невалиден ЕГН"
+	}
+
+	if !isDigitsOnly(u.Bulstat) || len(u.Bulstat) < 9 || len(u.Bulstat) > 10 {
+		return false, "Невалиден Булстат"
+	}
+
+	if len(u.Phone) > 0 && !isDigitsOnly(u.Phone) {
+		return false, "Невалиден телефон"
+	}
+
+	if len(u.Email) > 0 {
+		_, err := mail.ParseAddress(u.Email)
+		if err != nil {
+			return false, "Невалиден email"
+		}
+	}
+
+	return true, ""
 }
 
 func isDigitsOnly(s string) bool {
@@ -86,10 +120,11 @@ func LoadConfigFromFile() (Config, error) {
 	}
 
 	if len(savedConfig) > 0 {
-		json.Unmarshal(savedConfig, &c)
+		err = json.Unmarshal(savedConfig, &c)
+		if err != nil {
+			return c, err
+		}
 	}
-
-	// TODO: if no Taxes Config?
 
 	return c, nil
 }
@@ -108,19 +143,6 @@ func SaveConfigToFile(c Config) error {
 	}
 
 	return os.WriteFile(configPath, config, 0600)
-}
-
-// Money is stored with Divider = 100 to avoid floating point issues.
-// E.g. 550,66 euro is stored as 55066.
-type TaxesConfig struct {
-	MinInsuranceIncomeCents      int64
-	MaxInsuranceIncomeCents      int64
-	ExpensesPercentage           float32
-	TaxPercentage                float32
-	HealthInsurancePercentage    float32
-	PregnancyInsurancePercentage float32
-	PensionPercentagePartOne     float32
-	PensionPercentagePartTwo     float32
 }
 
 func GetDefaultTaxesConfig() TaxesConfig {

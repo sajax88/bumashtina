@@ -25,13 +25,17 @@ func (a *App) startup(ctx context.Context) {
 }
 
 func (a *App) SaveUserConfig(c UserConfig) string {
-	if !c.IsValid() {
-		return "Грешна конфигурация"
+	isValid, errorMessage := c.Validate()
+	if !isValid {
+		ShowWarningDialog(a.ctx, "Грешна конфигурация", errorMessage)
+		return ""
 	}
+
 	a.config.User = c
 	err := SaveConfigToFile(a.config)
 	if err != nil {
-		return err.Error()
+		ShowErrorDialog(a.ctx, "Грешка при запазване на файла", err.Error())
+		return ""
 	}
 
 	return "Успешно запазено"
@@ -162,8 +166,8 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 			"",
 			fmt.Sprintf(
 				"Осигурителният доход трябва да бъде между %.2f и %.2f EUR",
-				float64(f.TaxesConfig.MinInsuranceIncomeCents)/MONEY_DIVIDER,
-				float64(f.TaxesConfig.MaxInsuranceIncomeCents)/MONEY_DIVIDER,
+				float64(f.TaxesConfig.MinInsuranceIncomeCents)/MoneyDivider,
+				float64(f.TaxesConfig.MaxInsuranceIncomeCents)/MoneyDivider,
 			),
 		)
 	}
@@ -373,6 +377,6 @@ func (a *App) SavePaidTaxForQuarter(quarter int, year int, amount float32) strin
 	if row.Month != int16(lastMonth) {
 		return "Въведете данните за трите месеца за да запазите платения данък за тримесечието"
 	}
-	row.TaxesReallyPaidCents = int64(amount * MONEY_DIVIDER)
+	row.TaxesReallyPaidCents = int64(amount * MoneyDivider)
 	return a.UpdateForm(row)
 }

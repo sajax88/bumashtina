@@ -66,7 +66,7 @@ func MakeDeclarationOne(f IncomeForm, u UserConfig, s Settings) ([]byte, error) 
 		"0000",
 		"0.00",
 		"0.00",
-		fmt.Sprintf("%.2f", (float32(f.TaxedIncomeCents) / float32(MONEY_DIVIDER))),
+		fmt.Sprintf("%.2f", (float32(f.TaxedIncomeCents) / float32(MoneyDivider))),
 		"0.00",
 		fmt.Sprintf("%.2f", pensionPercentage),
 		"0.00",
@@ -117,11 +117,11 @@ func MakeDeclarationSix(year int, u UserConfig, sums SocialSecurityParts) ([]byt
 		"",
 		"0",
 		"",
-		fmt.Sprintf("%.2f", float64(sums.PensionPartOneCents/MONEY_DIVIDER)),
+		fmt.Sprintf("%.2f", float64(sums.PensionPartOneCents/MoneyDivider)),
 		"",
-		fmt.Sprintf("%.2f", float64(sums.PensionPartTwoCents/MONEY_DIVIDER)),
+		fmt.Sprintf("%.2f", float64(sums.PensionPartTwoCents/MoneyDivider)),
 		"",
-		fmt.Sprintf("%.2f", float64(sums.HealthInsuranceCents/MONEY_DIVIDER)),
+		fmt.Sprintf("%.2f", float64(sums.HealthInsuranceCents/MoneyDivider)),
 	}
 	fields = append(fields, make([]string, 42)...)
 	fields = append(fields, "NRAD62007")
