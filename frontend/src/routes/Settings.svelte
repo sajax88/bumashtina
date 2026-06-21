@@ -68,6 +68,12 @@
                     <input class="checkbox" id="IsPregnancyInsuranceEnabled"
                            bind:checked={settingsConfig.IsPregnancyInsuranceEnabled} type="checkbox"/>
                     <label class="checkbox-label" for="IsPregnancyInsuranceEnabled">Общо заболяване и майчинство</label>
+                    <p><small><i>
+                        Самоосигуряващи се лица избират дали да се осигуряват за общо заболяване и майчинство
+                        при подаване на "Декларация за регистрация на самоосигуряващо се лице". Преди да промените тази настройка,
+                        убедете се, че сте подали такава Декларация в НАП, тъй като настройката ще промени данните
+                        в следващите ви Декларации 1.
+                    </i></small></p>
                 </div>
             </div>
 

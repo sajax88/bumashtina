@@ -216,9 +216,9 @@
                         <td>Осигуряване за общо заболяване и майчинство</td>
                         <td>
                             {#if dataSingle.Settings.IsPregnancyInsuranceEnabled}
-                                <Check color="#c6d498" size="20"/>
+                                <Check color="#7a9423" size="20"/>
                             {:else}
-                                <Ban color="#edb18a" size="20"/>
+                                <Ban color="#bf550f" size="20"/>
                             {/if}
                         </td>
                     </tr>

@@ -70,7 +70,7 @@ func getConfigPath() (string, error) {
 }
 
 func LoadConfigFromFile() (Config, error) {
-	s := Settings{IsPregnancyInsuranceEnabled: true} // Default
+	s := Settings{IsPregnancyInsuranceEnabled: false} // Default
 	t := GetDefaultTaxesConfig()
 	c := Config{User: UserConfig{}, Settings: s, TaxesConfig: t}
 

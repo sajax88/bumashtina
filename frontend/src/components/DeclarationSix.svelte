@@ -1,8 +1,6 @@
 <script lang="ts">
     import {BookText, Check, Save} from "lucide-svelte";
     import {GenerateDeclarationSix, PreviewDeclarationSix} from "../../wailsjs/go/main/App";
-    import {main} from "../../wailsjs/go/models";
-    import SocialSecurityParts = main.SocialSecurityParts;
 
     // TODO: in one file?
     const MONEY_DIVIDER = 100;
@@ -20,6 +18,9 @@
 
     function previewDeclarationSix(): void {
         PreviewDeclarationSix(declarationSixForm.Year).then(function (result) {
+            if (!result.PensionPartOneCents) {
+                declarationSixResult = "Недостатъчно данни"
+            }
             declarationSixValues.PensionPartOne = result.PensionPartOneCents / MONEY_DIVIDER
             declarationSixValues.PensionPartTwo = result.PensionPartTwoCents / MONEY_DIVIDER
             declarationSixValues.HealthInsurance = result.HealthInsuranceCents / MONEY_DIVIDER
@@ -44,12 +45,17 @@
                 <span><BookText color="#444" size="20"/> Генерирай Декларация 6</span>
             </button>
             <div id="declaration-six-block" class="hidden-form-block" style="display: none;">
-                Година <input type="number" id="tax-calculator-year" class="year-input" bind:value={declarationSixForm.Year}/>
+                Година <input type="number" id="tax-calculator-year" class="year-input"
+                              bind:value={declarationSixForm.Year}/>
 
                 <button class="btn btn-small" on:click={previewDeclarationSix}>
                     <span><Check color="#444" size="20"/></span>
                 </button>
             </div>
+
+            {#if declarationSixResult}
+                {declarationSixResult}
+            {/if}
 
             {#if declarationSixValues.PensionPartOne}
                 <div class="alert alert-info" id="declaration-six-result">
