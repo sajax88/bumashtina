@@ -64,7 +64,7 @@
             declarationResult = result;
             setTimeout(() => {
                 declarationResult = ""
-            }, 2000)
+            }, 30000)
         });
     }
 
@@ -221,7 +221,7 @@
 
             <div>
                 <button class="btn" on:click={generateDeclarationOne}>
-                    <span><BookText color="#444" size="20"/> Генерирай Декларация 1</span>
+                    <span><BookText color="#444" size="20"/> Генерирай Декларация 1 за {form.Month}/{form.Year}</span>
                 </button>
             </div>
 

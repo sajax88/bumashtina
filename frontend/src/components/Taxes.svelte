@@ -1,5 +1,6 @@
 <script lang="ts">
     import {Calculator, Check, Plus} from "lucide-svelte";
+    import {fade} from 'svelte/transition';
 
     import {
         CalculateTaxForQuarter,
@@ -46,7 +47,14 @@
             parseInt(taxEnterForm.Quarter),
             taxEnterForm.Year,
             parseFloat(taxEnterForm.AmountPaid)
-        ).then((result) => (taxEnterResult = result)); // TODO: result
+        ).then(
+            function (result) {
+                taxEnterResult = result;
+                setTimeout(() => {
+                    taxEnterResult = ""
+                }, 2000)
+            }
+        );
     }
 </script>
 
@@ -80,9 +88,10 @@
                         <!-- TODO: take tax % from dynamic -->
                         <!-- TODO: поясни, откуда сумма расходов - 25% !-->
                     </div>
-                    <!-- TODO: warn if not entered
-                    <small><i>Точният данък зависи от фактически платени осигуровки</i></small>
-                    -->
+                    <small>
+                        <i>Точният данък ще бъде изчислен от НАП при подаването на декларацията по чл. 55 или годишната декларация по чл.50
+                            и зависи от фактически платени осигуровки
+                        </i></small>
                 {/if}
             </div>
         </div>
@@ -113,7 +122,7 @@
                 </button>
 
                 {#if taxEnterResult}
-                    <div class="alert success" id="tax-enter-form-result">
+                    <div class="alert success" id="tax-enter-form-result" in:fade={{duration:300}} out:fade={{duration:800}}>
                         {taxEnterResult}
                     </div>
                 {/if}
