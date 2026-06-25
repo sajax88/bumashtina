@@ -108,7 +108,7 @@
                 <div class="form-group checkbox-group">
                     <input class="checkbox" id="IsPregnancyInsuranceEnabled"
                            bind:checked={settingsConfig.IsPregnancyInsuranceEnabled} type="checkbox"/>
-                    <label class="checkbox-label" for="IsPregnancyInsuranceEnabled">Общо заболяване и майчинство</label>
+                    <label class="checkbox-label" for="IsPregnancyInsuranceEnabled">Осигурен(а) съм за общо заболяване и майчинство</label>
                 </div>
             </div>
 
@@ -129,7 +129,9 @@
 
         <h2>Данъци и осигуровки</h2>
         <p><small><i>
-            Промяна на тези настройки ще се отрази на новите ви Декларации 1, но няма да засегне вече въведените данни.
+            <!-- TODO: link -->
+            Размерът на осигурителните вноски може да се провери тук https://nra.bg/wps/portal/nra/osiguryavane/osiguryavam-se-sam#osigurqvam-se-sam2
+            Промяната на тези настройки ще се отрази на новите ви Декларации 1, но няма да засегне вече въведените данни.
         </i></small></p>
         {#if taxesConfig && taxesLabels}
             <table class="table">

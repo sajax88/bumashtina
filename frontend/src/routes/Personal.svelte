@@ -73,14 +73,14 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="Email">Email</label>
-                    <input class="input" required type="email" id="Email" bind:value={config.Email}/> <small>(за Декларация 6)</small>
+                    <input class="input" required type="email" id="Email" bind:value={config.Email}/> <small>(нужен за Декларация 6)</small>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="Phone">Телефон</label>
-                    <input class="input" required type="text" id="Phone" bind:value={config.Phone}/> <small>(за Декларация 6)</small>
+                    <input class="input" required type="text" id="Phone" bind:value={config.Phone}/> <small>(нужен за Декларация 6)</small>
                 </div>
             </div>
 

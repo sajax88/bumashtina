@@ -18,22 +18,26 @@
 
     function previewDeclarationSix(): void {
         PreviewDeclarationSix(declarationSixForm.Year).then(function (result) {
-            if (!result.PensionPartOneCents) {
-                declarationSixResult = "Недостатъчно данни"
+            if (result.PensionPartOneCents) {
+                declarationSixValues.PensionPartOne = result.PensionPartOneCents / MONEY_DIVIDER
+                declarationSixValues.PensionPartTwo = result.PensionPartTwoCents / MONEY_DIVIDER
+                declarationSixValues.HealthInsurance = result.HealthInsuranceCents / MONEY_DIVIDER
             }
-            declarationSixValues.PensionPartOne = result.PensionPartOneCents / MONEY_DIVIDER
-            declarationSixValues.PensionPartTwo = result.PensionPartTwoCents / MONEY_DIVIDER
-            declarationSixValues.HealthInsurance = result.HealthInsuranceCents / MONEY_DIVIDER
         });
     }
 
     function generateDeclarationSix(): void {
         let sums = {
-            PensionPartOneCents: declarationSixValues.PensionPartOne * MONEY_DIVIDER,
-            PensionPartTwoCents: declarationSixValues.PensionPartTwo * MONEY_DIVIDER,
-            HealthInsuranceCents: declarationSixValues.HealthInsurance * MONEY_DIVIDER,
+            PensionPartOneCents: moneyToCents(declarationSixValues.PensionPartOne),
+            PensionPartTwoCents: moneyToCents(declarationSixValues.PensionPartTwo),
+            HealthInsuranceCents: moneyToCents(declarationSixValues.HealthInsurance),
         }
-        GenerateDeclarationSix(declarationSixForm.Year, sums).then((result) => (declarationSixResult = result)); // TODO: output
+        GenerateDeclarationSix(declarationSixForm.Year, sums).then((result) => (declarationSixResult = result));
+    }
+
+    function moneyToCents(sum: string): number
+    {
+        return parseInt(Math.round(parseFloat(sum) * MONEY_DIVIDER))
     }
 </script>
 

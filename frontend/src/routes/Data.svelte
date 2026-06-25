@@ -4,8 +4,7 @@
     import {onMount} from 'svelte';
     import {main} from "../../wailsjs/go/models";
     import IncomeForm = main.IncomeForm;
-
-    const MONEY_DIVIDER = 100;
+    import {MONEY_DIVIDER} from "../constants";
 
     let data;
     let currentPage = 1;
@@ -31,10 +30,8 @@
         }
     }
 
-    // TODO: QuestionDialog instead of confirm!
     async function deleteData(month: number, year: number): Promise<void> {
-        DeleteData(month, year).then(function (result) {
-            console.log(result) // TODO: to ErrorDialog, some common error message
+        DeleteData(month, year).then(function () {
             loadData()
         });
     }
@@ -51,16 +48,32 @@
         let id = `${row.Month}${row.Year}`
         let amount = document.getElementById('paid-taxes-input-' + id).value
 
-        document.getElementById('paid-taxes-input-' + id).style.display = "none";
-        document.getElementById('paid-taxes-save-button-' + id).style.display = "none";
-
-        document.getElementById('paid-taxes-' + id).style.display = "inline";
-        document.getElementById('paid-taxes-' + id).innerHTML = amount
-
-        row.TaxesReallyPaidCents = parseInt(Math.ceil(parseFloat(amount) * MONEY_DIVIDER));
+        row.TaxesReallyPaidCents = parseInt(Math.round(parseFloat(amount) * MONEY_DIVIDER));
         UpdateForm(row).then(function (result) {
-            console.log(result) // TODO
+            if (result != "") {
+                document.getElementById('paid-taxes-input-' + id).style.display = "none";
+                document.getElementById('paid-taxes-save-button-' + id).style.display = "none";
+
+                document.getElementById('paid-taxes-' + id).style.display = "inline";
+                document.getElementById('paid-taxes-' + id).innerHTML = amount
+            }
         });
+    }
+
+    function getQuarterRomanNumber(m: number): string {
+        let q = Math.floor((m + 2) / 3)
+        switch (q) {
+            case 1:
+                return "I"
+            case 2:
+                return "II"
+            case 3:
+                return "III"
+            case 4:
+                return "IV"
+            default:
+                return ""
+        }
     }
 </script>
 
@@ -107,8 +120,7 @@
 
                     {#if row.Month % 3 === 0}
                         <tr class="dark-row">
-                            <!-- TODO: roman numbers -->
-                            <td>{Math.floor((row.Month + 2) / 3)} тримесечие</td>
+                            <td>{getQuarterRomanNumber(row.Month)} тримесечие</td>
                             <td></td>
                             <td></td>
                             <td></td>

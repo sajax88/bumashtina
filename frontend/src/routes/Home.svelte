@@ -10,6 +10,7 @@
     import Taxes from "../components/Taxes.svelte";
     import {main} from "../../wailsjs/go/models";
     import IncomeForm = main.IncomeForm;
+    import {fade} from 'svelte/transition';
 
     let form = {
         Month: String(new Date().getMonth()), // We want a previous month
@@ -23,10 +24,8 @@
     }
 
 
-    let configTaxes
-
-    let res = "" // TODO
-    let data // TODO
+    let configTaxes;
+    let declarationResult;
 
     const MONEY_DIVIDER = 100;
 
@@ -62,13 +61,15 @@
         })
 
         SaveIncomeForm(formToSave).then((result) => {
-            data = result; // TODO: show success message, or error.
-            // TODO Hide after a few seconds
+            declarationResult = result;
+            setTimeout(() => {
+                declarationResult = ""
+            }, 2000)
         });
     }
 
     function generateDeclarationOne(): void {
-        GenerateDeclarationOne(parseInt(form.Month), form.Year).then((result) => (res = result));
+        GenerateDeclarationOne(parseInt(form.Month), form.Year);
     }
 </script>
 
@@ -212,10 +213,10 @@
                 </button>
             </div>
         </div>
-        {#if data}
-            <div class="alert success">
+        {#if declarationResult}
+            <div class="alert success" in:fade={{duration:300}} out:fade={{duration:800}}>
                 <CircleCheck color="#748733" size="20"/>
-                {data}
+                {declarationResult}
             </div>
 
             <div>

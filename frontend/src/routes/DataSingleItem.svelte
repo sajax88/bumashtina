@@ -23,9 +23,9 @@
     let showTaxesConfig = false;
 
     let paidInsuranceValues = {
-        PensionPartOneCents: 0,
-        PensionPartTwoCents: 0,
-        HealthInsuranceCents: 0,
+        PensionPartOne: 0,
+        PensionPartTwo: 0,
+        HealthInsurance: 0,
     }
 
     onMount(async () => {
@@ -34,20 +34,19 @@
 
     async function load_data_for_month(): Promise<void> {
         LoadIncomeDataForMonth(month, year).then(function (result) {
-            //TODO: separate funds
             dataSingle = result
             socialSecurityParts = dataSingle.SocialSecurityToPayParts
             socialSecurityPaidParts = dataSingle.SocialSecurityReallyPaidParts
             if (dataSingle.SocialSecurityReallyPaidCents) {
-                paidInsuranceValues.PensionPartOneCents = socialSecurityPaidParts.PensionPartOneCents / MONEY_DIVIDER
-                paidInsuranceValues.PensionPartTwoCents = socialSecurityPaidParts.PensionPartTwoCents / MONEY_DIVIDER
-                paidInsuranceValues.HealthInsuranceCents = socialSecurityPaidParts.HealthInsuranceCents / MONEY_DIVIDER
+                paidInsuranceValues.PensionPartOne = socialSecurityPaidParts.PensionPartOneCents / MONEY_DIVIDER
+                paidInsuranceValues.PensionPartTwo = socialSecurityPaidParts.PensionPartTwoCents / MONEY_DIVIDER
+                paidInsuranceValues.HealthInsurance = socialSecurityPaidParts.HealthInsuranceCents / MONEY_DIVIDER
 
             } else {
                 // Set to calculated sums
-                paidInsuranceValues.PensionPartOneCents = socialSecurityParts.PensionPartOneCents / MONEY_DIVIDER
-                paidInsuranceValues.PensionPartTwoCents = socialSecurityParts.PensionPartTwoCents / MONEY_DIVIDER
-                paidInsuranceValues.HealthInsuranceCents = socialSecurityParts.HealthInsuranceCents / MONEY_DIVIDER
+                paidInsuranceValues.PensionPartOne = socialSecurityParts.PensionPartOneCents / MONEY_DIVIDER
+                paidInsuranceValues.PensionPartTwo = socialSecurityParts.PensionPartTwoCents / MONEY_DIVIDER
+                paidInsuranceValues.HealthInsurance = socialSecurityParts.HealthInsuranceCents / MONEY_DIVIDER
             }
         });
         LoadTaxesConfigLabels().then(function (result) {
@@ -56,10 +55,7 @@
     }
 
     function decl1(): void {
-        GenerateDeclarationOne(month, year).then(function (result) {
-            console.log(result)
-            // TODO: show success message, or error
-        });
+        GenerateDeclarationOne(month, year);
     }
 
     function showPaidInsuranceEditInput() {
@@ -70,19 +66,23 @@
     }
 
     async function savePaidInsurance() {
-        document.getElementById(`paid-insurance-inputs`).style.display = "none";
-        document.getElementById(`paid-insurance-save-button`).style.display = "none";
-
-        document.getElementById(`paid-insurance-value`).style.display = "inline";
-
-        // TODO: functions to turn into cents and back
-        dataSingle.SocialSecurityReallyPaidParts.PensionPartOneCents = parseInt(Math.ceil(parseFloat(paidInsuranceValues.PensionPartOneCents) * MONEY_DIVIDER));
-        dataSingle.SocialSecurityReallyPaidParts.PensionPartTwoCents = parseInt(Math.ceil(parseFloat(paidInsuranceValues.PensionPartTwoCents) * MONEY_DIVIDER));
-        dataSingle.SocialSecurityReallyPaidParts.HealthInsuranceCents = parseInt(Math.ceil(parseFloat(paidInsuranceValues.HealthInsuranceCents) * MONEY_DIVIDER));
+        dataSingle.SocialSecurityReallyPaidParts.PensionPartOneCents = moneyToCents(paidInsuranceValues.PensionPartOne);
+        dataSingle.SocialSecurityReallyPaidParts.PensionPartTwoCents = moneyToCents(paidInsuranceValues.PensionPartTwo);
+        dataSingle.SocialSecurityReallyPaidParts.HealthInsuranceCents = moneyToCents(paidInsuranceValues.HealthInsurance);
         await UpdateForm(dataSingle).then(async function (result) {
-            console.log(result) // TODO
-            await load_data_for_month()
+            if (result != "") {
+                document.getElementById(`paid-insurance-inputs`).style.display = "none";
+                document.getElementById(`paid-insurance-save-button`).style.display = "none";
+                document.getElementById(`paid-insurance-value`).style.display = "inline";
+
+                await load_data_for_month()
+            }
         });
+    }
+
+    function moneyToCents(sum: string): number
+    {
+        return parseInt(Math.round(parseFloat(sum) * MONEY_DIVIDER))
     }
 </script>
 
@@ -115,26 +115,29 @@
                     <td>{dataSingle.TaxesToPayCents / MONEY_DIVIDER}</td>
                     <td>
                         <small>
-                            <!-- TODO: paid insurance if entered, take all this from BE? -->
+                            <!-- TODO: % from settings, see CalculateTaxForMonth -->
+                            <!-- TODO: paid insurance IF entered, take all this from BE? -->
                             ({dataSingle.MonthIncomeCents / MONEY_DIVIDER} доход
                             - {dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER} осигуровки -
                             {dataSingle.MonthIncomeCents / MONEY_DIVIDER} * 0.25 разходи) * 10%
                             = {dataSingle.TaxesToPayCents / MONEY_DIVIDER} EUR
                         </small>
                     </td>
-                    <!-- TODO: % from settings, see CalculateTaxForMonth -->
+
                 </tr>
                 <tr>
                     <td>Изчислени осигуровки</td>
-                    <td>{dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER}</td> <!-- TODO: details -->
+                    <td>{dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER}</td>
                     <td>
                         <small>
+                            <!-- TODO: % from settings, see CalculateSocialSecurity -->
+                            <!-- TODO: build this on BE -->
                             {socialSecurityParts.PensionPartOneCents / MONEY_DIVIDER} ДОО +
                             {socialSecurityParts.PensionPartTwoCents / MONEY_DIVIDER} ДЗПО +
                             {socialSecurityParts.HealthInsuranceCents / MONEY_DIVIDER} НЗОК
                             = {dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER} EUR
                         </small>
-                        <!-- TODO: % from settings, see CalculateSocialSecurity -->
+
                     </td>
                 </tr>
                 <tr>
@@ -154,15 +157,15 @@
                         <span id="paid-insurance-inputs" style="display: none">
                         <label class="paid-insurance-label">ДОО: </label><input
                                 class="paid-insurance-input" type="text"
-                                bind:value={paidInsuranceValues.PensionPartOneCents}
+                                bind:value={paidInsuranceValues.PensionPartOne}
                         /><br/>
                         <label class="paid-insurance-label">ДЗПО: </label><input
                                 class="paid-insurance-input" type="text"
-                                bind:value={paidInsuranceValues.PensionPartTwoCents}
+                                bind:value={paidInsuranceValues.PensionPartTwo}
                         /><br/>
                         <label class="paid-insurance-label">НЗОК: </label><input
                                 class="paid-insurance-input" type="text"
-                                bind:value={paidInsuranceValues.HealthInsuranceCents}
+                                bind:value={paidInsuranceValues.HealthInsurance}
                         />
                             </span><br/>
 
@@ -203,10 +206,17 @@
                 {/if}
             </table>
             <br>
+            <p>
+                <small><i>
+                    Изчисленията стават на базата на таксите и осигуровките, които са били активни по време на въвеждането на данните.
+                    За да промените таксите и осигуровките за следващите месеци, отидете в "Настройки"
+                    <!-- TODO link -->
+                </i></small>
+            </p>
             <button class="btn btn-small" on:click={() => showTaxesConfig = !showTaxesConfig}>
                             <span>{#if showTaxesConfig}<EyeOff color="#444" size="16"/>{:else}<Eye color="#444"
                                                                                                    size="16"/>{/if}
-                                Настройки, данъци и осигуровки</span>
+                                Виж настройки, данъци и осигуровки за този месец</span>
             </button>
             {#if showTaxesConfig}
                 <h3>Данъци и осигуровки за {month}/{year}</h3>

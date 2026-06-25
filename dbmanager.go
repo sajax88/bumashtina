@@ -171,7 +171,7 @@ func GetAllDataFromFile() ([]IncomeForm, error) {
 		if err != nil {
 			return nil, err
 		}
-
+		// TODO: by number, not string
 		rows = sortRows(rows)
 
 		return rows, nil

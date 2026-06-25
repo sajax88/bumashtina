@@ -143,7 +143,7 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 	}
 
 	if existingForm.Month > 0 {
-		ShowWarningDialog(a.ctx, "", fmt.Sprintf("Данните за %d/%d вече съществуват, изтрийте ги за да въведете нови", f.Month, f.Year))
+		ShowWarningDialog(a.ctx, "", fmt.Sprintf("Данните за %d/%d вече съществуват, изтрийте ги, за да въведете нови", f.Month, f.Year))
 		return ""
 	}
 
@@ -188,39 +188,43 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 		return err.Error()
 	}
 
-	// TODO: link to entered data
+	// TODO: add link to entered data?
 	return "Успешно запазено"
 }
 
 func (a *App) UpdateForm(f IncomeForm) string {
-	// TODO: validation
-
 	existingForm, err := GetDataFromFileForMonth(int(f.Month), int(f.Year))
 	if err != nil {
-		return err.Error()
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return ""
 	}
 
 	if existingForm.Month > 0 {
+		// TODO: validation
+
 		// Allow updating only some values
 		existingForm.TaxesReallyPaidCents = f.TaxesReallyPaidCents
 		existingForm.SocialSecurityReallyPaidParts = f.SocialSecurityReallyPaidParts
 		existingForm.SocialSecurityReallyPaidCents = f.SocialSecurityReallyPaidParts.PensionPartOneCents + f.SocialSecurityReallyPaidParts.PensionPartTwoCents + f.SocialSecurityReallyPaidParts.HealthInsuranceCents
 	} else {
-		// TODO: return err object? or open error dialog?
-		return fmt.Sprintf("Данните за месец %d не са намерени", existingForm.Month)
+		ShowErrorDialog(a.ctx, "", fmt.Sprintf("Данните за месец %d не са намерени", existingForm.Month))
+		return ""
 	}
 
 	// Remove previous record and save the new one
 	err = DeleteDataFromFile(int(f.Month), int(f.Year))
 	if err != nil {
-		return err.Error()
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return ""
 	}
 
 	err = SaveDataToFile(existingForm)
 	if err != nil {
-		return err.Error()
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return ""
 	}
 
+	// TODO: bool?
 	return "Успешно запазено"
 }
 
@@ -238,16 +242,14 @@ func (a *App) DeleteData(month int, year int) string {
 
 	err := DeleteDataFromFile(month, year)
 	if err != nil {
-		return err.Error()
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return ""
 	}
 	return "Успешно изтрито"
 }
 
 func (a *App) GenerateDeclarationOne(month int, year int) string {
 	var res string
-
-	// TODO: check that personal data is entered!
-
 	incomeForm, err := GetDataFromFileForMonth(month, year)
 	if err != nil {
 		return err.Error()
@@ -256,14 +258,24 @@ func (a *App) GenerateDeclarationOne(month int, year int) string {
 	personalData := a.LoadUserConfig()
 	settings := a.LoadSettingsConfig()
 
+	if !personalData.isPopulated() {
+		ShowWarningDialog(a.ctx, "", "Попълнете личните си данни за да генерирате декларацията")
+		return ""
+	}
+
 	content, err := MakeDeclarationOne(incomeForm, personalData, settings)
 	if err != nil {
-		return err.Error()
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return ""
 	}
 
 	res, err = a.SaveDeclarationToFile(content, fmt.Sprintf("Declaration_1_%d_%02d", year, month))
 	if err != nil {
-		return err.Error()
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return ""
+	}
+	if res == "" {
+		return res
 	}
 
 	res += "\nСлед плащането в НАП попълнете платени осигуровки в Въведени данни за Декларацията 6"
@@ -272,13 +284,16 @@ func (a *App) GenerateDeclarationOne(month int, year int) string {
 }
 
 func (a *App) PreviewDeclarationSix(year int) SocialSecurityParts {
-
-	// TODO: check that personal data is entered!
-
 	sums := SocialSecurityParts{}
 	rows, err := GetDataFromFileForYear(year)
 	if err != nil {
 		// Error is logged in GetDataFromFileForYear
+		return sums
+	}
+
+	personalData := a.LoadUserConfig()
+	if !personalData.isPopulated() {
+		ShowWarningDialog(a.ctx, "", "Попълнете личните си данни за да генерирате декларацията")
 		return sums
 	}
 
@@ -295,17 +310,25 @@ func (a *App) PreviewDeclarationSix(year int) SocialSecurityParts {
 func (a *App) GenerateDeclarationSix(year int, sums SocialSecurityParts) string {
 	var res string
 
-	// TODO: check that personal data is entered!
 	personalData := a.LoadUserConfig()
+	if !personalData.isPopulated() {
+		ShowWarningDialog(a.ctx, "", "Попълнете личните си данни за да генерирате декларацията")
+		return ""
+	}
 
 	content, err := MakeDeclarationSix(year, personalData, sums)
 	if err != nil {
-		return err.Error()
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return ""
 	}
 
 	res, err = a.SaveDeclarationToFile(content, fmt.Sprintf("Declaration_6_%d", year))
 	if err != nil {
-		return err.Error()
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return ""
+	}
+	if res == "" {
+		return res
 	}
 
 	return res
@@ -324,13 +347,17 @@ func (a *App) SaveDeclarationToFile(content []byte, filename string) (string, er
 	if err != nil {
 		return "", err
 	}
+	if saveFilePath == "" {
+		// Can happen when user cancels the dialog
+		return "", nil
+	}
 
 	saveFilePath, err = SaveDeclaration(saveFilePath, content)
 	if err != nil {
+		log.Println("SaveDeclaration")
+		log.Println(err)
 		return "", err
 	}
-
-	// TODO: MessageDialog
 
 	return fmt.Sprintf("Успешно, файлът беше записан в %s", saveFilePath), nil
 }
@@ -347,8 +374,8 @@ func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
 
 	rows, err := GetDataFromFileForQuarter(quarter, year, &result)
 	if err != nil {
-
-		log.Fatal(err)
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return result
 	}
 
 	if len(rows) == 0 {
@@ -357,30 +384,31 @@ func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
 
 	result.TotalIncomeCents, err = CalculateIncomeForThreeMonths(rows)
 	if err != nil {
-
-		log.Fatal(err)
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return result
 	}
 
 	// TODO: if really paid insurance was not entered, add notification?
 	result.TaxCents, err = CalculateAdvanceTaxForThreeMonths(rows, &result)
 	if err != nil {
-
-		log.Fatal(err)
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return result
 	}
 
 	return result
 }
 
 func (a *App) SavePaidTaxForQuarter(quarter int, year int, amount float32) string {
-	// TODO: object with status instead of string, in all cases?
 	// Find the last month in the quarter and save the paid tax there
 	lastMonth := (quarter-1)*3 + 3
 	row, err := GetDataFromFileForMonth(lastMonth, year)
 	if err != nil {
-		return err.Error()
+		ShowWarningDialog(a.ctx, "", err.Error())
+		return ""
 	}
 	if row.Month != int16(lastMonth) {
-		return "Въведете данните за трите месеца за да запазите платения данък за тримесечието"
+		ShowWarningDialog(a.ctx, "", "Въведете данните за трите месеца, за да запазите платения данък за тримесечието")
+		return ""
 	}
 	row.TaxesReallyPaidCents = int64(amount * MoneyDivider)
 	return a.UpdateForm(row)

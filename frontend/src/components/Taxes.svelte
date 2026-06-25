@@ -78,6 +78,7 @@
                         10% =
                             <b>{taxCalculationResult.TaxCents / MONEY_DIVIDER} EUR</b></p>
                         <!-- TODO: take tax % from dynamic -->
+                        <!-- TODO: поясни, откуда сумма расходов - 25% !-->
                     </div>
                     <!-- TODO: warn if not entered
                     <small><i>Точният данък зависи от фактически платени осигуровки</i></small>
