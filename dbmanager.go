@@ -31,13 +31,12 @@ func getDataPath() (string, error) {
 	return dataPath, nil
 }
 
-func SaveDataToFile(f IncomeForm) error {
+func AddDataToFile(f IncomeForm) error {
 	dataPath, err := getDataPath()
 	if err != nil {
 		return err
 	}
 
-	// TODO: insert or update
 	allData, err := GetAllDataFromFile()
 	if err != nil {
 		return err
@@ -46,9 +45,7 @@ func SaveDataToFile(f IncomeForm) error {
 	allData = append(allData, f)
 	allData = sortRows(allData)
 
-	// TODO
 	data, err := json.Marshal(allData)
-
 	if err != nil {
 		return err
 	}
@@ -171,7 +168,6 @@ func GetAllDataFromFile() ([]IncomeForm, error) {
 		if err != nil {
 			return nil, err
 		}
-		// TODO: by number, not string
 		rows = sortRows(rows)
 
 		return rows, nil
@@ -183,8 +179,12 @@ func GetAllDataFromFile() ([]IncomeForm, error) {
 // Sort the rows by month and year
 func sortRows(rows []IncomeForm) []IncomeForm {
 	compareByMonthAndYear := func(a, b IncomeForm) int {
-		return -cmp.Compare(fmt.Sprintf("%d%d", a.Year, a.Month), fmt.Sprintf("%d%d", b.Year, b.Month))
+		return -cmp.Compare(
+			fmt.Sprintf("%d%02d", a.Year, a.Month),
+			fmt.Sprintf("%d%02d", b.Year, b.Month),
+		)
 	}
+
 	slices.SortFunc(rows, compareByMonthAndYear)
 
 	return rows

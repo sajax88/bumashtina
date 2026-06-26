@@ -48,6 +48,7 @@ type CalculatedTax struct {
 	Year               int
 	MonthStart         int
 	MonthEnd           int
+	Notes              string
 }
 
 func CalculateSocialSecurity(f *IncomeForm) {
@@ -73,12 +74,12 @@ func CalculateSocialSecurity(f *IncomeForm) {
 }
 
 func calculateInsuranceFromPercentage(taxedIncomeCents int64, insurancePercent float32) int64 {
-	insuranceCents := float32(taxedIncomeCents) * insurancePercent / 100
+	insuranceCents := float32(taxedIncomeCents) * insurancePercent / MoneyDivider
 	return int64(math.Round(float64(insuranceCents)))
 }
 
 func CalculateTaxForMonth(f IncomeForm) int64 {
-	expenses := math.Round(float64(f.MonthIncomeCents) * float64(f.TaxesConfig.ExpensesPercentage) / 100)
+	expenses := math.Round(float64(f.MonthIncomeCents) * float64(f.TaxesConfig.ExpensesPercentage) / MoneyDivider)
 	var insurance float64
 	if f.SocialSecurityReallyPaidCents > 0 {
 		insurance = float64(f.SocialSecurityReallyPaidCents)
@@ -86,7 +87,7 @@ func CalculateTaxForMonth(f IncomeForm) int64 {
 		insurance = float64(f.SocialSecurityToPayCents)
 	}
 
-	return int64(math.Round(math.Round(float64(f.MonthIncomeCents)-expenses-insurance) * float64(f.TaxesConfig.TaxPercentage) / 100))
+	return int64(math.Round(math.Round(float64(f.MonthIncomeCents)-expenses-insurance) * float64(f.TaxesConfig.TaxPercentage) / MoneyDivider))
 }
 
 func CalculateIncomeForThreeMonths(forms []IncomeForm) (int64, error) {
@@ -100,9 +101,9 @@ func CalculateIncomeForThreeMonths(forms []IncomeForm) (int64, error) {
 	return incomeTotalCents, nil
 }
 
-func CalculateAdvanceTaxForThreeMonths(forms []IncomeForm, result *CalculatedTax) (int64, error) {
+func CalculateAdvanceTaxForThreeMonths(forms []IncomeForm, result *CalculatedTax) error {
 	if len(forms) > 3 {
-		return 0, fmt.Errorf("Очаквах данни за 3 месеца, получих %d", len(forms))
+		return fmt.Errorf("Въведете данни за 3 месеца, в момента има %d записа", len(forms))
 	}
 
 	// За да определите авансовия си данък за тримесечието
@@ -117,14 +118,23 @@ func CalculateAdvanceTaxForThreeMonths(forms []IncomeForm, result *CalculatedTax
 		expensesPercent = f.TaxesConfig.ExpensesPercentage
 
 		incomeTotalCents += f.MonthIncomeCents
-		paidInsuranceCents += f.SocialSecurityReallyPaidCents // TODO: use calculated insurance if no really paid
+
+		if f.SocialSecurityReallyPaidCents > 0 {
+			paidInsuranceCents += f.SocialSecurityReallyPaidCents
+		} else {
+			paidInsuranceCents += f.SocialSecurityToPayCents
+			result.Notes = "Въз основа на изчислените осигуровки"
+		}
 	}
+
 	// (total income for 3 months - expenses - insurances) * taxPercentage
-	incomeWithDeductions := float32(incomeTotalCents) - float32(incomeTotalCents)*expensesPercent/100 - float32(paidInsuranceCents)
-	advanceTax := incomeWithDeductions * taxPercent / 100
+	incomeWithDeductions := float32(incomeTotalCents) - float32(incomeTotalCents)*expensesPercent/MoneyDivider - float32(paidInsuranceCents)
+	advanceTax := incomeWithDeductions * taxPercent / MoneyDivider
 
 	result.PaidInsuranceCents = paidInsuranceCents
-	result.ExpensesCents = int64(math.Round(float64(float32(incomeTotalCents) * expensesPercent / 100)))
+	result.ExpensesCents = int64(math.Round(float64(float32(incomeTotalCents) * expensesPercent / MoneyDivider)))
 
-	return int64(math.Round(float64(advanceTax))), nil
+	result.TaxCents = int64(math.Round(float64(advanceTax)))
+
+	return nil
 }

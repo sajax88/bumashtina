@@ -135,8 +135,6 @@ func SaveConfigToFile(c Config) error {
 		return err
 	}
 
-	log.Print(c) // TODO
-
 	config, err := json.Marshal(c)
 	if err != nil {
 		return err

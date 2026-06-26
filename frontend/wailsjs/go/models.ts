@@ -9,6 +9,7 @@ export namespace main {
 	    Year: number;
 	    MonthStart: number;
 	    MonthEnd: number;
+	    Notes: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new CalculatedTax(source);
@@ -24,6 +25,7 @@ export namespace main {
 	        this.Year = source["Year"];
 	        this.MonthStart = source["MonthStart"];
 	        this.MonthEnd = source["MonthEnd"];
+	        this.Notes = source["Notes"];
 	    }
 	}
 	export class Settings {

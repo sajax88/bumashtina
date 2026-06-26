@@ -1,9 +1,7 @@
 <script lang="ts">
     import {BookText, Check, Save} from "lucide-svelte";
     import {GenerateDeclarationSix, PreviewDeclarationSix} from "../../wailsjs/go/main/App";
-
-    // TODO: in one file?
-    const MONEY_DIVIDER = 100;
+    import {MONEY_DIVIDER} from "../constants";
 
     let declarationSixValues = {
         PensionPartOne: 0,

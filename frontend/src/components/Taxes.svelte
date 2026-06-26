@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Calculator, Check, Plus} from "lucide-svelte";
+    import {Calculator, Check, Plus, Info} from "lucide-svelte";
     import {fade} from 'svelte/transition';
 
     import {
@@ -82,9 +82,16 @@
                     <div class="alert alert-info" id="tax-calculator-result">
                         <p>Месеци: {taxCalculationResult.MonthStart}-{taxCalculationResult.MonthEnd}</p>
                         <p>({taxCalculationResult.TotalIncomeCents / MONEY_DIVIDER} доход - {taxCalculationResult.ExpensesCents / MONEY_DIVIDER}
-                        приспадащи се разходи - {taxCalculationResult.PaidInsuranceCents / MONEY_DIVIDER} платени осигуровки) *
+                        приспадащи се разходи - {taxCalculationResult.PaidInsuranceCents / MONEY_DIVIDER} осигуровки) *
                         10% =
                             <b>{taxCalculationResult.TaxCents / MONEY_DIVIDER} EUR</b></p>
+                        {#if taxCalculationResult.Notes}
+                            <div class="alert-small-note">
+                                <small>
+                                    <span><Info color="#79b4d1" size="18"/>{taxCalculationResult.Notes}</span>
+                                </small>
+                            </div>
+                        {/if}
                         <!-- TODO: take tax % from dynamic -->
                         <!-- TODO: поясни, откуда сумма расходов - 25% !-->
                     </div>

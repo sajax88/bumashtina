@@ -117,7 +117,7 @@
             <tbody>
             {#if paginatedData && paginatedData.length > 0}
                 {#each paginatedData as row}
-
+                    <!-- TODO: if year changed, add empty row -->
                     {#if row.Month % 3 === 0}
                         <tr class="dark-row">
                             <td>{getQuarterRomanNumber(row.Month)} тримесечие</td>

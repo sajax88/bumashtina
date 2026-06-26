@@ -20,8 +20,6 @@ func firstSymbol(s string) string {
 }
 
 func MakeDeclarationOne(f IncomeForm, u UserConfig, s Settings) ([]byte, error) {
-	// TODO: VALIDATE days
-
 	f.WorkDaysReal = f.WorkDaysTotal - f.WorkDaysSickLeave
 
 	initials := strings.ToUpper(firstSymbol(u.FirstName) + firstSymbol(u.MiddleName))
@@ -31,6 +29,8 @@ func MakeDeclarationOne(f IncomeForm, u UserConfig, s Settings) ([]byte, error) 
 	if s.IsPregnancyInsuranceEnabled {
 		pensionPercentage += f.TaxesConfig.PregnancyInsurancePercentage
 	}
+
+	taxedIncome := float32(f.TaxedIncomeCents) / float32(MoneyDivider)
 
 	fields := []string{
 		fmt.Sprintf("%d", f.Month),
@@ -66,7 +66,7 @@ func MakeDeclarationOne(f IncomeForm, u UserConfig, s Settings) ([]byte, error) 
 		"0000",
 		"0.00",
 		"0.00",
-		fmt.Sprintf("%.2f", (float32(f.TaxedIncomeCents) / float32(MoneyDivider))),
+		fmt.Sprintf("%.2f", taxedIncome),
 		"0.00",
 		fmt.Sprintf("%.2f", pensionPercentage),
 		"0.00",
@@ -100,8 +100,6 @@ func MakeDeclarationOne(f IncomeForm, u UserConfig, s Settings) ([]byte, error) 
 }
 
 func MakeDeclarationSix(year int, u UserConfig, sums SocialSecurityParts) ([]byte, error) {
-	// TODO: VALIDATE year
-
 	endSymbol := ""
 	fullName := strings.ToUpper(u.FirstName + " " + u.MiddleName + " " + u.LastName)
 
@@ -155,13 +153,4 @@ func toWindows1251(utf8String string) (string, error) {
 	reader := transform.NewReader(bytes.NewBufferString(utf8String), charmap.Windows1251.NewEncoder())
 	encodedBytes, err := io.ReadAll(reader)
 	return string(encodedBytes), err
-}
-
-func fromWindows1251(bytes []byte) (string, error) {
-	// TODO: do we need this?
-	return "", nil
-	// decoder := charmap.Windows1251.NewDecoder()
-	// decodedReader := transform.NewReader(bytes, decoder)
-	// decodedString, err := io.ReadAll(decodedReader)
-	// return string(decodedString), err
 }

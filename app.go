@@ -69,7 +69,8 @@ func (a *App) SaveTaxesConfig(t TaxesConfig) string {
 }
 
 func (a *App) LoadUserConfig() UserConfig {
-	if a.config != (Config{}) { // TODO
+	// Try getting from cache
+	if a.config != (Config{}) {
 		return a.config.User
 	}
 
@@ -82,7 +83,8 @@ func (a *App) LoadUserConfig() UserConfig {
 }
 
 func (a *App) LoadSettingsConfig() Settings {
-	if a.config != (Config{}) { // TODO
+	// Try getting from cache
+	if a.config != (Config{}) {
 		return a.config.Settings
 	}
 
@@ -95,12 +97,14 @@ func (a *App) LoadSettingsConfig() Settings {
 }
 
 func (a *App) LoadTaxesConfig() TaxesConfig {
-	if a.config != (Config{}) { // TODO
+	// Try getting from cache
+	if a.config != (Config{}) {
 		return a.config.TaxesConfig
 	}
 
 	c, err := LoadConfigFromFile()
 	if err != nil {
+		ShowErrorDialog(a.ctx, "", err.Error())
 		log.Fatal(err)
 	}
 	a.config = c
@@ -114,6 +118,7 @@ func (a *App) LoadTaxesConfigLabels() []string {
 func (a *App) LoadAllIncomeData() []IncomeForm {
 	rows, err := GetAllDataFromFile()
 	if err != nil {
+		ShowErrorDialog(a.ctx, "", err.Error())
 		log.Fatal(err)
 	}
 	return rows
@@ -122,6 +127,7 @@ func (a *App) LoadAllIncomeData() []IncomeForm {
 func (a *App) LoadIncomeDataForMonth(month int, year int) IncomeForm {
 	row, err := GetDataFromFileForMonth(month, year)
 	if err != nil {
+		ShowErrorDialog(a.ctx, "", err.Error())
 		log.Fatal(err)
 	}
 	return row
@@ -136,9 +142,9 @@ func (a *App) LoadAlerts() string {
 }
 
 func (a *App) SaveIncomeForm(f IncomeForm) string {
-
 	existingForm, err := GetDataFromFileForMonth(int(f.Month), int(f.Year))
 	if err != nil {
+		ShowErrorDialog(a.ctx, "", err.Error())
 		return err.Error()
 	}
 
@@ -150,6 +156,8 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 	f.TaxesConfig = a.LoadTaxesConfig()
 	f.Settings = a.LoadSettingsConfig()
 
+	// TODO: to separate function?
+
 	if f.WorkDaysSickLeave > f.WorkDaysTotal {
 		ShowWarningDialog(a.ctx, "", "Дните в болничен не могат да надвишават общите работни дни")
 		return ""
@@ -160,12 +168,17 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 		return ""
 	}
 
-	if f.MonthIncomeCents == 0 || f.TaxedIncomeCents == 0 || f.Year == 0 {
-		ShowWarningDialog(a.ctx, "", "Моля, попълнете всички задължителни полета")
+	if f.MonthIncomeCents < 0 {
+		ShowWarningDialog(a.ctx, "", "Невалиден месечен доход")
+	}
+
+	if f.Year < 2026 {
+		ShowWarningDialog(a.ctx, "", "Дати преди 01.12.2026 не се поддържат")
 		return ""
 	}
 
-	if f.TaxedIncomeCents < f.TaxesConfig.MinInsuranceIncomeCents || f.TaxedIncomeCents > f.TaxesConfig.MaxInsuranceIncomeCents {
+	if f.MonthIncomeCents > 0 &&
+		(f.TaxedIncomeCents < f.TaxesConfig.MinInsuranceIncomeCents || f.TaxedIncomeCents > f.TaxesConfig.MaxInsuranceIncomeCents) {
 		ShowWarningDialog(
 			a.ctx,
 			"",
@@ -183,13 +196,12 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 	CalculateSocialSecurity(&f)
 	f.TaxesToPayCents = CalculateTaxForMonth(f)
 
-	err = SaveDataToFile(f)
+	err = AddDataToFile(f)
 	if err != nil {
 		return err.Error()
 	}
 
-	// TODO: add link to entered data?
-	return "Успешно запазено"
+	return "Успешно запазено, виж \"Въведени данни\""
 }
 
 func (a *App) UpdateForm(f IncomeForm) string {
@@ -218,7 +230,7 @@ func (a *App) UpdateForm(f IncomeForm) string {
 		return ""
 	}
 
-	err = SaveDataToFile(existingForm)
+	err = AddDataToFile(existingForm)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "", err.Error())
 		return ""
@@ -262,6 +274,8 @@ func (a *App) GenerateDeclarationOne(month int, year int) string {
 		ShowWarningDialog(a.ctx, "", "Попълнете личните си данни за да генерирате декларацията")
 		return ""
 	}
+
+	// TODO: VALIDATE days (total not more than 31, sick leave not more than total)
 
 	content, err := MakeDeclarationOne(incomeForm, personalData, settings)
 	if err != nil {
@@ -315,6 +329,8 @@ func (a *App) GenerateDeclarationSix(year int, sums SocialSecurityParts) string 
 		ShowWarningDialog(a.ctx, "", "Попълнете личните си данни за да генерирате декларацията")
 		return ""
 	}
+
+	// TODO: VALIDATE year
 
 	content, err := MakeDeclarationSix(year, personalData, sums)
 	if err != nil {
@@ -388,8 +404,7 @@ func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
 		return result
 	}
 
-	// TODO: if really paid insurance was not entered, add notification?
-	result.TaxCents, err = CalculateAdvanceTaxForThreeMonths(rows, &result)
+	err = CalculateAdvanceTaxForThreeMonths(rows, &result)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "", err.Error())
 		return result
@@ -407,7 +422,7 @@ func (a *App) SavePaidTaxForQuarter(quarter int, year int, amount float32) strin
 		return ""
 	}
 	if row.Month != int16(lastMonth) {
-		ShowWarningDialog(a.ctx, "", "Въведете данните за трите месеца, за да запазите платения данък за тримесечието")
+		ShowWarningDialog(a.ctx, "", "Въведете данните за трите месеца, за да запазите платения данък за тримесечието. Ако сте прекъснали дейност, въведете нулев доход и нулев осигурителен доход.")
 		return ""
 	}
 	row.TaxesReallyPaidCents = int64(amount * MoneyDivider)

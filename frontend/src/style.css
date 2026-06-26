@@ -48,6 +48,10 @@ body {
     color: #777;
 }
 
+fieldset {
+    border: 0;
+}
+
 .input-box {
     padding: 20px 30px;
     text-align: left;
@@ -140,6 +144,10 @@ body {
     margin-right: 10px;
 }
 
+.alert small svg {
+    margin-right: 5px;
+}
+
  .alert p {
      margin-block-start: 0.5em;
      margin-block-end: 0.5em;
@@ -160,6 +168,11 @@ body {
 }
 
 button span {
+    display: flex;
+    align-items: center;
+}
+
+.alert-small-note span {
     display: flex;
     align-items: center;
 }

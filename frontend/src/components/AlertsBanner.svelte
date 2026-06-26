@@ -3,17 +3,14 @@
     import {onMount} from "svelte";
     import {LoadAlerts} from "../../wailsjs/go/main/App";
 
-    let alerts;
+    let alerts:String;
 
     onMount(async () => {
         await loadAlerts()
     });
 
     async function loadAlerts(): Promise<void> {
-        const [actions] = await Promise.all([
-            LoadAlerts()
-        ]);
-        alerts = actions; // TODO: multiple?
+        LoadAlerts().then((result) => {alerts = result});
     }
 </script>
 

@@ -8,13 +8,12 @@
     import {onMount} from 'svelte';
     import {CircleCheck, Edit, Save} from 'lucide-svelte';
     import {fade} from 'svelte/transition';
+    import {BrowserOpenURL} from "../../wailsjs/runtime";
     import {MONEY_DIVIDER} from '../constants'
 
     onMount(() => {
         loadAllConfigs()
     });
-
-    // TODO: from some common source?
 
     let resSettings = ""
     let resTaxes = ""
@@ -129,8 +128,10 @@
 
         <h2>Данъци и осигуровки</h2>
         <p><small><i>
-            <!-- TODO: link -->
-            Размерът на осигурителните вноски може да се провери тук https://nra.bg/wps/portal/nra/osiguryavane/osiguryavam-se-sam#osigurqvam-se-sam2
+            Размерът на осигурителните вноски може да се провери <a
+                href=""
+                on:click={function(e) {BrowserOpenURL('https://nra.bg/wps/portal/nra/osiguryavane/osiguryavam-se-sam#osigurqvam-se-sam2'); e.preventDefault();}}
+                >тук</a>.
             Промяната на тези настройки ще се отрази на новите ви Декларации 1, но няма да засегне вече въведените данни.
         </i></small></p>
         {#if taxesConfig && taxesLabels}
