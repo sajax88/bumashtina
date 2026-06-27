@@ -115,11 +115,10 @@
                     <td>{dataSingle.TaxesToPayCents / MONEY_DIVIDER}</td>
                     <td>
                         <small>
-                            <!-- TODO: % from settings, see CalculateTaxForMonth -->
-                            <!-- TODO: paid insurance IF entered, take all this from BE? -->
+                            <!-- TODO: paid insurance IF entered, table? -->
                             ({dataSingle.MonthIncomeCents / MONEY_DIVIDER} доход
                             - {dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER} осигуровки -
-                            {dataSingle.MonthIncomeCents / MONEY_DIVIDER} * 0.25 разходи) * 10%
+                            {dataSingle.MonthIncomeCents / MONEY_DIVIDER} * {dataSingle.TaxesConfig.ExpensesPercentage} % разходи) * {dataSingle.TaxesConfig.TaxPercentage}%
                             = {dataSingle.TaxesToPayCents / MONEY_DIVIDER} EUR
                         </small>
                     </td>
@@ -131,7 +130,7 @@
                     <td>
                         <small>
                             <!-- TODO: % from settings, see CalculateSocialSecurity -->
-                            <!-- TODO: build this on BE -->
+                            <!-- TODO: table -->
                             {socialSecurityParts.PensionPartOneCents / MONEY_DIVIDER} ДОО +
                             {socialSecurityParts.PensionPartTwoCents / MONEY_DIVIDER} ДЗПО +
                             {socialSecurityParts.HealthInsuranceCents / MONEY_DIVIDER} НЗОК

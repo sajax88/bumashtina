@@ -82,8 +82,11 @@
     </div>
 
     <div class="input-box" id="home-page-input-box">
-
         <h2>Въведи данни за доходи</h2>
+        <p>
+            <small>Ако не сте имали дейност, въведете нулев доход и нулев осигурителен доход.<br>
+                В този случай Декларация 1 не се подава.</small>
+        </p>
 
         <div class="form-row">
             <div class="form-group">
@@ -139,7 +142,7 @@
                 <label for="WorkDaysTotal">Общо работни дни</label>
                 <input class="input" min="0" max="31" id="WorkDaysTotal" type="number" bind:value={form.WorkDaysTotal}/>
 
-                <div class="info">Провери работни дни: <a href="#"
+                <div class="info">Проверете работни дни: <a href="#"
                                                           on:click={function(e){
                                                               BrowserOpenURL('https://kik-info.com/spravochnik/calendar/' + form.Year);
                                                               e.preventDefault();
@@ -192,7 +195,7 @@
                 <div class="form-group">
                     <label for="DayStart">Начален ден на дейност</label>
                     <input class="input" id="DayStart" type="number" min="0" max="31" bind:value={form.DayStart}/>
-                    <div class="info">Само ако започваш дейност през този месец</div>
+                    <div class="info">Само ако започвате дейност през този месец</div>
                 </div>
 
             </div>
@@ -201,7 +204,7 @@
                 <div class="form-group">
                     <label for="DayEnd">Краен ден на дейност</label>
                     <input class="input" id="DayEnd" type="number" min="0" max="31" bind:value={form.DayEnd}/>
-                    <div class="info">Само ако приключваш дейност през този месец</div>
+                    <div class="info">Само ако приключвате дейност през този месец</div>
                 </div>
             </div>
         </fieldset>
@@ -238,6 +241,10 @@
         float: right;
         padding-left: 20px;
         width: 35%;
+    }
+
+    #home-page-input-box h2 {
+        margin-bottom: 0;
     }
 
     #home-page-input-box label {

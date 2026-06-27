@@ -18,7 +18,6 @@ func getDataPath() (string, error) {
 
 	if dirErr != nil {
 		log.Fatal(dirErr)
-		return "", dirErr
 	}
 
 	dataPath := filepath.Join(homeDir, "bumashtina", "data", "data.json")
@@ -50,7 +49,9 @@ func AddDataToFile(f IncomeForm) error {
 		return err
 	}
 
-	return os.WriteFile(dataPath, data, 0600)
+	_, err = SaveToFile(dataPath, data)
+
+	return err
 }
 
 func GetDataFromFileForMonth(month int, year int) (IncomeForm, error) {
@@ -135,21 +136,21 @@ func DeleteDataFromFile(month int, year int) error {
 
 	allData = slices.Delete(allData, indexToDelete, indexToDelete+1)
 	data, err := json.Marshal(allData)
-
 	if err != nil {
 		return err
 	}
 
-	return os.WriteFile(dataPath, data, 0600)
+	_, err = SaveToFile(dataPath, data)
+	return err
 }
 
 func GetAllDataFromFile() ([]IncomeForm, error) {
 	// TODO: cache in app once it was read? Refresh the cache when written!
+	// Caching: https://v3.wails.io/guides/performance/#caching
 
 	dataPath, err := getDataPath()
 	if err != nil {
 		log.Fatal(err)
-		return []IncomeForm{}, err
 	}
 
 	savedData, err := os.ReadFile(dataPath)
@@ -157,9 +158,7 @@ func GetAllDataFromFile() ([]IncomeForm, error) {
 		if errors.Is(err, os.ErrNotExist) {
 			return []IncomeForm{}, nil
 		}
-		// TODO: check these places with Fatal, we need to show err instead of exiting
 		log.Fatal(err)
-		return []IncomeForm{}, err
 	}
 
 	if len(savedData) > 0 {

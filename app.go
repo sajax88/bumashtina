@@ -18,7 +18,7 @@ func NewApp() *App {
 	return &App{}
 }
 
-// startup is called when the app starts. The context is saved
+// Startup is called when the app starts. The context is saved
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
@@ -46,6 +46,7 @@ func (a *App) SaveSettingsConfig(c Settings) string {
 	err := SaveConfigToFile(a.config)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "Грешка при запазване на файла", err.Error())
+		return ""
 	}
 
 	return "Успешно запазено"
@@ -156,41 +157,11 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 	f.TaxesConfig = a.LoadTaxesConfig()
 	f.Settings = a.LoadSettingsConfig()
 
-	// TODO: to separate function?
-
-	if f.WorkDaysSickLeave > f.WorkDaysTotal {
-		ShowWarningDialog(a.ctx, "", "Дните в болничен не могат да надвишават общите работни дни")
+	isValid, errorMessage := f.Validate()
+	if !isValid {
+		ShowWarningDialog(a.ctx, "", errorMessage)
 		return ""
 	}
-
-	if f.DayStart > 0 && f.DayEnd > 0 && f.DayStart >= f.DayEnd {
-		ShowWarningDialog(a.ctx, "", "Началният ден трябва да бъде преди крайния ден")
-		return ""
-	}
-
-	if f.MonthIncomeCents < 0 {
-		ShowWarningDialog(a.ctx, "", "Невалиден месечен доход")
-	}
-
-	if f.Year < 2026 {
-		ShowWarningDialog(a.ctx, "", "Дати преди 01.12.2026 не се поддържат")
-		return ""
-	}
-
-	if f.MonthIncomeCents > 0 &&
-		(f.TaxedIncomeCents < f.TaxesConfig.MinInsuranceIncomeCents || f.TaxedIncomeCents > f.TaxesConfig.MaxInsuranceIncomeCents) {
-		ShowWarningDialog(
-			a.ctx,
-			"",
-			fmt.Sprintf(
-				"Осигурителният доход трябва да бъде между %.2f и %.2f EUR",
-				float64(f.TaxesConfig.MinInsuranceIncomeCents)/MoneyDivider,
-				float64(f.TaxesConfig.MaxInsuranceIncomeCents)/MoneyDivider,
-			),
-		)
-	}
-
-	// TODO: validation
 
 	// Calculate approximate taxes and social security, save them together with the form
 	CalculateSocialSecurity(&f)
@@ -201,7 +172,7 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 		return err.Error()
 	}
 
-	return "Успешно запазено, виж \"Въведени данни\""
+	return "Успешно запазено"
 }
 
 func (a *App) UpdateForm(f IncomeForm) string {
@@ -212,8 +183,6 @@ func (a *App) UpdateForm(f IncomeForm) string {
 	}
 
 	if existingForm.Month > 0 {
-		// TODO: validation
-
 		// Allow updating only some values
 		existingForm.TaxesReallyPaidCents = f.TaxesReallyPaidCents
 		existingForm.SocialSecurityReallyPaidParts = f.SocialSecurityReallyPaidParts
@@ -236,7 +205,6 @@ func (a *App) UpdateForm(f IncomeForm) string {
 		return ""
 	}
 
-	// TODO: bool?
 	return "Успешно запазено"
 }
 
@@ -274,8 +242,6 @@ func (a *App) GenerateDeclarationOne(month int, year int) string {
 		ShowWarningDialog(a.ctx, "", "Попълнете личните си данни за да генерирате декларацията")
 		return ""
 	}
-
-	// TODO: VALIDATE days (total not more than 31, sick leave not more than total)
 
 	content, err := MakeDeclarationOne(incomeForm, personalData, settings)
 	if err != nil {
@@ -330,7 +296,10 @@ func (a *App) GenerateDeclarationSix(year int, sums SocialSecurityParts) string 
 		return ""
 	}
 
-	// TODO: VALIDATE year
+	if year < MinYear {
+		ShowErrorDialog(a.ctx, "", "Невалидна година")
+		return ""
+	}
 
 	content, err := MakeDeclarationSix(year, personalData, sums)
 	if err != nil {
@@ -368,10 +337,8 @@ func (a *App) SaveDeclarationToFile(content []byte, filename string) (string, er
 		return "", nil
 	}
 
-	saveFilePath, err = SaveDeclaration(saveFilePath, content)
+	saveFilePath, err = SaveToFile(saveFilePath, content)
 	if err != nil {
-		log.Println("SaveDeclaration")
-		log.Println(err)
 		return "", err
 	}
 
@@ -379,13 +346,21 @@ func (a *App) SaveDeclarationToFile(content []byte, filename string) (string, er
 }
 
 func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
-	// TODO: validate
-
 	result := CalculatedTax{
 		TotalIncomeCents: 0,
 		TaxCents:         0,
 		Quarter:          quarter,
 		Year:             year,
+	}
+
+	if quarter > 4 || quarter < 1 {
+		ShowErrorDialog(a.ctx, "", "Невалидно тримесечие")
+		return result
+	}
+
+	if year < MinYear {
+		ShowErrorDialog(a.ctx, "", "Невалидна година")
+		return result
 	}
 
 	rows, err := GetDataFromFileForQuarter(quarter, year, &result)

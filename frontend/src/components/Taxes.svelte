@@ -6,7 +6,7 @@
         CalculateTaxForQuarter,
         SavePaidTaxForQuarter
     } from "../../wailsjs/go/main/App.js";
-    import CalculatedTax from "./CalculatedTax.svelte";
+    import CalculatedTaxForQuarter from "./CalculatedTaxForQuarter.svelte";
 
     const MONEY_DIVIDER = 100;
 
@@ -80,15 +80,7 @@
                     <span><Check color="#444" size="20"/></span>
                 </button>
                 {#if taxCalculationResult}
-                    <CalculatedTax taxCalculationResult={taxCalculationResult}/>
-
-                    <small>
-                        <i>
-                            Точният данък ще бъде изчислен от НАП при подаването
-                            на декларацията по чл. 55 или годишната декларация по чл.50
-                            и зависи от фактически платени осигуровки
-                        </i>
-                    </small>
+                    <CalculatedTaxForQuarter taxCalculationResult={taxCalculationResult}/>
                 {/if}
             </div>
         </div>

@@ -10,6 +10,7 @@ import (
 )
 
 const MoneyDivider = 100
+const MinYear = 2026
 
 type UserConfig struct {
 	FirstName  string
@@ -30,12 +31,12 @@ type Settings struct {
 type TaxesConfig struct {
 	MinInsuranceIncomeCents      int64
 	MaxInsuranceIncomeCents      int64
-	ExpensesPercentage           float32 // TODO: to float64?
-	TaxPercentage                float32
-	HealthInsurancePercentage    float32
-	PregnancyInsurancePercentage float32
-	PensionPercentagePartOne     float32
-	PensionPercentagePartTwo     float32
+	ExpensesPercentage           float64
+	TaxPercentage                float64
+	HealthInsurancePercentage    float64
+	PregnancyInsurancePercentage float64
+	PensionPercentagePartOne     float64
+	PensionPercentagePartTwo     float64
 }
 
 type Config struct {
@@ -90,14 +91,12 @@ func getConfigPath() (string, error) {
 
 	if dirErr != nil {
 		log.Fatal(dirErr)
-		return "", dirErr
 	}
 
 	configPath := filepath.Join(configDir, "bumashtina", "data", "config.json")
 	err := os.MkdirAll(filepath.Dir(configPath), os.ModePerm)
 	if err != nil {
-		log.Fatal(err)
-		return "", err
+		log.Fatal(err) // TODO: return to the app context and show a error dialog, remove amost all log.Fatal
 	}
 
 	return configPath, nil
@@ -115,7 +114,7 @@ func LoadConfigFromFile() (Config, error) {
 
 	savedConfig, err := os.ReadFile(configPath)
 	if err != nil && !os.IsNotExist(err) {
-		// There is a config file but we couldn't read it
+		// There is a config file, but we couldn't read it
 		return c, err
 	}
 
@@ -140,7 +139,8 @@ func SaveConfigToFile(c Config) error {
 		return err
 	}
 
-	return os.WriteFile(configPath, config, 0600)
+	_, err = SaveToFile(configPath, config)
+	return err
 }
 
 func (t TaxesConfig) Validate() (bool, string) {
