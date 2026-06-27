@@ -1,11 +1,12 @@
 <script lang="ts">
-    import {Calculator, Check, Plus, Info} from "lucide-svelte";
+    import {Calculator, Check, Plus} from "lucide-svelte";
     import {fade} from 'svelte/transition';
 
     import {
         CalculateTaxForQuarter,
         SavePaidTaxForQuarter
     } from "../../wailsjs/go/main/App.js";
+    import CalculatedTax from "./CalculatedTax.svelte";
 
     const MONEY_DIVIDER = 100;
 
@@ -79,26 +80,15 @@
                     <span><Check color="#444" size="20"/></span>
                 </button>
                 {#if taxCalculationResult}
-                    <div class="alert alert-info" id="tax-calculator-result">
-                        <p>Месеци: {taxCalculationResult.MonthStart}-{taxCalculationResult.MonthEnd}</p>
-                        <p>({taxCalculationResult.TotalIncomeCents / MONEY_DIVIDER} доход - {taxCalculationResult.ExpensesCents / MONEY_DIVIDER}
-                        приспадащи се разходи - {taxCalculationResult.PaidInsuranceCents / MONEY_DIVIDER} осигуровки) *
-                        10% =
-                            <b>{taxCalculationResult.TaxCents / MONEY_DIVIDER} EUR</b></p>
-                        {#if taxCalculationResult.Notes}
-                            <div class="alert-small-note">
-                                <small>
-                                    <span><Info color="#79b4d1" size="18"/>{taxCalculationResult.Notes}</span>
-                                </small>
-                            </div>
-                        {/if}
-                        <!-- TODO: take tax % from dynamic -->
-                        <!-- TODO: поясни, откуда сумма расходов - 25% !-->
-                    </div>
+                    <CalculatedTax taxCalculationResult={taxCalculationResult}/>
+
                     <small>
-                        <i>Точният данък ще бъде изчислен от НАП при подаването на декларацията по чл. 55 или годишната декларация по чл.50
+                        <i>
+                            Точният данък ще бъде изчислен от НАП при подаването
+                            на декларацията по чл. 55 или годишната декларация по чл.50
                             и зависи от фактически платени осигуровки
-                        </i></small>
+                        </i>
+                    </small>
                 {/if}
             </div>
         </div>
@@ -149,10 +139,6 @@
 
     .hidden-form-block input[type="number"] {
         width: 100px;
-    }
-
-    #tax-calculator-result {
-        margin: 10px 0;
     }
 
     #tax-enter-form-amount {

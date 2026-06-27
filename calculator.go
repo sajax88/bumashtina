@@ -49,6 +49,7 @@ type CalculatedTax struct {
 	MonthStart         int
 	MonthEnd           int
 	Notes              string
+	TaxesConfig        TaxesConfig
 }
 
 func CalculateSocialSecurity(f *IncomeForm) {

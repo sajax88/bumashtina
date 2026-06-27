@@ -1,45 +1,5 @@
 export namespace main {
 	
-	export class CalculatedTax {
-	    TotalIncomeCents: number;
-	    TaxCents: number;
-	    ExpensesCents: number;
-	    PaidInsuranceCents: number;
-	    Quarter: number;
-	    Year: number;
-	    MonthStart: number;
-	    MonthEnd: number;
-	    Notes: string;
-	
-	    static createFrom(source: any = {}) {
-	        return new CalculatedTax(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.TotalIncomeCents = source["TotalIncomeCents"];
-	        this.TaxCents = source["TaxCents"];
-	        this.ExpensesCents = source["ExpensesCents"];
-	        this.PaidInsuranceCents = source["PaidInsuranceCents"];
-	        this.Quarter = source["Quarter"];
-	        this.Year = source["Year"];
-	        this.MonthStart = source["MonthStart"];
-	        this.MonthEnd = source["MonthEnd"];
-	        this.Notes = source["Notes"];
-	    }
-	}
-	export class Settings {
-	    IsPregnancyInsuranceEnabled: boolean;
-	
-	    static createFrom(source: any = {}) {
-	        return new Settings(source);
-	    }
-	
-	    constructor(source: any = {}) {
-	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.IsPregnancyInsuranceEnabled = source["IsPregnancyInsuranceEnabled"];
-	    }
-	}
 	export class TaxesConfig {
 	    MinInsuranceIncomeCents: number;
 	    MaxInsuranceIncomeCents: number;
@@ -64,6 +24,66 @@ export namespace main {
 	        this.PregnancyInsurancePercentage = source["PregnancyInsurancePercentage"];
 	        this.PensionPercentagePartOne = source["PensionPercentagePartOne"];
 	        this.PensionPercentagePartTwo = source["PensionPercentagePartTwo"];
+	    }
+	}
+	export class CalculatedTax {
+	    TotalIncomeCents: number;
+	    TaxCents: number;
+	    ExpensesCents: number;
+	    PaidInsuranceCents: number;
+	    Quarter: number;
+	    Year: number;
+	    MonthStart: number;
+	    MonthEnd: number;
+	    Notes: string;
+	    TaxesConfig: TaxesConfig;
+	
+	    static createFrom(source: any = {}) {
+	        return new CalculatedTax(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.TotalIncomeCents = source["TotalIncomeCents"];
+	        this.TaxCents = source["TaxCents"];
+	        this.ExpensesCents = source["ExpensesCents"];
+	        this.PaidInsuranceCents = source["PaidInsuranceCents"];
+	        this.Quarter = source["Quarter"];
+	        this.Year = source["Year"];
+	        this.MonthStart = source["MonthStart"];
+	        this.MonthEnd = source["MonthEnd"];
+	        this.Notes = source["Notes"];
+	        this.TaxesConfig = this.convertValues(source["TaxesConfig"], TaxesConfig);
+	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
+	}
+	export class Settings {
+	    IsPregnancyInsuranceEnabled: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new Settings(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.IsPregnancyInsuranceEnabled = source["IsPregnancyInsuranceEnabled"];
 	    }
 	}
 	export class SocialSecurityParts {

@@ -410,6 +410,7 @@ func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
 		return result
 	}
 
+	result.TaxesConfig = rows[0].TaxesConfig
 	return result
 }
 
