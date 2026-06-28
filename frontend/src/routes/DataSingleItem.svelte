@@ -9,6 +9,7 @@
     import {Ban, BookText, Check, CircleArrowLeft, Edit, Eye, EyeOff, Save} from "lucide-svelte";
     import CalculatedTaxForMonth from "../components/CalculatedTaxForMonth.svelte";
     import {numberWithSpaces} from "../common_functions";
+    import CalculatedSocialSecurity from "../components/CalculatedSocialSecurity.svelte";
 
     export let params;
 
@@ -121,23 +122,15 @@
                 <tr>
                     <td>Изчислени осигуровки</td>
                     <td colspan="2">
-                        <small>
-                            <!-- TODO: % from dataSingle settings -->
-                            <!-- TODO: table -->
-                            {numberWithSpaces(socialSecurityParts.PensionPartOneCents / MONEY_DIVIDER)} ДОО<br>
-                            + {numberWithSpaces(socialSecurityParts.PensionPartTwoCents / MONEY_DIVIDER)} ДЗПО<br>
-                            + {numberWithSpaces(socialSecurityParts.HealthInsuranceCents / MONEY_DIVIDER)} НЗОК<br>
-                            = <b>{numberWithSpaces(dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER)} EUR</b>
-                        </small>
+                        <CalculatedSocialSecurity dataSingle={dataSingle} socialSecurityParts={socialSecurityParts} />
                     </td>
                 </tr>
                 <tr>
                     <td>Платени осигуровки</td>
                     <td>
                         <span id="paid-insurance-value">
-                            <!-- TODO: table -->
                             {#if dataSingle.SocialSecurityReallyPaidCents}
-                                {numberWithSpaces(socialSecurityPaidParts.PensionPartOneCents / MONEY_DIVIDER)} ДОО<br>
+                                {numberWithSpaces(socialSecurityPaidParts.PensionPartOneCents / MONEY_DIVIDER)} ДОО {#if dataSingle.Settings.IsPregnancyInsuranceEnabled} + ОЗМ{/if}<br>
                                 +{numberWithSpaces(socialSecurityPaidParts.PensionPartTwoCents / MONEY_DIVIDER)} ДЗПО<br>
                                 +{numberWithSpaces(socialSecurityPaidParts.HealthInsuranceCents / MONEY_DIVIDER)} НЗОК<br>
                                 = <b>{numberWithSpaces(dataSingle.SocialSecurityReallyPaidCents / MONEY_DIVIDER)} EUR</b>
@@ -147,7 +140,7 @@
                         </span>
 
                         <span id="paid-insurance-inputs" style="display: none">
-                        <label class="paid-insurance-label">ДОО: </label><input
+                        <label class="paid-insurance-label">ДОО {#if dataSingle.Settings.IsPregnancyInsuranceEnabled} + ОЗМ{/if}: </label><input
                                 class="paid-insurance-input" type="text"
                                 bind:value={paidInsuranceValues.PensionPartOne}
                         /><br/>
