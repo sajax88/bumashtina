@@ -1,11 +1,7 @@
 package main
 
 import (
-	"encoding/json"
-	"log"
 	"net/mail"
-	"os"
-	"path/filepath"
 	"strconv"
 )
 
@@ -84,63 +80,6 @@ func isDigitsOnly(s string) bool {
 		return true
 	}
 	return false
-}
-
-func getConfigPath() (string, error) {
-	configDir, dirErr := os.UserConfigDir()
-
-	if dirErr != nil {
-		log.Fatal(dirErr)
-	}
-
-	configPath := filepath.Join(configDir, "bumashtina", "data", "config.json")
-	err := os.MkdirAll(filepath.Dir(configPath), os.ModePerm)
-	if err != nil {
-		log.Fatal(err) // TODO: return to the app context and show a error dialog, remove amost all log.Fatal
-	}
-
-	return configPath, nil
-}
-
-func LoadConfigFromFile() (Config, error) {
-	s := Settings{IsPregnancyInsuranceEnabled: false} // Default
-	t := GetDefaultTaxesConfig()
-	c := Config{User: UserConfig{}, Settings: s, TaxesConfig: t}
-
-	configPath, err := getConfigPath()
-	if err != nil {
-		return c, err
-	}
-
-	savedConfig, err := os.ReadFile(configPath)
-	if err != nil && !os.IsNotExist(err) {
-		// There is a config file, but we couldn't read it
-		return c, err
-	}
-
-	if len(savedConfig) > 0 {
-		err = json.Unmarshal(savedConfig, &c)
-		if err != nil {
-			return c, err
-		}
-	}
-
-	return c, nil
-}
-
-func SaveConfigToFile(c Config) error {
-	configPath, err := getConfigPath()
-	if err != nil {
-		return err
-	}
-
-	config, err := json.Marshal(c)
-	if err != nil {
-		return err
-	}
-
-	_, err = SaveToFile(configPath, config)
-	return err
 }
 
 func (t TaxesConfig) Validate() (bool, string) {

@@ -3,7 +3,6 @@ package main
 import (
 	"cmp"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -145,6 +144,7 @@ func DeleteDataFromFile(month int, year int) error {
 }
 
 func GetAllDataFromFile() ([]IncomeForm, error) {
+
 	// TODO: cache in app once it was read? Refresh the cache when written!
 	// Caching: https://v3.wails.io/guides/performance/#caching
 
@@ -153,12 +153,9 @@ func GetAllDataFromFile() ([]IncomeForm, error) {
 		log.Fatal(err)
 	}
 
-	savedData, err := os.ReadFile(dataPath)
-	if err != nil {
-		if errors.Is(err, os.ErrNotExist) {
-			return []IncomeForm{}, nil
-		}
-		log.Fatal(err)
+	savedData, err := ReadFromFile(dataPath)
+	if err != nil || len(savedData) == 0 {
+		return []IncomeForm{}, err
 	}
 
 	if len(savedData) > 0 {
@@ -169,6 +166,7 @@ func GetAllDataFromFile() ([]IncomeForm, error) {
 		}
 		rows = sortRows(rows)
 
+		// TODO: write to cache
 		return rows, nil
 	}
 

@@ -6,12 +6,13 @@ import (
 	"log"
 	"os"
 
+	lru "github.com/hashicorp/golang-lru/v2"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type App struct {
-	ctx    context.Context
-	config Config
+	ctx   context.Context
+	cache *lru.Cache[string, []byte]
 }
 
 func NewApp() *App {
@@ -31,8 +32,14 @@ func (a *App) SaveUserConfig(u UserConfig) string {
 		return ""
 	}
 
-	a.config.User = u
-	err := SaveConfigToFile(a.config)
+	c, err := LoadConfig(a)
+	if err != nil {
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return ""
+	}
+
+	c.User = u // TODO: remove all app.config, save cache when the file is saved
+	err = SaveConfig(a, c)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "Грешка при запазване на файла", err.Error())
 		return ""
@@ -41,9 +48,15 @@ func (a *App) SaveUserConfig(u UserConfig) string {
 	return "Успешно запазено"
 }
 
-func (a *App) SaveSettingsConfig(c Settings) string {
-	a.config.Settings = c
-	err := SaveConfigToFile(a.config)
+func (a *App) SaveSettingsConfig(s Settings) string {
+	c, err := LoadConfig(a)
+	if err != nil {
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return ""
+	}
+
+	c.Settings = s
+	err = SaveConfig(a, c)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "Грешка при запазване на файла", err.Error())
 		return ""
@@ -59,8 +72,14 @@ func (a *App) SaveTaxesConfig(t TaxesConfig) string {
 		return ""
 	}
 
-	a.config.TaxesConfig = t
-	err := SaveConfigToFile(a.config)
+	c, err := LoadConfig(a)
+	if err != nil {
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return ""
+	}
+
+	c.TaxesConfig = t
+	err = SaveConfig(a, c)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "Грешка при запазване на файла", err.Error())
 		return ""
@@ -70,45 +89,29 @@ func (a *App) SaveTaxesConfig(t TaxesConfig) string {
 }
 
 func (a *App) LoadUserConfig() UserConfig {
-	// Try getting from cache
-	if a.config != (Config{}) {
-		return a.config.User
-	}
-
-	c, err := LoadConfigFromFile()
+	c, err := LoadConfig(a)
 	if err != nil {
-		log.Fatal(err)
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return UserConfig{}
 	}
-	a.config = c
 	return c.User
 }
 
 func (a *App) LoadSettingsConfig() Settings {
-	// Try getting from cache
-	if a.config != (Config{}) {
-		return a.config.Settings
-	}
-
-	c, err := LoadConfigFromFile()
+	c, err := LoadConfig(a)
 	if err != nil {
-		log.Fatal(err)
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return Settings{}
 	}
-	a.config = c
 	return c.Settings
 }
 
 func (a *App) LoadTaxesConfig() TaxesConfig {
-	// Try getting from cache
-	if a.config != (Config{}) {
-		return a.config.TaxesConfig
-	}
-
-	c, err := LoadConfigFromFile()
+	c, err := LoadConfig(a)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "", err.Error())
-		log.Fatal(err)
+		return TaxesConfig{}
 	}
-	a.config = c
 	return c.TaxesConfig
 }
 

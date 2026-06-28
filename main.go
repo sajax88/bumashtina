@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 
+	lru "github.com/hashicorp/golang-lru/v2"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
@@ -14,10 +15,11 @@ var assets embed.FS
 func main() {
 	// Create an instance of the app structure
 	app := NewApp()
+	app.cache, _ = lru.New[string, []byte](512)
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "Bumashtina v1.0.1",
+		Title:  "Bumashtina v1.0.0",
 		Width:  1024,
 		Height: 768,
 		AssetServer: &assetserver.Options{
