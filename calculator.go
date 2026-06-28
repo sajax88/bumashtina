@@ -19,6 +19,7 @@ type IncomeForm struct {
 
 	// Calculated
 	TaxesToPayCents          int64
+	ExpensesCents            int64
 	SocialSecurityToPayCents int64
 	SocialSecurityToPayParts SocialSecurityParts
 
@@ -54,7 +55,7 @@ type CalculatedTax struct {
 
 func (f IncomeForm) Validate() (bool, string) {
 	if f.WorkDaysTotal < 0 || f.WorkDaysTotal > 31 {
-		return false, "Невалиден брой на общите работни дни"
+		return false, "Невалид"
 	}
 
 	if f.WorkDaysSickLeave > f.WorkDaysTotal {
@@ -100,7 +101,6 @@ func CalculateSocialSecurity(f *IncomeForm) {
 		// Общо заболяване и майчинство
 		pensionPartOne += calculateInsuranceFromPercentage(f.TaxedIncomeCents, f.TaxesConfig.PregnancyInsurancePercentage)
 	}
-
 	// ДЗПО
 	pensionPartTwo := calculateInsuranceFromPercentage(f.TaxedIncomeCents, f.TaxesConfig.PensionPercentagePartTwo)
 	// НЗОК
@@ -116,12 +116,14 @@ func CalculateSocialSecurity(f *IncomeForm) {
 }
 
 func calculateInsuranceFromPercentage(taxedIncomeCents int64, insurancePercent float64) int64 {
-	insuranceCents := float64(taxedIncomeCents) * insurancePercent / MoneyDivider
+	insuranceCents := float64(taxedIncomeCents) * insurancePercent / 100
 	return int64(math.Round(insuranceCents))
 }
 
-func CalculateTaxForMonth(f IncomeForm) int64 {
-	expenses := math.Round(float64(f.MonthIncomeCents) * f.TaxesConfig.ExpensesPercentage / MoneyDivider)
+func CalculateTaxForMonth(f *IncomeForm) {
+	expenses := math.Round(float64(f.MonthIncomeCents) * f.TaxesConfig.ExpensesPercentage / 100)
+	f.ExpensesCents = int64(expenses)
+
 	var insurance float64
 	if f.SocialSecurityReallyPaidCents > 0 {
 		insurance = float64(f.SocialSecurityReallyPaidCents)
@@ -129,7 +131,8 @@ func CalculateTaxForMonth(f IncomeForm) int64 {
 		insurance = float64(f.SocialSecurityToPayCents)
 	}
 
-	return int64(math.Round(math.Round(float64(f.MonthIncomeCents)-expenses-insurance) * f.TaxesConfig.TaxPercentage / MoneyDivider))
+	taxedIncome := math.Round(float64(f.MonthIncomeCents) - expenses - insurance)
+	f.TaxesToPayCents = int64(math.Round(taxedIncome * f.TaxesConfig.TaxPercentage / 100))
 }
 
 func CalculateIncomeForThreeMonths(forms []IncomeForm) (int64, error) {

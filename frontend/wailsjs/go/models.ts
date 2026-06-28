@@ -113,6 +113,7 @@ export namespace main {
 	    WorkDaysReal: number;
 	    WorkDaysSickLeave: number;
 	    TaxesToPayCents: number;
+	    ExpensesCents: number;
 	    SocialSecurityToPayCents: number;
 	    SocialSecurityToPayParts: SocialSecurityParts;
 	    TaxesReallyPaidCents: number;
@@ -137,6 +138,7 @@ export namespace main {
 	        this.WorkDaysReal = source["WorkDaysReal"];
 	        this.WorkDaysSickLeave = source["WorkDaysSickLeave"];
 	        this.TaxesToPayCents = source["TaxesToPayCents"];
+	        this.ExpensesCents = source["ExpensesCents"];
 	        this.SocialSecurityToPayCents = source["SocialSecurityToPayCents"];
 	        this.SocialSecurityToPayParts = this.convertValues(source["SocialSecurityToPayParts"], SocialSecurityParts);
 	        this.TaxesReallyPaidCents = source["TaxesReallyPaidCents"];

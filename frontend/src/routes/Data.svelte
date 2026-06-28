@@ -5,6 +5,7 @@
     import {main} from "../../wailsjs/go/models";
     import IncomeForm = main.IncomeForm;
     import {MONEY_DIVIDER} from "../constants";
+    import {numberWithSpaces} from "../common_functions";
 
     let data;
     let currentPage = 1;
@@ -155,15 +156,17 @@
 
                     <tr>
                         <td>{row.Month} / {row.Year}</td>
-                        <td>{row.MonthIncomeCents / MONEY_DIVIDER}</td>
-                        <td>{row.TaxedIncomeCents / MONEY_DIVIDER}</td>
-                        <td>{row.SocialSecurityReallyPaidCents / MONEY_DIVIDER}
-                            /{row.SocialSecurityToPayCents / MONEY_DIVIDER}</td>
+                        <td>{numberWithSpaces(row.MonthIncomeCents / MONEY_DIVIDER)}</td>
+                        <td>{numberWithSpaces(row.TaxedIncomeCents / MONEY_DIVIDER)}</td>
+                        <td>{numberWithSpaces(row.SocialSecurityReallyPaidCents / MONEY_DIVIDER)}
+                            /{numberWithSpaces(row.SocialSecurityToPayCents / MONEY_DIVIDER)}</td>
                         <td>-</td>
                         <td class="btn-col">
-                            <a href="#/item-single/{row.Year}/{row.Month}">
-                                <View color="#444" size="20"/>
-                            </a>
+                            {#if row.MonthIncomeCents > 0 || row.TaxedIncomeCents > 0}
+                                <a href="#/item-single/{row.Year}/{row.Month}">
+                                    <View color="#444" size="20"/>
+                                </a>
+                            {/if}
                         </td>
                         <td class="btn-col">
                             <button class="delete-button" on:click={() => deleteData(row.Month, row.Year)}>

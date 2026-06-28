@@ -2,15 +2,9 @@
     import {MONEY_DIVIDER} from "../constants";
     import {Info} from "lucide-svelte";
     import {fade} from 'svelte/transition';
+    import {numberWithSpaces} from "../common_functions";
 
     export let taxCalculationResult;
-
-    // Thank you, dude from stackoverflow
-    function numberWithSpaces(x) {
-        let parts = x.toString().split(".");
-        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-        return parts.join(".");
-    }
 </script>
 
 <div in:fade={{duration:300}} class="alert alert-info" id="tax-calculator-result">

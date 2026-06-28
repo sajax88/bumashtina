@@ -23,7 +23,6 @@
         WorkDaysSickLeave: 0,
     }
 
-
     let configTaxes;
     let declarationResult;
 

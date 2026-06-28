@@ -165,7 +165,7 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 
 	// Calculate approximate taxes and social security, save them together with the form
 	CalculateSocialSecurity(&f)
-	f.TaxesToPayCents = CalculateTaxForMonth(f)
+	CalculateTaxForMonth(&f)
 
 	err = AddDataToFile(f)
 	if err != nil {

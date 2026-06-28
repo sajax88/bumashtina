@@ -7,6 +7,8 @@
     } from "../../wailsjs/go/main/App.js";
     import {onMount} from 'svelte';
     import {Ban, BookText, Check, CircleArrowLeft, Edit, Eye, EyeOff, Save} from "lucide-svelte";
+    import CalculatedTaxForMonth from "../components/CalculatedTaxForMonth.svelte";
+    import {numberWithSpaces} from "../common_functions";
 
     export let params;
 
@@ -104,50 +106,41 @@
                 <tbody>
                 <tr>
                     <td>Доход за месец</td>
-                    <td colspan="2">{dataSingle.MonthIncomeCents / MONEY_DIVIDER}</td>
+                    <td colspan="2">{numberWithSpaces(dataSingle.MonthIncomeCents / MONEY_DIVIDER)}</td>
                 </tr>
                 <tr>
                     <td>Осигурителен доход</td>
-                    <td colspan="2">{dataSingle.TaxedIncomeCents / MONEY_DIVIDER}</td>
+                    <td colspan="2">{numberWithSpaces(dataSingle.TaxedIncomeCents / MONEY_DIVIDER)}</td>
                 </tr>
                 <tr>
                     <td>Изчислен данък<br></td>
-                    <td>{dataSingle.TaxesToPayCents / MONEY_DIVIDER}</td>
-                    <td>
-                        <small>
-                            <!-- TODO: paid insurance IF entered, table? -->
-                            ({dataSingle.MonthIncomeCents / MONEY_DIVIDER} доход
-                            - {dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER} осигуровки -
-                            {dataSingle.MonthIncomeCents / MONEY_DIVIDER} * {dataSingle.TaxesConfig.ExpensesPercentage} % разходи) * {dataSingle.TaxesConfig.TaxPercentage}%
-                            = {dataSingle.TaxesToPayCents / MONEY_DIVIDER} EUR
-                        </small>
+                    <td colspan="2">
+                       <CalculatedTaxForMonth dataSingle={dataSingle}/>
                     </td>
-
                 </tr>
                 <tr>
                     <td>Изчислени осигуровки</td>
-                    <td>{dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER}</td>
-                    <td>
+                    <td colspan="2">
                         <small>
-                            <!-- TODO: % from settings, see CalculateSocialSecurity -->
+                            <!-- TODO: % from dataSingle settings -->
                             <!-- TODO: table -->
-                            {socialSecurityParts.PensionPartOneCents / MONEY_DIVIDER} ДОО +
-                            {socialSecurityParts.PensionPartTwoCents / MONEY_DIVIDER} ДЗПО +
-                            {socialSecurityParts.HealthInsuranceCents / MONEY_DIVIDER} НЗОК
-                            = {dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER} EUR
+                            {numberWithSpaces(socialSecurityParts.PensionPartOneCents / MONEY_DIVIDER)} ДОО<br>
+                            + {numberWithSpaces(socialSecurityParts.PensionPartTwoCents / MONEY_DIVIDER)} ДЗПО<br>
+                            + {numberWithSpaces(socialSecurityParts.HealthInsuranceCents / MONEY_DIVIDER)} НЗОК<br>
+                            = <b>{numberWithSpaces(dataSingle.SocialSecurityToPayCents / MONEY_DIVIDER)} EUR</b>
                         </small>
-
                     </td>
                 </tr>
                 <tr>
                     <td>Платени осигуровки</td>
                     <td>
                         <span id="paid-insurance-value">
+                            <!-- TODO: table -->
                             {#if dataSingle.SocialSecurityReallyPaidCents}
-                                {socialSecurityPaidParts.PensionPartOneCents / MONEY_DIVIDER} ДОО +
-                                {socialSecurityPaidParts.PensionPartTwoCents / MONEY_DIVIDER} ДЗПО +
-                                {socialSecurityPaidParts.HealthInsuranceCents / MONEY_DIVIDER} НЗОК =
-                                {dataSingle.SocialSecurityReallyPaidCents / MONEY_DIVIDER} EUR
+                                {numberWithSpaces(socialSecurityPaidParts.PensionPartOneCents / MONEY_DIVIDER)} ДОО<br>
+                                +{numberWithSpaces(socialSecurityPaidParts.PensionPartTwoCents / MONEY_DIVIDER)} ДЗПО<br>
+                                +{numberWithSpaces(socialSecurityPaidParts.HealthInsuranceCents / MONEY_DIVIDER)} НЗОК<br>
+                                = <b>{numberWithSpaces(dataSingle.SocialSecurityReallyPaidCents / MONEY_DIVIDER)} EUR</b>
                            {:else}
                                 -
                             {/if}
