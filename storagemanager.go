@@ -65,7 +65,7 @@ func getFilePath(filename string) (string, error) {
 	filePath := filepath.Join(d, "bumashtina", "data", filename)
 	err := os.MkdirAll(filepath.Dir(filePath), os.ModePerm)
 	if err != nil {
-		return "", err // TODO: remove almost all log.Fatal!
+		return "", err
 	}
 
 	return filePath, nil

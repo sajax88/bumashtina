@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 
 	lru "github.com/hashicorp/golang-lru/v2"
@@ -124,7 +123,7 @@ func (a *App) LoadAllIncomeData() []IncomeForm {
 	rows, err := GetIncomeData(a)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "", err.Error())
-		log.Fatal(err)
+		return []IncomeForm{}
 	}
 	return rows
 }
@@ -133,7 +132,7 @@ func (a *App) LoadIncomeDataForMonth(month int, year int) IncomeForm {
 	row, err := GetDataFromFileForMonth(a, month, year)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "", err.Error())
-		log.Fatal(err)
+		return IncomeForm{}
 	}
 	return row
 }

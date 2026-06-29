@@ -7,18 +7,6 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-func ShowInfoDialog(c context.Context, title string, message string) {
-	_, err := runtime.MessageDialog(c, runtime.MessageDialogOptions{
-		Type:    runtime.InfoDialog,
-		Title:   title,
-		Message: message,
-	})
-
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 func ShowWarningDialog(c context.Context, title string, message string) {
 	_, err := runtime.MessageDialog(c, runtime.MessageDialogOptions{
 		Type:    runtime.WarningDialog,
@@ -27,7 +15,7 @@ func ShowWarningDialog(c context.Context, title string, message string) {
 	})
 
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 }
 
@@ -39,7 +27,7 @@ func ShowErrorDialog(c context.Context, title string, message string) {
 	})
 
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 }
 
@@ -55,7 +43,7 @@ func ShowQuestionDialog(c context.Context, title string, message string, default
 	})
 
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 
 	return answer

@@ -4,7 +4,6 @@ import (
 	"cmp"
 	"encoding/json"
 	"fmt"
-	"log"
 	"slices"
 )
 
@@ -26,7 +25,6 @@ func AddDataToFile(a *App, f IncomeForm) error {
 func GetDataFromFileForMonth(a *App, month int, year int) (IncomeForm, error) {
 	rows, err := GetIncomeData(a)
 	if err != nil {
-		log.Fatal(err)
 		return IncomeForm{}, err
 	}
 
@@ -58,7 +56,6 @@ func GetDataFromFileForYear(a *App, year int) ([]IncomeForm, error) {
 func GetDataFromFileForQuarter(a *App, quarter int, year int, result *CalculatedTax) ([]IncomeForm, error) {
 	row, err := GetIncomeData(a)
 	if err != nil {
-		log.Fatal(err)
 		return []IncomeForm{}, err
 	}
 
@@ -81,7 +78,6 @@ func GetDataFromFileForQuarter(a *App, quarter int, year int, result *Calculated
 func DeleteDataFromFile(a *App, month int, year int) error {
 	allData, err := GetIncomeData(a)
 	if err != nil {
-		log.Fatal(err)
 		return err
 	}
 
