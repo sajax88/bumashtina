@@ -38,7 +38,7 @@ func (a *App) SaveUserConfig(u UserConfig) string {
 		return ""
 	}
 
-	c.User = u // TODO: remove all app.config, save cache when the file is saved
+	c.User = u
 	err = SaveConfig(a, c)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "Грешка при запазване на файла", err.Error())
@@ -65,6 +65,7 @@ func (a *App) SaveSettingsConfig(s Settings) string {
 	return "Успешно запазено"
 }
 
+// TODO: same as in Users config
 func (a *App) SaveTaxesConfig(t TaxesConfig) string {
 	isValid, errorMessage := t.Validate()
 	if !isValid {
@@ -120,7 +121,7 @@ func (a *App) LoadTaxesConfigLabels() []string {
 }
 
 func (a *App) LoadAllIncomeData() []IncomeForm {
-	rows, err := GetAllDataFromFile()
+	rows, err := GetIncomeData(a)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "", err.Error())
 		log.Fatal(err)
@@ -129,7 +130,7 @@ func (a *App) LoadAllIncomeData() []IncomeForm {
 }
 
 func (a *App) LoadIncomeDataForMonth(month int, year int) IncomeForm {
-	row, err := GetDataFromFileForMonth(month, year)
+	row, err := GetDataFromFileForMonth(a, month, year)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "", err.Error())
 		log.Fatal(err)
@@ -146,7 +147,7 @@ func (a *App) LoadAlerts() string {
 }
 
 func (a *App) SaveIncomeForm(f IncomeForm) string {
-	existingForm, err := GetDataFromFileForMonth(int(f.Month), int(f.Year))
+	existingForm, err := GetDataFromFileForMonth(a, int(f.Month), int(f.Year))
 	if err != nil {
 		ShowErrorDialog(a.ctx, "", err.Error())
 		return err.Error()
@@ -170,7 +171,7 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 	CalculateSocialSecurity(&f)
 	CalculateTaxForMonth(&f)
 
-	err = AddDataToFile(f)
+	err = AddDataToFile(a, f)
 	if err != nil {
 		return err.Error()
 	}
@@ -179,7 +180,7 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 }
 
 func (a *App) UpdateForm(f IncomeForm) string {
-	existingForm, err := GetDataFromFileForMonth(int(f.Month), int(f.Year))
+	existingForm, err := GetDataFromFileForMonth(a, int(f.Month), int(f.Year))
 	if err != nil {
 		ShowErrorDialog(a.ctx, "", err.Error())
 		return ""
@@ -196,13 +197,13 @@ func (a *App) UpdateForm(f IncomeForm) string {
 	}
 
 	// Remove previous record and save the new one
-	err = DeleteDataFromFile(int(f.Month), int(f.Year))
+	err = DeleteDataFromFile(a, int(f.Month), int(f.Year))
 	if err != nil {
 		ShowErrorDialog(a.ctx, "", err.Error())
 		return ""
 	}
 
-	err = AddDataToFile(existingForm)
+	err = AddDataToFile(a, existingForm)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "", err.Error())
 		return ""
@@ -223,7 +224,7 @@ func (a *App) DeleteData(month int, year int) string {
 		return ""
 	}
 
-	err := DeleteDataFromFile(month, year)
+	err := DeleteDataFromFile(a, month, year)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "", err.Error())
 		return ""
@@ -233,7 +234,7 @@ func (a *App) DeleteData(month int, year int) string {
 
 func (a *App) GenerateDeclarationOne(month int, year int) string {
 	var res string
-	incomeForm, err := GetDataFromFileForMonth(month, year)
+	incomeForm, err := GetDataFromFileForMonth(a, month, year)
 	if err != nil {
 		return err.Error()
 	}
@@ -268,7 +269,7 @@ func (a *App) GenerateDeclarationOne(month int, year int) string {
 
 func (a *App) PreviewDeclarationSix(year int) SocialSecurityParts {
 	sums := SocialSecurityParts{}
-	rows, err := GetDataFromFileForYear(year)
+	rows, err := GetDataFromFileForYear(a, year)
 	if err != nil {
 		// Error is logged in GetDataFromFileForYear
 		return sums
@@ -366,7 +367,7 @@ func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
 		return result
 	}
 
-	rows, err := GetDataFromFileForQuarter(quarter, year, &result)
+	rows, err := GetDataFromFileForQuarter(a, quarter, year, &result)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "", err.Error())
 		return result
@@ -395,7 +396,7 @@ func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
 func (a *App) SavePaidTaxForQuarter(quarter int, year int, amount float32) string {
 	// Find the last month in the quarter and save the paid tax there
 	lastMonth := (quarter-1)*3 + 3
-	row, err := GetDataFromFileForMonth(lastMonth, year)
+	row, err := GetDataFromFileForMonth(a, lastMonth, year)
 	if err != nil {
 		ShowWarningDialog(a.ctx, "", err.Error())
 		return ""

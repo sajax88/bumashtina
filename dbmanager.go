@@ -5,62 +5,32 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"os"
-	"path/filepath"
 	"slices"
 )
 
 // We don't have a real database, so we just store the data in the file for now.
 
-func getDataPath() (string, error) {
-	homeDir, dirErr := os.UserConfigDir()
-
-	if dirErr != nil {
-		log.Fatal(dirErr)
-	}
-
-	dataPath := filepath.Join(homeDir, "bumashtina", "data", "data.json")
-	err := os.MkdirAll(filepath.Dir(dataPath), os.ModePerm)
-	if err != nil {
-		log.Fatal(err)
-		return "", err
-	}
-
-	return dataPath, nil
-}
-
-func AddDataToFile(f IncomeForm) error {
-	dataPath, err := getDataPath()
-	if err != nil {
-		return err
-	}
-
-	allData, err := GetAllDataFromFile()
+func AddDataToFile(a *App, f IncomeForm) error {
+	allData, err := GetIncomeData(a)
 	if err != nil {
 		return err
 	}
 
 	allData = append(allData, f)
-	allData = sortRows(allData)
 
-	data, err := json.Marshal(allData)
-	if err != nil {
-		return err
-	}
-
-	_, err = SaveToFile(dataPath, data)
+	err = SaveIncomeData(a, allData)
 
 	return err
 }
 
-func GetDataFromFileForMonth(month int, year int) (IncomeForm, error) {
-	row, err := GetAllDataFromFile()
+func GetDataFromFileForMonth(a *App, month int, year int) (IncomeForm, error) {
+	rows, err := GetIncomeData(a)
 	if err != nil {
 		log.Fatal(err)
 		return IncomeForm{}, err
 	}
 
-	for _, f := range row {
+	for _, f := range rows {
 		if f.Month == int16(month) && f.Year == int16(year) {
 			return f, nil
 		}
@@ -69,10 +39,9 @@ func GetDataFromFileForMonth(month int, year int) (IncomeForm, error) {
 	return IncomeForm{}, nil
 }
 
-func GetDataFromFileForYear(year int) ([]IncomeForm, error) {
-	row, err := GetAllDataFromFile()
+func GetDataFromFileForYear(a *App, year int) ([]IncomeForm, error) {
+	row, err := GetIncomeData(a)
 	if err != nil {
-		log.Fatal(err)
 		return []IncomeForm{}, err
 	}
 
@@ -86,8 +55,8 @@ func GetDataFromFileForYear(year int) ([]IncomeForm, error) {
 	return rows, nil
 }
 
-func GetDataFromFileForQuarter(quarter int, year int, result *CalculatedTax) ([]IncomeForm, error) {
-	row, err := GetAllDataFromFile()
+func GetDataFromFileForQuarter(a *App, quarter int, year int, result *CalculatedTax) ([]IncomeForm, error) {
+	row, err := GetIncomeData(a)
 	if err != nil {
 		log.Fatal(err)
 		return []IncomeForm{}, err
@@ -109,13 +78,8 @@ func GetDataFromFileForQuarter(quarter int, year int, result *CalculatedTax) ([]
 	return rows, nil
 }
 
-func DeleteDataFromFile(month int, year int) error {
-	dataPath, err := getDataPath()
-	if err != nil {
-		return err
-	}
-
-	allData, err := GetAllDataFromFile()
+func DeleteDataFromFile(a *App, month int, year int) error {
+	allData, err := GetIncomeData(a)
 	if err != nil {
 		log.Fatal(err)
 		return err
@@ -134,43 +98,42 @@ func DeleteDataFromFile(month int, year int) error {
 	}
 
 	allData = slices.Delete(allData, indexToDelete, indexToDelete+1)
-	data, err := json.Marshal(allData)
+	err = SaveIncomeData(a, allData)
+
+	return err
+}
+
+func GetIncomeData(a *App) ([]IncomeForm, error) {
+	var rows []IncomeForm
+
+	data, err := LoadData(a.cache, DataFile, DataKey)
+	if err != nil {
+		return rows, err
+	}
+
+	err = json.Unmarshal(data, &rows)
+	if err != nil {
+		return rows, err
+	}
+
+	rows = sortRows(rows)
+
+	return rows, nil
+}
+
+func SaveIncomeData(a *App, rows []IncomeForm) error {
+	rows = sortRows(rows)
+	incomeData, err := json.Marshal(rows)
 	if err != nil {
 		return err
 	}
 
-	_, err = SaveToFile(dataPath, data)
-	return err
-}
-
-func GetAllDataFromFile() ([]IncomeForm, error) {
-
-	// TODO: cache in app once it was read? Refresh the cache when written!
-	// Caching: https://v3.wails.io/guides/performance/#caching
-
-	dataPath, err := getDataPath()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	savedData, err := ReadFromFile(dataPath)
-	if err != nil || len(savedData) == 0 {
-		return []IncomeForm{}, err
-	}
-
-	if len(savedData) > 0 {
-		var rows []IncomeForm
-		err := json.Unmarshal(savedData, &rows)
-		if err != nil {
-			return nil, err
-		}
-		rows = sortRows(rows)
-
-		// TODO: write to cache
-		return rows, nil
-	}
-
-	return []IncomeForm{}, nil
+	return SaveData(
+		a.cache,
+		incomeData,
+		DataFile,
+		DataKey,
+	)
 }
 
 // Sort the rows by month and year

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"os"
 	"path/filepath"
 
@@ -14,54 +13,7 @@ const DataKey = "DATA"
 const ConfigFile = "config.json"
 const DataFile = "data.json"
 
-// TODO: do we need this?
-// StorageConfig can be used for saving and loading config and data
-type StorageConfig struct {
-	CacheKey string
-	FileName string
-	Obj      interface{}
-}
-
-// TODO: replace all SaveToFile and ReadFromFile with this
-
-// TODO: reuse the same methods for saving and loading data,
-
-func LoadConfig(a *App) (Config, error) {
-	var c Config
-
-	data, err := loadData(a.cache, ConfigFile, ConfigKey)
-	if err != nil {
-		return c, err
-	}
-
-	err = json.Unmarshal(data, &c)
-	if err != nil {
-		return c, err
-	}
-
-	// Set default taxes config
-	if c.TaxesConfig.TaxPercentage == 0 {
-		c.TaxesConfig = GetDefaultTaxesConfig()
-	}
-
-	return c, err
-}
-
-func SaveConfig(a *App, c Config) error {
-	config, err := json.Marshal(c) // TODO: all marshalling and unmarshalling - in file service
-	if err != nil {
-		return err
-	}
-
-	return saveData(
-		a.cache,
-		config,
-		ConfigFile,
-		ConfigKey,
-	)
-}
-
-func loadData(cache *lru.Cache[string, []byte], fileName string, cacheKey string) ([]byte, error) {
+func LoadData(cache *lru.Cache[string, []byte], fileName string, cacheKey string) ([]byte, error) {
 	// First try to get from cache
 	cachedData, inCache := cache.Get(cacheKey)
 	if inCache && len(cachedData) > 0 {
@@ -86,7 +38,7 @@ func loadData(cache *lru.Cache[string, []byte], fileName string, cacheKey string
 	return savedData, nil
 }
 
-func saveData(cache *lru.Cache[string, []byte], data []byte, fileName string, cacheKey string) error {
+func SaveData(cache *lru.Cache[string, []byte], data []byte, fileName string, cacheKey string) error {
 	filePath, err := getFilePath(fileName)
 	if err != nil {
 		return err

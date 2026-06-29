@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"net/mail"
 	"strconv"
 )
@@ -135,4 +136,39 @@ func GetLabelsForTaxesConfig() []string {
 		"Процент за фонд „Пенсии“ ДОО – за родените след 31 декември 1959 г.",
 		"Процент за ДЗПО – Универсален пенсионен фонд за родените след 31 декември 1959 г.",
 	}
+}
+
+func LoadConfig(a *App) (Config, error) {
+	var c Config
+
+	data, err := LoadData(a.cache, ConfigFile, ConfigKey)
+	if err != nil {
+		return c, err
+	}
+
+	err = json.Unmarshal(data, &c)
+	if err != nil {
+		return c, err
+	}
+
+	// Set default taxes config
+	if c.TaxesConfig.TaxPercentage == 0 {
+		c.TaxesConfig = GetDefaultTaxesConfig()
+	}
+
+	return c, err
+}
+
+func SaveConfig(a *App, c Config) error {
+	config, err := json.Marshal(c)
+	if err != nil {
+		return err
+	}
+
+	return SaveData(
+		a.cache,
+		config,
+		ConfigFile,
+		ConfigKey,
+	)
 }
