@@ -146,16 +146,19 @@ func LoadConfig(a *App) (Config, error) {
 		return c, err
 	}
 
+	if len(data) == 0 {
+		c.TaxesConfig = GetDefaultTaxesConfig()
+		return c, nil
+	}
+
 	err = json.Unmarshal(data, &c)
 	if err != nil {
 		return c, err
 	}
 
-	// Set default taxes config
 	if c.TaxesConfig.TaxPercentage == 0 {
 		c.TaxesConfig = GetDefaultTaxesConfig()
 	}
-
 	return c, err
 }
 

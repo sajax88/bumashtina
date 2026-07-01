@@ -64,7 +64,6 @@ func (a *App) SaveSettingsConfig(s Settings) string {
 	return "Успешно запазено"
 }
 
-// TODO: same as in Users config
 func (a *App) SaveTaxesConfig(t TaxesConfig) string {
 	isValid, errorMessage := t.Validate()
 	if !isValid {
@@ -270,13 +269,18 @@ func (a *App) PreviewDeclarationSix(year int) SocialSecurityParts {
 	sums := SocialSecurityParts{}
 	rows, err := GetDataFromFileForYear(a, year)
 	if err != nil {
-		// Error is logged in GetDataFromFileForYear
+		ShowErrorDialog(a.ctx, "", err.Error())
 		return sums
 	}
 
 	personalData := a.LoadUserConfig()
 	if !personalData.isPopulated() {
 		ShowWarningDialog(a.ctx, "", "Попълнете личните си данни за да генерирате декларацията")
+		return sums
+	}
+
+	if len(rows) == 0 {
+		ShowWarningDialog(a.ctx, "", "Няма въведени данни")
 		return sums
 	}
 

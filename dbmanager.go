@@ -107,6 +107,10 @@ func GetIncomeData(a *App) ([]IncomeForm, error) {
 		return rows, err
 	}
 
+	if len(data) == 0 {
+		return rows, nil
+	}
+
 	err = json.Unmarshal(data, &rows)
 	if err != nil {
 		return rows, err
