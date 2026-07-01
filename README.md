@@ -21,4 +21,4 @@ and have access to your Go methods, there is also a dev server that runs on http
 
 ## Building
 
-To build a redistributable, production mode package, use `wails build`.
+To build a redistributable, production mode package, use `wails build`. See Wails docs for details: https://wails.io/docs/reference/cli#build 
