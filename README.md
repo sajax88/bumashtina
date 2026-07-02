@@ -58,3 +58,12 @@ and have access to your Go methods, there is also a dev server that runs on http
 To build a redistributable, production mode package, use `wails build`. See Wails docs for details: https://wails.io/docs/reference/cli#build 
 On Ubuntu 24 you might have to build with tag:
 `wails build -tags webkit2_41`
+
+
+## I like your app and want to buy you a coffee/beer
+
+You certainly can!
+
+https://buymeacoffee.com/sajax
+
+You can also consider buying a coffee or contributing to [Wails](https://wails.io/) or [Svelte](https://svelte.dev/) or [Lucide](https://lucide.dev/) 
