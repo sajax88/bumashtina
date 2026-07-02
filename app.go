@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	lru "github.com/hashicorp/golang-lru/v2"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -410,4 +411,52 @@ func (a *App) SavePaidTaxForQuarter(quarter int, year int, amount float32) strin
 	}
 	row.TaxesReallyPaidCents = int64(amount * MoneyDivider)
 	return a.UpdateForm(row)
+}
+
+func (a *App) ExportData() string {
+	var err error
+	var options runtime.SaveDialogOptions
+
+	currentTime := time.Now().Local()
+	options.DefaultFilename = fmt.Sprintf("Bumashtina_%s.zip", currentTime.Format("2006-01-02"))
+	options.DefaultDirectory, err = os.UserHomeDir()
+	if err != nil {
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return ""
+	}
+	saveFilePath, err := runtime.SaveFileDialog(a.ctx, options)
+	if err != nil {
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return ""
+	}
+	if saveFilePath == "" {
+		// Can happen when user cancels the dialog
+
+		return ""
+	}
+
+	// Zip both files into one archive
+	err = exportIntoZip(saveFilePath)
+	if err != nil {
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return ""
+	}
+
+	return fmt.Sprintf("Успешно, файлът беше записан в %s", saveFilePath)
+}
+
+func (a *App) ImportData() string {
+	//TODO
+	answer := ShowQuestionDialog(
+		a.ctx,
+		"Потвърдете действието",
+		"Потвърждавате ли импорт на данните? Съществуващите настройки и данни ще бъдат заличени!",
+		"",
+	)
+
+	if answer == "No" {
+		return ""
+	}
+
+	return "Данните са импортирани успешно"
 }

@@ -1,7 +1,7 @@
 # README
 
 
-This is an app for all the poor souls who happen to pay their own taxes and social security in the Republic of Bulgaria. Only for the **self-employed** people who know what they're doing!
+This is a desktop app for all the poor souls in the Republic of Bulgaria who happen to pay their taxes and social security themselves. Only for the **self-employed** people who know what they're doing!
 Check if this is your case: https://nra.bg/wps/portal/nra/osiguryavane/osiguryavam-se-sam#osigurqvam-se-sam0
 
 App language: **BG only**!

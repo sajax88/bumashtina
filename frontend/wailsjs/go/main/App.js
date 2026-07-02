@@ -10,12 +10,20 @@ export function DeleteData(arg1, arg2) {
   return window['go']['main']['App']['DeleteData'](arg1, arg2);
 }
 
+export function ExportData() {
+  return window['go']['main']['App']['ExportData']();
+}
+
 export function GenerateDeclarationOne(arg1, arg2) {
   return window['go']['main']['App']['GenerateDeclarationOne'](arg1, arg2);
 }
 
 export function GenerateDeclarationSix(arg1, arg2) {
   return window['go']['main']['App']['GenerateDeclarationSix'](arg1, arg2);
+}
+
+export function ImportData() {
+  return window['go']['main']['App']['ImportData']();
 }
 
 export function LoadAlerts() {

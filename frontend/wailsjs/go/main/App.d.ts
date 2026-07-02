@@ -6,9 +6,13 @@ export function CalculateTaxForQuarter(arg1:number,arg2:number):Promise<main.Cal
 
 export function DeleteData(arg1:number,arg2:number):Promise<string>;
 
+export function ExportData():Promise<string>;
+
 export function GenerateDeclarationOne(arg1:number,arg2:number):Promise<string>;
 
 export function GenerateDeclarationSix(arg1:number,arg2:main.SocialSecurityParts):Promise<string>;
+
+export function ImportData():Promise<string>;
 
 export function LoadAlerts():Promise<string>;
 

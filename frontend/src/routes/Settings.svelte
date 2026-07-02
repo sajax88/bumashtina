@@ -10,6 +10,8 @@
     import {fade} from 'svelte/transition';
     import {BrowserOpenURL} from "../../wailsjs/runtime";
     import {MONEY_DIVIDER} from '../constants'
+    import ImportData from "../components/ImportData.svelte";
+    import ExportData from "../components/ExportData.svelte";
 
     onMount(() => {
         loadAllConfigs()
@@ -176,13 +178,10 @@
             {/if}
         {/if}
 
-        <!-- TODO
         <h2>Експорт/импорт на данни</h2>
 
-        <p><small>
-            Внимание, при импорт на данните ще се заличат въведените ви данни!
-        </small></p>
-        -->
+        <ExportData />
+        <ImportData />
     </div>
 </main>
 

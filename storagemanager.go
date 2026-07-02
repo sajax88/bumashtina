@@ -1,6 +1,8 @@
 package main
 
 import (
+	"archive/zip"
+	"io"
 	"os"
 	"path/filepath"
 
@@ -69,4 +71,45 @@ func getFilePath(filename string) (string, error) {
 	}
 
 	return filePath, nil
+}
+
+func exportIntoZip(zipFilePath string) error {
+	configFilePath, err := getFilePath(ConfigFile)
+	if err != nil {
+		return err
+	}
+	dataFilePath, err := getFilePath(DataFile)
+	if err != nil {
+		return err
+	}
+
+	archive, err := os.Create(zipFilePath)
+	if err != nil {
+		return err
+	}
+	defer archive.Close()
+	zipWriter := zip.NewWriter(archive)
+	defer zipWriter.Close()
+
+	files := []string{configFilePath, dataFilePath}
+
+	for _, fPath := range files {
+		reader, err := os.Open(fPath)
+		if err != nil {
+			return err
+		}
+		defer reader.Close()
+
+		fileName := filepath.Base(fPath)
+		writer, err := zipWriter.Create(fileName)
+		if err != nil {
+			return err
+		}
+		if _, err := io.Copy(writer, reader); err != nil {
+			return err
+		}
+		reader.Close()
+	}
+
+	return nil
 }
