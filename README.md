@@ -23,7 +23,7 @@ You'll need to download this repo and go into the `bumashtina` directory.
 Open your terminal and run: `./build/bin/bumashtina.exe`
 
 ### Mac
-Open your terminal and run: `open -n ./build/bin/Bumashtina.app`
+Open your terminal and run: `open ./build/bin/Bumashtina.app`
 
 ### Linux (tested on Ubuntu)
 Open your terminal and run: `./build/bin/bumashtina`
