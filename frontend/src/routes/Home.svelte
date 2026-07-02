@@ -51,8 +51,8 @@
         let formToSave = new IncomeForm({
             Month: parseInt(form.Month),
             Year: form.Year,
-            MonthIncomeCents: Math.ceil(parseFloat(form.MonthIncome) * MONEY_DIVIDER),
-            TaxedIncomeCents: Math.ceil(parseFloat(form.TaxedIncome) * MONEY_DIVIDER),
+            MonthIncomeCents: Math.round(parseFloat(form.MonthIncome) * MONEY_DIVIDER),
+            TaxedIncomeCents: Math.round(parseFloat(form.TaxedIncome) * MONEY_DIVIDER),
             DayStart: form.DayStart,
             DayEnd: form.DayEnd,
             WorkDaysTotal: form.WorkDaysTotal,
