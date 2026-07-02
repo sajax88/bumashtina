@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path/filepath"
 	"time"
 
 	lru "github.com/hashicorp/golang-lru/v2"
@@ -446,7 +447,29 @@ func (a *App) ExportData() string {
 }
 
 func (a *App) ImportData() string {
-	//TODO
+	var err error
+	var options runtime.OpenDialogOptions
+	options.DefaultDirectory, err = os.UserHomeDir()
+	options.Filters = []runtime.FileFilter{{Pattern: "*.zip"}}
+	if err != nil {
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return ""
+	}
+	openFilePath, err := runtime.OpenFileDialog(a.ctx, options)
+	if err != nil {
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return ""
+	}
+
+	if openFilePath == "" {
+		return ""
+	}
+
+	if filepath.Ext(openFilePath) != ".zip" {
+		ShowErrorDialog(a.ctx, "", "Избраният файл не е .zip")
+		return ""
+	}
+
 	answer := ShowQuestionDialog(
 		a.ctx,
 		"Потвърдете действието",
@@ -455,6 +478,12 @@ func (a *App) ImportData() string {
 	)
 
 	if answer == "No" {
+		return ""
+	}
+
+	err = importFromZip(openFilePath)
+	if err != nil {
+		ShowErrorDialog(a.ctx, "", err.Error())
 		return ""
 	}
 

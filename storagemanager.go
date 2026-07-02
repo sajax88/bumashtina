@@ -113,3 +113,48 @@ func exportIntoZip(zipFilePath string) error {
 
 	return nil
 }
+
+func importFromZip(zipFilePath string) error {
+	archive, err := zip.OpenReader(zipFilePath)
+	if err != nil {
+		return err
+	}
+	defer archive.Close()
+
+	for _, f := range archive.File {
+		var filePath string
+		if f.Name == ConfigFile {
+			filePath, err = getFilePath(ConfigFile)
+		} else if f.Name == DataFile {
+			filePath, err = getFilePath(DataFile)
+		} else {
+			// Skip whatever else we have there
+			continue
+		}
+		if err != nil {
+			return err
+		}
+
+		dstFile, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+		if err != nil {
+			return err
+		}
+
+		fileInArchive, err := f.Open()
+		if err != nil {
+			dstFile.Close()
+			return err
+		}
+
+		if _, err := io.Copy(dstFile, fileInArchive); err != nil {
+			dstFile.Close()
+			fileInArchive.Close()
+			return err
+		}
+
+		dstFile.Close()
+		fileInArchive.Close()
+	}
+
+	return nil
+}
