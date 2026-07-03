@@ -10,10 +10,10 @@
     import CalculatedTaxForMonth from "../components/CalculatedTaxForMonth.svelte";
     import {numberWithSpaces} from "../common_functions";
     import CalculatedSocialSecurity from "../components/CalculatedSocialSecurity.svelte";
+    import {MONEY_DIVIDER} from "../constants";
+    import {moneyToCents} from "../functions";
 
     export let params;
-
-    const MONEY_DIVIDER = 100;
 
     let dataSingle;
     let socialSecurityParts;
@@ -69,9 +69,9 @@
     }
 
     async function savePaidInsurance() {
-        dataSingle.SocialSecurityReallyPaidParts.PensionPartOneCents = moneyToCents(paidInsuranceValues.PensionPartOne);
-        dataSingle.SocialSecurityReallyPaidParts.PensionPartTwoCents = moneyToCents(paidInsuranceValues.PensionPartTwo);
-        dataSingle.SocialSecurityReallyPaidParts.HealthInsuranceCents = moneyToCents(paidInsuranceValues.HealthInsurance);
+        dataSingle.SocialSecurityReallyPaidParts.PensionPartOneCents = moneyToCents(paidInsuranceValues.PensionPartOne.toString());
+        dataSingle.SocialSecurityReallyPaidParts.PensionPartTwoCents = moneyToCents(paidInsuranceValues.PensionPartTwo.toString());
+        dataSingle.SocialSecurityReallyPaidParts.HealthInsuranceCents = moneyToCents(paidInsuranceValues.HealthInsurance.toString());
         await UpdateForm(dataSingle).then(async function (result) {
             if (result != "") {
                 document.getElementById(`paid-insurance-inputs`).style.display = "none";
@@ -81,11 +81,6 @@
                 await load_data_for_month()
             }
         });
-    }
-
-    function moneyToCents(sum: string): number
-    {
-        return parseInt(Math.round(parseFloat(sum) * MONEY_DIVIDER))
     }
 </script>
 

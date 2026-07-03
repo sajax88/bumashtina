@@ -7,8 +7,8 @@
         SavePaidTaxForQuarter
     } from "../../wailsjs/go/main/App.js";
     import CalculatedTaxForQuarter from "./CalculatedTaxForQuarter.svelte";
-
-    const MONEY_DIVIDER = 100;
+    import {MONEY_DIVIDER} from "../constants";
+    import {moneyToCents} from "../functions";
 
     let taxCalculationResult;
     let previousQuarter = Math.floor((new Date().getMonth() + 3) / 3) - 1;
@@ -27,14 +27,14 @@
     let taxEnterForm = {
         Quarter: previousQuarter.toString(),
         Year: taxFormYear,
-        AmountPaid: 0.0,
+        AmountPaid: "0.0",
     }
 
     function calculateTaxForQuarter() {
         CalculateTaxForQuarter(parseInt(taxCalculatorForm.Quarter), taxCalculatorForm.Year).then(
             function (result) {
                 taxCalculationResult = result
-                taxEnterForm.AmountPaid = result.TaxCents / MONEY_DIVIDER;
+                taxEnterForm.AmountPaid = String(result.TaxCents / MONEY_DIVIDER);
                 taxEnterForm.Quarter = taxCalculatorForm.Quarter;
                 taxEnterForm.Year = taxCalculatorForm.Year;
             }
@@ -47,7 +47,7 @@
         SavePaidTaxForQuarter(
             parseInt(taxEnterForm.Quarter),
             taxEnterForm.Year,
-            parseFloat(taxEnterForm.AmountPaid)
+            moneyToCents(taxEnterForm.AmountPaid)
         ).then(
             function (result) {
                 taxEnterResult = result;

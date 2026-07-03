@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"slices"
@@ -13,7 +14,7 @@ import (
 
 func firstSymbol(s string) string {
 	r := []rune(s)
-	if len(r) > 1 {
+	if len(r) >= 1 {
 		return string(r[:1])
 	}
 	return s
@@ -21,6 +22,9 @@ func firstSymbol(s string) string {
 
 func MakeDeclarationOne(f IncomeForm, u UserConfig, s Settings) ([]byte, error) {
 	f.WorkDaysReal = f.WorkDaysTotal - f.WorkDaysSickLeave
+	if f.WorkDaysReal < 0 || f.WorkDaysReal > 31 {
+		return nil, errors.New(fmt.Sprintf("Невалидна стойност на работни дни: %d", f.WorkDaysReal))
+	}
 
 	initials := strings.ToUpper(firstSymbol(u.FirstName) + firstSymbol(u.MiddleName))
 	endSymbol := ""
@@ -115,11 +119,11 @@ func MakeDeclarationSix(year int, u UserConfig, sums SocialSecurityParts) ([]byt
 		"",
 		"0",
 		"",
-		fmt.Sprintf("%.2f", float64(sums.PensionPartOneCents/MoneyDivider)),
+		fmt.Sprintf("%.2f", float64(sums.PensionPartOneCents)/float64(MoneyDivider)),
 		"",
-		fmt.Sprintf("%.2f", float64(sums.PensionPartTwoCents/MoneyDivider)),
+		fmt.Sprintf("%.2f", float64(sums.PensionPartTwoCents)/float64(MoneyDivider)),
 		"",
-		fmt.Sprintf("%.2f", float64(sums.HealthInsuranceCents/MoneyDivider)),
+		fmt.Sprintf("%.2f", float64(sums.HealthInsuranceCents)/float64(MoneyDivider)),
 	}
 	fields = append(fields, make([]string, 42)...)
 	fields = append(fields, "NRAD62007")
@@ -138,6 +142,7 @@ func MakeDeclarationSix(year int, u UserConfig, sums SocialSecurityParts) ([]byt
 func joinFields(fields []string, separator string, withQuotes []int) string {
 	result := ""
 	for i, field := range fields {
+		// The last field should always be quoted
 		if slices.Contains(withQuotes, i) || i == len(fields)-1 {
 			field = `"` + field + `"`
 		}

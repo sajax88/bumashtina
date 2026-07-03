@@ -2,6 +2,7 @@
     import {BookText, Check, Save} from "lucide-svelte";
     import {GenerateDeclarationSix, PreviewDeclarationSix} from "../../wailsjs/go/main/App";
     import {MONEY_DIVIDER} from "../constants";
+    import {moneyToCents} from "../functions";
 
     let declarationSixValues = {
         PensionPartOne: 0,
@@ -26,16 +27,11 @@
 
     function generateDeclarationSix(): void {
         let sums = {
-            PensionPartOneCents: moneyToCents(declarationSixValues.PensionPartOne),
-            PensionPartTwoCents: moneyToCents(declarationSixValues.PensionPartTwo),
-            HealthInsuranceCents: moneyToCents(declarationSixValues.HealthInsurance),
+            PensionPartOneCents: moneyToCents(declarationSixValues.PensionPartOne.toString()),
+            PensionPartTwoCents: moneyToCents(declarationSixValues.PensionPartTwo.toString()),
+            HealthInsuranceCents: moneyToCents(declarationSixValues.HealthInsurance.toString()),
         }
         GenerateDeclarationSix(declarationSixForm.Year, sums).then((result) => (declarationSixResult = result));
-    }
-
-    function moneyToCents(sum: string): number
-    {
-        return parseInt(Math.round(parseFloat(sum) * MONEY_DIVIDER))
     }
 </script>
 

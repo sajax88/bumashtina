@@ -7,8 +7,6 @@ import (
 	"slices"
 )
 
-// We don't have a real database, so we just store the data in the file for now.
-
 func AddDataToFile(a *App, f IncomeForm) error {
 	allData, err := GetIncomeData(a)
 	if err != nil {
@@ -34,6 +32,7 @@ func GetDataFromFileForMonth(a *App, month int, year int) (IncomeForm, error) {
 		}
 	}
 
+	// Return empty data if not found
 	return IncomeForm{}, nil
 }
 

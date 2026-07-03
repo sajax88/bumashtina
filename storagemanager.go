@@ -23,42 +23,42 @@ func LoadData(cache *lru.Cache[string, []byte], fileName string, cacheKey string
 	}
 
 	// Try to get from file
-	filePath, err := getFilePath(fileName)
+	filePath, err := prepareFilePath(fileName)
 	if err != nil {
 		return nil, err
 	}
 	savedData, err := ReadFromFile(filePath)
-	if err != nil || len(savedData) == 0 {
+	if err != nil || savedData == nil {
 		return nil, err
 	}
 
-	if inCache {
-		cache.Remove(cacheKey)
-	}
-	cache.Add(cacheKey, savedData)
+	dataCopy := make([]byte, len(savedData))
+	copy(dataCopy, savedData)
+	cache.Add(cacheKey, dataCopy)
 
 	return savedData, nil
 }
 
 func SaveData(cache *lru.Cache[string, []byte], data []byte, fileName string, cacheKey string) error {
-	filePath, err := getFilePath(fileName)
+	filePath, err := prepareFilePath(fileName)
 	if err != nil {
 		return err
 	}
 
-	_, err = SaveToFile(filePath, data)
+	err = SaveToFile(filePath, data)
 	if err != nil {
 		return err
 	}
 
 	// Update cache
-	cache.Remove(cacheKey)
-	cache.Add(cacheKey, data)
+	dataCopy := make([]byte, len(data))
+	copy(dataCopy, data)
+	cache.Add(cacheKey, dataCopy)
 
 	return nil
 }
 
-func getFilePath(filename string) (string, error) {
+func prepareFilePath(filename string) (string, error) {
 	d, dirErr := os.UserConfigDir()
 	if dirErr != nil {
 		return "", dirErr
@@ -74,11 +74,11 @@ func getFilePath(filename string) (string, error) {
 }
 
 func exportIntoZip(zipFilePath string) error {
-	configFilePath, err := getFilePath(ConfigFile)
+	configFilePath, err := prepareFilePath(ConfigFile)
 	if err != nil {
 		return err
 	}
-	dataFilePath, err := getFilePath(DataFile)
+	dataFilePath, err := prepareFilePath(DataFile)
 	if err != nil {
 		return err
 	}
@@ -98,23 +98,25 @@ func exportIntoZip(zipFilePath string) error {
 		if err != nil {
 			return err
 		}
-		defer reader.Close()
 
 		fileName := filepath.Base(fPath)
 		writer, err := zipWriter.Create(fileName)
 		if err != nil {
+			reader.Close()
 			return err
 		}
 		if _, err := io.Copy(writer, reader); err != nil {
+			reader.Close()
 			return err
 		}
+
 		reader.Close()
 	}
 
 	return nil
 }
 
-func importFromZip(zipFilePath string) error {
+func importFromZip(cache *lru.Cache[string, []byte], zipFilePath string) error {
 	archive, err := zip.OpenReader(zipFilePath)
 	if err != nil {
 		return err
@@ -124,9 +126,9 @@ func importFromZip(zipFilePath string) error {
 	for _, f := range archive.File {
 		var filePath string
 		if f.Name == ConfigFile {
-			filePath, err = getFilePath(ConfigFile)
+			filePath, err = prepareFilePath(ConfigFile)
 		} else if f.Name == DataFile {
-			filePath, err = getFilePath(DataFile)
+			filePath, err = prepareFilePath(DataFile)
 		} else {
 			// Skip whatever else we have there
 			continue
@@ -155,6 +157,8 @@ func importFromZip(zipFilePath string) error {
 		dstFile.Close()
 		fileInArchive.Close()
 	}
+
+	cache.Purge()
 
 	return nil
 }

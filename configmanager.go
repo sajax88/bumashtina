@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"net/mail"
-	"strconv"
 )
 
 const MoneyDivider = 100
@@ -77,10 +76,15 @@ func (u UserConfig) Validate() (bool, string) {
 }
 
 func isDigitsOnly(s string) bool {
-	if _, err := strconv.Atoi(s); err == nil {
-		return true
+	if len(s) == 0 {
+		return false
 	}
-	return false
+	for _, c := range s {
+		if c < '0' || c > '9' {
+			return false
+		}
+	}
+	return true
 }
 
 func (t TaxesConfig) Validate() (bool, string) {
@@ -89,6 +93,9 @@ func (t TaxesConfig) Validate() (bool, string) {
 	}
 	if t.MaxInsuranceIncomeCents <= 0 {
 		return false, "Невалиден максимален осигурителен доход"
+	}
+	if t.MinInsuranceIncomeCents >= t.MaxInsuranceIncomeCents {
+		return false, "Минималният осигурителен доход трябва да е по-малък от максималния"
 	}
 	if (t.ExpensesPercentage <= 0) || (t.ExpensesPercentage > 100) {
 		return false, "Невалиден процент признати разходи"
@@ -156,7 +163,8 @@ func LoadConfig(a *App) (Config, error) {
 		return c, err
 	}
 
-	if c.TaxesConfig.TaxPercentage == 0 {
+	isValid, _ := c.TaxesConfig.Validate()
+	if !isValid {
 		c.TaxesConfig = GetDefaultTaxesConfig()
 	}
 	return c, err

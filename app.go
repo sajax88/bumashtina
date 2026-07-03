@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"time"
@@ -17,7 +18,11 @@ type App struct {
 }
 
 func NewApp() *App {
-	return &App{}
+	cache, err := lru.New[string, []byte](512)
+	if err != nil {
+		log.Fatalf("failed to create cache: %v", err)
+	}
+	return &App{cache: cache}
 }
 
 // Startup is called when the app starts. The context is saved
@@ -168,8 +173,7 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 	}
 
 	// Calculate approximate taxes and social security, save them together with the form
-	CalculateSocialSecurity(&f)
-	CalculateTaxForMonth(&f)
+	CalculateSocialSecurityAndTaxForMonth(&f)
 
 	err = AddDataToFile(a, f)
 	if err != nil {
@@ -192,7 +196,7 @@ func (a *App) UpdateForm(f IncomeForm) string {
 		existingForm.SocialSecurityReallyPaidParts = f.SocialSecurityReallyPaidParts
 		existingForm.SocialSecurityReallyPaidCents = f.SocialSecurityReallyPaidParts.PensionPartOneCents + f.SocialSecurityReallyPaidParts.PensionPartTwoCents + f.SocialSecurityReallyPaidParts.HealthInsuranceCents
 	} else {
-		ShowErrorDialog(a.ctx, "", fmt.Sprintf("Данните за месец %d не са намерени", existingForm.Month))
+		ShowErrorDialog(a.ctx, "", fmt.Sprintf("Данните за месец %d не са намерени", f.Month))
 		return ""
 	}
 
@@ -346,7 +350,7 @@ func (a *App) SaveDeclarationToFile(content []byte, filename string) (string, er
 		return "", nil
 	}
 
-	saveFilePath, err = SaveToFile(saveFilePath, content)
+	err = SaveToFile(saveFilePath, content)
 	if err != nil {
 		return "", err
 	}
@@ -398,7 +402,7 @@ func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
 	return result
 }
 
-func (a *App) SavePaidTaxForQuarter(quarter int, year int, amount float32) string {
+func (a *App) SavePaidTaxForQuarter(quarter int, year int, amountCents int64) string {
 	// Find the last month in the quarter and save the paid tax there
 	lastMonth := (quarter-1)*3 + 3
 	row, err := GetDataFromFileForMonth(a, lastMonth, year)
@@ -410,7 +414,7 @@ func (a *App) SavePaidTaxForQuarter(quarter int, year int, amount float32) strin
 		ShowWarningDialog(a.ctx, "", "Въведете данните за трите месеца, за да запазите платения данък за тримесечието. Ако сте прекъснали дейност, въведете нулев доход и нулев осигурителен доход.")
 		return ""
 	}
-	row.TaxesReallyPaidCents = int64(amount * MoneyDivider)
+	row.TaxesReallyPaidCents = amountCents
 	return a.UpdateForm(row)
 }
 
@@ -481,7 +485,7 @@ func (a *App) ImportData() string {
 		return ""
 	}
 
-	err = importFromZip(openFilePath)
+	err = importFromZip(a.cache, openFilePath)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "", err.Error())
 		return ""

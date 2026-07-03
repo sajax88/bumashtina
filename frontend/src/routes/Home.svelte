@@ -11,6 +11,7 @@
     import {main} from "../../wailsjs/go/models";
     import IncomeForm = main.IncomeForm;
     import {fade} from 'svelte/transition';
+    import {MONEY_DIVIDER} from "../constants";
 
     let form = {
         Month: String(new Date().getMonth()), // We want a previous month
@@ -26,7 +27,6 @@
     let configTaxes;
     let declarationResult;
 
-    const MONEY_DIVIDER = 100;
 
     onMount(async () => {
         await load_configs()

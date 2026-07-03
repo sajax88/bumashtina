@@ -6,23 +6,23 @@ import (
 )
 
 // ReadFromFile returns empty data if the file does not exist
-func ReadFromFile(filepath string) ([]byte, error) {
-	data, err := os.ReadFile(filepath)
+func ReadFromFile(filePath string) ([]byte, error) {
+	data, err := os.ReadFile(filePath)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			return []byte{}, nil
+			return nil, nil
 		}
-		return []byte{}, err
+		return nil, err
 	}
 
 	return data, nil
 }
 
-func SaveToFile(filepath string, content []byte) (string, error) {
-	err := os.WriteFile(filepath, content, 0644)
+func SaveToFile(filePath string, content []byte) error {
+	err := os.WriteFile(filePath, content, 0600)
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	return filepath, nil
+	return nil
 }
