@@ -3,6 +3,7 @@ package main
 import (
 	"cmp"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"slices"
 )
@@ -11,6 +12,12 @@ func AddDataToFile(a *App, f IncomeForm) error {
 	allData, err := GetIncomeData(a)
 	if err != nil {
 		return err
+	}
+
+	for _, r := range allData {
+		if r.Month == f.Month && r.Year == f.Year {
+			return errors.New(fmt.Sprintf("Data for %d/%d already exists", f.Month, f.Year))
+		}
 	}
 
 	allData = append(allData, f)
