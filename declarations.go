@@ -12,18 +12,14 @@ import (
 	"golang.org/x/text/transform"
 )
 
-func firstSymbol(s string) string {
-	r := []rune(s)
-	if len(r) >= 1 {
-		return string(r[:1])
-	}
-	return s
-}
-
 func MakeDeclarationOne(f IncomeForm, u UserConfig, s Settings) ([]byte, error) {
 	f.WorkDaysReal = f.WorkDaysTotal - f.WorkDaysSickLeave
 	if f.WorkDaysReal < 0 || f.WorkDaysReal > 31 {
 		return nil, errors.New(fmt.Sprintf("Невалидна стойност на работни дни: %d", f.WorkDaysReal))
+	}
+
+	if f.TaxedIncomeCents == 0 {
+		return nil, errors.New("Нулев осигурителен доход, декларацията не се подава")
 	}
 
 	initials := strings.ToUpper(firstSymbol(u.FirstName) + firstSymbol(u.MiddleName))
@@ -158,4 +154,12 @@ func toWindows1251(utf8String string) (string, error) {
 	reader := transform.NewReader(bytes.NewBufferString(utf8String), charmap.Windows1251.NewEncoder())
 	encodedBytes, err := io.ReadAll(reader)
 	return string(encodedBytes), err
+}
+
+func firstSymbol(s string) string {
+	r := []rune(s)
+	if len(r) >= 1 {
+		return string(r[:1])
+	}
+	return s
 }
