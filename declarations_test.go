@@ -112,9 +112,65 @@ func TestMakeDeclarationOne(t *testing.T) {
 				t.Errorf("MakeDeclarationOne() error = %v, expected error message = %v", err.Error(), tt.errMsg)
 			}
 
+			// It's important to keep Windows line endings in the test data - that's how NRA expects them!
+			// If you see the diff in \r symbol, re-check if the test declaration file was not accidentally commited just with LF ending
 			if !tt.wantErr && !bytes.Equal(result, tt.expected) {
 				t.Errorf(
 					"MakeDeclarationOne() result is not equal to expected. Diff from expected: %v",
+					cmp.Diff(tt.expected, result),
+				)
+			}
+		})
+	}
+}
+
+func TestMakeDeclarationSix(t *testing.T) {
+	tests := []struct {
+		name                string
+		year                int
+		user                UserConfig
+		socialSecurityParts SocialSecurityParts
+		wantErr             bool
+		errMsg              string
+		expected            []byte
+	}{
+		{
+			name: "Valid Input",
+			year: 2026,
+			user: UserConfig{
+				FirstName:  "Иван",
+				MiddleName: "Петров",
+				LastName:   "Иванов",
+				Egn:        "1234567890",
+				Phone:      "0876123456",
+				Email:      "ivanov@gmail.com",
+			},
+			socialSecurityParts: SocialSecurityParts{
+				PensionPartOneCents:  156260,
+				PensionPartTwoCents:  52790,
+				HealthInsuranceCents: 84465,
+			},
+			wantErr:  false,
+			expected: readFileOrPanic("testdata/declaration_six_valid.txt"),
+		},
+
+		// TODO: handle invalid cases?
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := MakeDeclarationSix(tt.year, tt.user, tt.socialSecurityParts)
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("MakeDeclarationSix() returned unexpected error %v", err)
+				return
+			}
+
+			// It's important to keep Windows line endings in the test data - that's how NRA expects them!
+			// If you see the diff in \r symbol, re-check if the test declaration file was not accidentally commited just with LF ending
+			if !tt.wantErr && !bytes.Equal(result, tt.expected) {
+				t.Errorf(
+					"MakeDeclarationSix() result is not equal to expected. Diff from expected: %v",
 					cmp.Diff(tt.expected, result),
 				)
 			}
