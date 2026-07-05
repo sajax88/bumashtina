@@ -1,5 +1,16 @@
 # README
 
+**BG**
+
+Тази програмка може да ви бъде полезна, ако сте самоосигуряващо се лице по смисъла на КСО.
+
+Функции:
+- генерира Декларация 1 и Декларация 6, които се качват в портала на НАП https://portal.nra.bg/
+- изчислява данък за тримесечие за подаване на Декларация по чл. 55
+
+Всичко се изчислява и се запазва локално. За повече информация вижте инструкциите долу. 
+
+**EN**
 
 This is a desktop app for all the poor souls in the Republic of Bulgaria who happen to pay their taxes and social security themselves. Only for the **self-employed** people who know what they're doing!
 Check if this is your case: https://nra.bg/wps/portal/nra/osiguryavane/osiguryavam-se-sam#osigurqvam-se-sam0
