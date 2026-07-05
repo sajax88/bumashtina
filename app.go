@@ -298,6 +298,11 @@ func (a *App) PreviewDeclarationSix(year int) SocialSecurityParts {
 		sums.HealthInsuranceCents += paidSums.HealthInsuranceCents
 	}
 
+	if sums.PensionPartOneCents == 0 {
+		ShowWarningDialog(a.ctx, "", "Няма данни за платени осигуровки")
+		return sums
+	}
+
 	return sums
 }
 
