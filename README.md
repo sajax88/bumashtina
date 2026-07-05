@@ -25,6 +25,10 @@ Open your terminal and run: `./build/bin/bumashtina.exe`
 ### Mac
 Open your terminal and run: `open ./build/bin/Bumashtina.app`
 
+If the app is considered unsafe, remove the quarantine attribute:
+`xattr -dr com.apple.quarantine /Applications/Bumashtina.app
+open /Applications/Bumashtina.app`
+
 ### Linux (tested on Ubuntu)
 Open your terminal and run: `./build/bin/bumashtina` for Ubuntu 22
 or `./build/bin/bumashtina_with_libwebkit2gtk_41` for Ubuntu 24
@@ -59,6 +63,10 @@ and have access to your Go methods, there is also a dev server that runs on http
 To build a redistributable, production mode package, use `wails build`. See Wails docs for details: https://wails.io/docs/reference/cli#build 
 On Ubuntu 24 you might have to build with tag:
 `wails build -tags webkit2_41`
+
+### Unit tests
+
+Don't forget to run the unit tests before committing. Feel free to add more.
 
 
 ## I like your app and want to buy you a coffee/beer

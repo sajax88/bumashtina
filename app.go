@@ -262,6 +262,7 @@ func (a *App) GenerateDeclarationOne(month int, year int) string {
 		ShowErrorDialog(a.ctx, "", err.Error())
 		return ""
 	}
+	// Dialog cancelled
 	if res == "" {
 		return res
 	}
@@ -325,6 +326,7 @@ func (a *App) GenerateDeclarationSix(year int, sums SocialSecurityParts) string 
 		ShowErrorDialog(a.ctx, "", err.Error())
 		return ""
 	}
+	// Dialog cancelled
 	if res == "" {
 		return res
 	}
