@@ -153,8 +153,6 @@ func TestMakeDeclarationSix(t *testing.T) {
 			wantErr:  false,
 			expected: readFileOrPanic("testdata/declaration_six_valid.txt"),
 		},
-
-		// TODO: handle invalid cases?
 	}
 
 	for _, tt := range tests {

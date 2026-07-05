@@ -26,7 +26,8 @@ Open your terminal and run: `./build/bin/bumashtina.exe`
 Open your terminal and run: `open ./build/bin/Bumashtina.app`
 
 ### Linux (tested on Ubuntu)
-Open your terminal and run: `./build/bin/bumashtina`
+Open your terminal and run: `./build/bin/bumashtina` for Ubuntu 22
+or `./build/bin/bumashtina_with_libwebkit2gtk_41` for Ubuntu 24
 
 ## I want to customize or contribute
 
