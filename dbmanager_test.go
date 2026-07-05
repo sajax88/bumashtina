@@ -169,8 +169,8 @@ func TestSortRows(t *testing.T) {
 	}
 	sorted := sortRows(rows)
 
-	if len(sorted) != 4 {
-		t.Fatalf("Expected 4 rows, got %d", len(sorted))
+	if len(sorted) != 5 {
+		t.Fatalf("Expected 5 rows, got %d", len(sorted))
 	}
 
 	// sortRows sorts descending (Year, Month)
