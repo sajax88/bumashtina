@@ -28,21 +28,21 @@ The data is stored locally in the user's directory.
 
 ## I just want to run the program
 
-You'll need to download this repo and go into the `bumashtina` directory.
+You'll need to download the compiled version from [releases](https://github.com/sajax88/bumashtina/releases) or download this repo and go into the `bumashtina/build/bin` directory.
 
 ### Windows
-Open your terminal and run: `./build/bin/bumashtina.exe`
+Open your terminal and run: `./bumashtina.exe`
 
 ### Mac
-Open your terminal and run: `open ./build/bin/Bumashtina.app`
+Open your terminal and run: `open ./Bumashtina.app`
 
 If the app is considered unsafe, remove the quarantine attribute:
-`xattr -dr com.apple.quarantine /Applications/Bumashtina.app
-open /Applications/Bumashtina.app`
+`xattr -dr com.apple.quarantine ./Bumashtina.app
+open ./Bumashtina.app`
 
 ### Linux (tested on Ubuntu)
-Open your terminal and run: `./build/bin/bumashtina` for Ubuntu 22
-or `./build/bin/bumashtina_with_libwebkit2gtk_41` for Ubuntu 24
+Open your terminal and run: `./bumashtina` for Ubuntu 22
+or `./bumashtina_with_libwebkit2gtk_41` for Ubuntu 24
 
 ## I want to customize or contribute
 
