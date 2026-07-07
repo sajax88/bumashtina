@@ -10,6 +10,8 @@
 
 Всичко се изчислява и се запазва локално. За повече информация вижте инструкциите долу. 
 
+<img width="1022" height="521" alt="image" src="https://github.com/user-attachments/assets/7717fcc1-59f0-4537-8047-e0467b821845" />
+
 **EN**
 
 This is a desktop app for all the poor souls in the Republic of Bulgaria who happen to pay their taxes and social security themselves. Only for the **self-employed** people who know what they're doing!
