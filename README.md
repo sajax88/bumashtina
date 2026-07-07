@@ -12,6 +12,7 @@
 
 <img width="1022" height="521" alt="image" src="https://github.com/user-attachments/assets/7717fcc1-59f0-4537-8047-e0467b821845" />
 
+
 **EN**
 
 This is a desktop app for all the poor souls in the Republic of Bulgaria who happen to pay their taxes and social security themselves. Only for the **self-employed** people who know what they're doing!
@@ -45,7 +46,8 @@ open ./Bumashtina.app`
 
 ### Linux (tested on Ubuntu)
 Open your terminal and run: `./bumashtina` for Ubuntu 22
-or `./bumashtina_with_libwebkit2gtk_41` for Ubuntu 24
+or `./bumashtina_with_libwebkit2gtk_41` for Ubuntu 24.
+
 You'll need to make the file executable first!
 
 ## I want to customize or contribute
