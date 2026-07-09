@@ -192,7 +192,13 @@ func CalculateAdvanceTaxForThreeMonths(forms []IncomeForm, result *CalculatedTax
 	result.PaidInsuranceCents = paidInsuranceCents
 	result.ExpensesCents = int64(math.Round(float64(incomeTotalCents) * expensesPercent / 100))
 
-	result.TaxCents = int64(math.Round(advanceTax))
+	taxCents := int64(math.Round(advanceTax))
+
+	if taxCents > 0 {
+		result.TaxCents = taxCents
+	} else {
+		result.TaxCents = 0
+	}
 
 	return nil
 }

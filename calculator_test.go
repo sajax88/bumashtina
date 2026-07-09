@@ -237,3 +237,34 @@ func TestCalculateAdvanceTaxForThreeMonths(t *testing.T) {
 		t.Error("Expected error for 4 months, got nil")
 	}
 }
+
+func TestCalculateTaxesForThreeMonthsLowIncome(t *testing.T) {
+	config := TaxesConfig{
+		PensionPercentagePartOne:  10.0,
+		PensionPercentagePartTwo:  5.0,
+		HealthInsurancePercentage: 5.0,
+		ExpensesPercentage:        25.0,
+		TaxPercentage:             10.0,
+	}
+	forms := []IncomeForm{
+		{MonthIncomeCents: 10000, SocialSecurityToPayCents: 60000, TaxesConfig: config},
+		{MonthIncomeCents: 10000, SocialSecurityToPayCents: 60000, TaxesConfig: config},
+		{MonthIncomeCents: 10000, SocialSecurityToPayCents: 60000, TaxesConfig: config},
+	}
+
+	// Total Income = 30000
+	// Paid Insurance = 60000 * 3 = 180000
+	// Expenses = 25% of 30000 = 7500
+	// Taxable = 30000 - 7500 - 60000 = -37500
+	// Tax must be 0 because taxable income is negative
+
+	var result CalculatedTax
+	err := CalculateAdvanceTaxForThreeMonths(forms, &result)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+
+	if result.TaxCents != 0 {
+		t.Errorf("TaxCents = %d; want 0", result.TaxCents)
+	}
+}
