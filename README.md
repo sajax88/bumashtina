@@ -1,6 +1,8 @@
 # README
 
-**BG**
+<h3>BG</h3>
+
+<a href="https://github.com/sajax88/bumashtina/releases/latest">Свали последната версия</a>
 
 Тази програмка може да ви бъде полезна, ако сте самоосигуряващо се лице по смисъла на КСО.
 
@@ -12,8 +14,9 @@
 
 <img width="1022" height="521" alt="image" src="https://github.com/user-attachments/assets/7717fcc1-59f0-4537-8047-e0467b821845" />
 
+<h3>EN</h3>
 
-**EN**
+<a href="https://github.com/sajax88/bumashtina/releases/latest">Download the latest version</a>
 
 This is a desktop app for all the poor souls in the Republic of Bulgaria who happen to pay their taxes and social security themselves. Only for the **self-employed** people who know what they're doing!
 Check if this is your case: https://nra.bg/wps/portal/nra/osiguryavane/osiguryavam-se-sam#osigurqvam-se-sam0
