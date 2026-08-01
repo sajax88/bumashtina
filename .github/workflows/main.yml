@@ -1,6 +1,8 @@
 name: Wails build
 
-on: push
+on:
+  push:
+  workflow_dispatch:
 #  push:
 #    tags:
 #    # Match any new tag
@@ -35,8 +37,11 @@ jobs:
 
     runs-on: ${{ matrix.build.os }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: snider/build@v3
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+
+      - name: 'Build'
+        uses:  snider/build-action@v4
         with:
           build-name: ${{ matrix.build.name }}
           build-platform: ${{ matrix.build.platform }}
