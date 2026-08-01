@@ -3,10 +3,11 @@ name: Wails build
 on:
   push:
   workflow_dispatch:
-#  push:
-#    tags:
-#    # Match any new tag
-#      - '*'
+
+  # TODO
+  #    tags:
+  #    # Match any new tag
+  #      - '*'
 
 env:
   # Necessary for most environments as build failure can occur due to OOM issues
@@ -23,17 +24,15 @@ jobs:
           - name: 'bumashtina'
             platform:  'linux/amd64'
             os: 'ubuntu-22.04'
-            # TODO
-#          - name: 'bumashtina_with_libwebkit2gtk_41'
-#            platform:  'linux/amd64'
-#            os: 'ubuntu-24.04'
-            # TODO
-#          - name: 'bumashtina'
-#            platform:  'windows/amd64'
-#            os: 'windows-latest'
-#          - name: 'bumashtina'
-#            platform:  'darwin/universal'
-#            os: 'macos-latest'
+          - name: 'bumashtina_with_libwebkit2gtk_41'
+            platform:  'linux/amd64'
+            os: 'ubuntu-24.04'
+          - name: 'bumashtina_windows'
+            platform:  'windows/amd64'
+            os: 'windows-latest'
+          - name: 'bumashtina'
+            platform:  'darwin/universal'
+            os: 'macos-latest'
 
     runs-on: ${{ matrix.build.os }}
     steps:
