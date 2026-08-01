@@ -35,17 +35,17 @@ The data is stored locally in the user's directory.
 ## I just want to run the program
 
 Download the latest version for your OS from [releases](https://github.com/sajax88/bumashtina/releases), unpack and run the executable file. 
-- For Windows you need to rename the file from **bumashtina_windows** to **bumashtina_windows.exe** first.
-- For Ubuntu 24 download **bumashtina_with_libwebkit2gtk_41** version
+- On Windows you need to rename the file from **bumashtina_windows** to **bumashtina_windows.exe** first.
+- On Ubuntu 24 download **bumashtina_with_libwebkit2gtk_41** version
 - On Linux you'll need to make the file executable first!
-- If the app is considered unsafe on MacOS, remove the quarantine attribute: `xattr -dr com.apple.quarantine ./Bumashtina.app
+- On MacOS rename the file to **bumashtina.app**. If the app is considered unsafe, remove the quarantine attribute: `xattr -dr com.apple.quarantine ./bumashtina.app`
 
 ## I want to customize or contribute
 
 Cool! The tech stack is Wails plus Svelte.
 
 The following are the standard Wails commands for development. See Wails docs for more: https://wails.io/docs/introduction
-The current framework version is 2.12.0.
+The current framework version is 2.13.0.
 
 ### Run dev
 
