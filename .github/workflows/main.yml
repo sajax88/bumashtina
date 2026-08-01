@@ -30,15 +30,16 @@ jobs:
     runs-on: ${{ matrix.build.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        env:
+          ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
         with:
           submodules: recursive
 
-      - name: Build wails
-        uses: dAppServer/wails-build-action@v2.2
-        id: build
-        with:
-          build-name: ${{ matrix.build.name }}
-          build-platform: ${{ matrix.build.platform }}
-          package: false # TODO
-          go-version: '1.26'
+#      - name: Build wails
+#        uses: snider/build@v3
+#        id: build
+#        with:
+#          build-name: ${{ matrix.build.name }}
+#          build-platform: ${{ matrix.build.platform }}
+#          package: false # TODO
