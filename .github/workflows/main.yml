@@ -25,10 +25,10 @@ jobs:
           - name: 'bumashtina_with_libwebkit2gtk_41'
             platform:  'linux/amd64'
             os: 'ubuntu-24.04'
-          - name: 'bumashtina_windows'
+          - name: 'bumashtina.exe'
             platform:  'windows/amd64'
             os: 'windows-latest'
-          - name: 'bumashtina'
+          - name: 'bumashtina.app'
             platform:  'darwin/universal'
             os: 'macos-latest'
 
