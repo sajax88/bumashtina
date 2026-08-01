@@ -2,12 +2,10 @@ name: Wails build
 
 on:
   push:
+    tags:
+      # Match any new tag
+      - '*'
   workflow_dispatch:
-
-  # TODO
-  #    tags:
-  #    # Match any new tag
-  #      - '*'
 
 env:
   # Necessary for most environments as build failure can occur due to OOM issues
@@ -44,4 +42,4 @@ jobs:
         with:
           build-name: ${{ matrix.build.name }}
           build-platform: ${{ matrix.build.platform }}
-          package: false # TODO
+          package: true
