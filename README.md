@@ -34,24 +34,11 @@ The data is stored locally in the user's directory.
 
 ## I just want to run the program
 
-You'll need to download the compiled version from [releases](https://github.com/sajax88/bumashtina/releases) or download this repo and go into the `bumashtina/build/bin` directory.
-
-### Windows
-Open your terminal and run: `./bumashtina.exe` (or click on the program icon)
-If the app is considered unsafe, you'll need to accept the risk. We're working on it :)
-
-### Mac
-Open your terminal and run: `open ./Bumashtina.app` (or click on the program icon)
-
-If the app is considered unsafe, remove the quarantine attribute:
-`xattr -dr com.apple.quarantine ./Bumashtina.app
-open ./Bumashtina.app`
-
-### Linux (tested on Ubuntu)
-Open your terminal and run: `./bumashtina` for Ubuntu 22
-or `./bumashtina_with_libwebkit2gtk_41` for Ubuntu 24.
-
-You'll need to make the file executable first!
+Download the latest version for your OS from [releases](https://github.com/sajax88/bumashtina/releases), unpack and run the executable file. 
+- For Windows you need to rename the file from **bumashtina_windows** to **bumashtina_windows.exe** first.
+- For Ubuntu 24 download **bumashtina_with_libwebkit2gtk_41** version
+- On Linux you'll need to make the file executable first!
+- If the app is considered unsafe on MacOS, remove the quarantine attribute: `xattr -dr com.apple.quarantine ./Bumashtina.app
 
 ## I want to customize or contribute
 
@@ -81,7 +68,7 @@ and have access to your Go methods, there is also a dev server that runs on http
 ### Building
 
 To build a redistributable, production mode package, use `wails build`. See Wails docs for details: https://wails.io/docs/reference/cli#build 
-On Ubuntu 24 you might have to build with tag:
+On Ubuntu 24 you have to build with this tag:
 `wails build -tags webkit2_41`
 
 ### Unit tests
