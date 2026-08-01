@@ -35,7 +35,6 @@ The data is stored locally in the user's directory.
 ## I just want to run the program
 
 Download the latest version for your OS from [releases](https://github.com/sajax88/bumashtina/releases), unpack and run the executable file. 
-- On Windows you need to rename the file from **bumashtina_windows** to **bumashtina_windows.exe** first.
 - On Ubuntu 24 download **bumashtina_with_libwebkit2gtk_41** version
 - On Linux you'll need to make the file executable first!
 - On MacOS rename the file to **bumashtina.app**. If the app is considered unsafe, remove the quarantine attribute: `xattr -dr com.apple.quarantine ./bumashtina.app`

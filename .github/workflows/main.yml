@@ -28,7 +28,7 @@ jobs:
           - name: 'bumashtina.exe'
             platform:  'windows/amd64'
             os: 'windows-latest'
-          - name: 'bumashtina.app'
+          - name: 'bumashtina'
             platform:  'darwin/universal'
             os: 'macos-latest'
 
