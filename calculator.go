@@ -17,6 +17,8 @@ type IncomeForm struct {
 	WorkDaysReal      int16
 	WorkDaysSickLeave int16
 
+	IsMonthSkipped bool // Дейността е прекъсната, този месец не се брои при изравняване на вноските
+
 	// Calculated
 	TaxesToPayCents          int64
 	ExpensesCents            int64
@@ -78,6 +80,14 @@ func (f IncomeForm) Validate() (bool, string) {
 		return false, "Невалиден месечен доход"
 	}
 
+	if f.IsMonthSkipped && (f.MonthIncomeCents != 0 || f.TaxedIncomeCents != 0) {
+		return false, "Ако не сте упражнявали дейност, въведете нулев доход и осигурителен доход"
+	}
+
+	if f.MonthIncomeCents == 0 && !f.IsMonthSkipped && f.TaxedIncomeCents > f.TaxesConfig.MinInsuranceIncomeCents {
+		return false, fmt.Sprintf("Ако нямате приходи, осигурителният доход не може да е над минималения")
+	}
+
 	if f.Month < 1 || f.Month > 12 {
 		return false, fmt.Sprintf("Невалиден месец %d", f.Month)
 	}
@@ -93,10 +103,6 @@ func (f IncomeForm) Validate() (bool, string) {
 			float64(f.TaxesConfig.MinInsuranceIncomeCents)/MoneyDivider,
 			float64(f.TaxesConfig.MaxInsuranceIncomeCents)/MoneyDivider,
 		)
-	}
-
-	if f.MonthIncomeCents == 0 && f.TaxedIncomeCents != 0 {
-		return false, fmt.Sprintf("Въведете нулев осигурителен доход, ако нямате приходи")
 	}
 
 	return true, ""

@@ -156,13 +156,21 @@
 
                     <tr>
                         <td>{row.Month} / {row.Year}</td>
-                        <td>{numberWithSpaces(row.MonthIncomeCents / MONEY_DIVIDER)}</td>
-                        <td>{numberWithSpaces(row.TaxedIncomeCents / MONEY_DIVIDER)}</td>
-                        <td>{numberWithSpaces(row.SocialSecurityReallyPaidCents / MONEY_DIVIDER)}
-                            /{numberWithSpaces(row.SocialSecurityToPayCents / MONEY_DIVIDER)}</td>
-                        <td>-</td>
+                        {#if row.IsMonthSkipped}
+                            <td colspan="4">Няма дейност</td>
+                        {:else}
+                            <td>{numberWithSpaces(row.MonthIncomeCents / MONEY_DIVIDER)}</td>
+                            <td>{numberWithSpaces(row.TaxedIncomeCents / MONEY_DIVIDER)}</td>
+                            <td>
+                                {numberWithSpaces(row.SocialSecurityReallyPaidCents / MONEY_DIVIDER)}
+                                /{numberWithSpaces(row.SocialSecurityToPayCents / MONEY_DIVIDER)}
+
+                            </td>
+                            <td>-</td>
+                        {/if}
+
                         <td class="btn-col">
-                            {#if row.MonthIncomeCents > 0 || row.TaxedIncomeCents > 0}
+                            {#if !row.IsMonthSkipped}
                                 <a href="#/item-single/{row.Year}/{row.Month}">
                                     <View color="#444" size="20"/>
                                 </a>

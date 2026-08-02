@@ -112,6 +112,7 @@ export namespace main {
 	    WorkDaysTotal: number;
 	    WorkDaysReal: number;
 	    WorkDaysSickLeave: number;
+	    IsMonthSkipped: boolean;
 	    TaxesToPayCents: number;
 	    ExpensesCents: number;
 	    SocialSecurityToPayCents: number;
@@ -137,6 +138,7 @@ export namespace main {
 	        this.WorkDaysTotal = source["WorkDaysTotal"];
 	        this.WorkDaysReal = source["WorkDaysReal"];
 	        this.WorkDaysSickLeave = source["WorkDaysSickLeave"];
+	        this.IsMonthSkipped = source["IsMonthSkipped"];
 	        this.TaxesToPayCents = source["TaxesToPayCents"];
 	        this.ExpensesCents = source["ExpensesCents"];
 	        this.SocialSecurityToPayCents = source["SocialSecurityToPayCents"];

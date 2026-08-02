@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {ArrowBigDown, ArrowBigUp, BookText, CircleCheck, Save} from 'lucide-svelte';
+    import {ArrowBigDown, ArrowBigUp, BookText, CircleCheck, Info as InfoIcon, Save} from 'lucide-svelte';
     import {GenerateDeclarationOne, LoadTaxesConfig, SaveIncomeForm,} from "../../wailsjs/go/main/App.js";
     import {BrowserOpenURL} from "../../wailsjs/runtime";
     import {onMount} from 'svelte';
@@ -22,10 +22,12 @@
         DayEnd: 0,
         WorkDaysTotal: 0,
         WorkDaysSickLeave: 0,
+        IsMonthSkipped: false,
     }
 
     let configTaxes;
     let declarationResult;
+    let showSkippedMonthInfo = false;
 
 
     onMount(async () => {
@@ -48,6 +50,8 @@
     }
 
     function saveIncome(): void {
+        console.log(form)
+
         let formToSave = new IncomeForm({
             Month: parseInt(form.Month),
             Year: form.Year,
@@ -57,6 +61,7 @@
             DayEnd: form.DayEnd,
             WorkDaysTotal: form.WorkDaysTotal,
             WorkDaysSickLeave: form.WorkDaysSickLeave,
+            IsMonthSkipped: form.IsMonthSkipped,
         })
 
         SaveIncomeForm(formToSave).then((result) => {
@@ -86,10 +91,28 @@
 
     <div class="input-box" id="home-page-input-box">
         <h2>Въведи данни за доходи</h2>
-        <p>
-            <small>Ако не сте имали дейност, въведете нулев доход и нулев осигурителен доход.<br>
-                В този случай Декларация 1 не се подава.</small>
-        </p>
+
+        <div class="form-row form-row-first">
+            <div class="form-group checkbox-group">
+                <input id="IsMonthSkipped" type="checkbox" bind:checked={form.IsMonthSkipped} />
+                <label class='checkbox-label' for="IsMonthSkipped">Не съм упражнявал дейност през месеца</label>
+                <button
+                        type="button"
+                        class="info-icon-btn"
+                        on:click={() => showSkippedMonthInfo = !showSkippedMonthInfo}
+                        aria-label="Информация"
+                >
+                    <InfoIcon color="#444" size="16"/>
+                </button>
+                {#if showSkippedMonthInfo}
+                    <div class="info-popup" transition:fade={{duration: 200}}>
+                        Отбележете тази опция само ако сте прекъснали дейност с подадена декларация в НАП.
+                        Въведете нулев доход и нулев осигурителен доход.
+                        За месеци с прекъсната дейност Декларация 1 не се подава.
+                    </div>
+                {/if}
+            </div>
+        </div>
 
         <div class="form-row">
             <div class="form-group">
@@ -272,6 +295,38 @@
         margin-top: 20px;
         padding: 10px;
         background-color: #dfd6c1;
+    }
+
+    .info-icon-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        margin-left: 4px;
+        vertical-align: middle;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .info-icon-btn:hover {
+        opacity: 0.7;
+    }
+
+    .info-popup {
+        position: relative;
+        margin-top: 8px;
+        padding: 10px;
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 0.9em;
+        color: #444;
+        line-height: 1.4;
+        max-width: 300px;
+    }
+
+    .form-row-first {
+        margin-top: 20px;
     }
 
 </style>
