@@ -121,8 +121,8 @@ func (t TaxesConfig) Validate() (bool, string) {
 
 func GetDefaultTaxesConfig() TaxesConfig {
 	return TaxesConfig{
-		MinInsuranceIncomeCents:      55066,  // Euro cents
-		MaxInsuranceIncomeCents:      211164, // Euro cents
+		MinInsuranceIncomeCents:      62020,  // Euro cents
+		MaxInsuranceIncomeCents:      230000, // Euro cents
 		ExpensesPercentage:           25.0,   // Признати разходи
 		TaxPercentage:                10.0,   // Данък върху дохода
 		HealthInsurancePercentage:    8.0,    // За фонд „Здравно осигуряване“
