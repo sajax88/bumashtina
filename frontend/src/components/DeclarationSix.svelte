@@ -46,7 +46,7 @@
             <div id="declaration-six-block" class="hidden-form-block" style="display: none;">
                 <div class="alert-small">Декларация 6 се подава до 30 април, по ЕГН</div>
 
-                Година <input type="number" id="tax-calculator-year" class="year-input"
+                Година <input type="number" id="declaration-six-year" class="year-input"
                               bind:value={declarationSixForm.Year}/>
 
                 <button class="btn btn-small" on:click={previewDeclarationSix}>

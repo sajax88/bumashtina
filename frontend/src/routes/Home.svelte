@@ -12,6 +12,7 @@
     import IncomeForm = main.IncomeForm;
     import {fade} from 'svelte/transition';
     import {MONEY_DIVIDER} from "../constants";
+    import YearlyAlignment from "../components/YearlyAlignment.svelte";
 
     let form = {
         Month: String(new Date().getMonth()), // We want a previous month
@@ -87,6 +88,7 @@
 
         <DeclarationSix/>
         <Taxes/>
+        <YearlyAlignment/>
 
     </div>
 

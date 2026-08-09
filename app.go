@@ -236,6 +236,57 @@ func (a *App) DeleteData(month int, year int) string {
 	return "Успешно изтрито"
 }
 
+func (a *App) GetActiveMonthsNumber(year int) int {
+	rows, err := GetDataFromFileForYear(a, year)
+	if err != nil {
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return 0
+	}
+	activeMonths := 0
+	for _, f := range rows {
+		if f.IsMonthSkipped == false {
+			activeMonths++
+		}
+	}
+	return activeMonths
+}
+
+func (a *App) DoYearlyAlignment(year int) string {
+	rows, err := GetDataFromFileForYear(a, year)
+	if err != nil {
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return ""
+	}
+
+	result := ""
+	for _, f := range rows {
+		if f.IsMonthSkipped {
+			continue
+		}
+
+		// TODO: maybe not string, an object instead?
+		result += fmt.Sprintf("%d", f.Month)
+		//Формулата:
+		//	Окончателен месечен осигурителен доход = годишен облагаем доход (след НПР) ÷ брой активни месеци
+		//	Делиш на месеците, през които си упражнявал дейност, не непременно на 12 (чл. 3, ал. 3 от НЕВДПОВ).
+		//	Ако си стартирал през април, делиш на 9.
+		//Пример: Годишен облагаем доход от 18 000 €,
+		//	дейност през всичките 12 месеца → 18 000 ÷ 12 = 1 500 € окончателен месечен осигурителен доход.
+		//		Тъй като доходът се разпределя по равно, получената стойност е еднаква за всеки активен месец.
+		//		Под 550,66 € → вдига се до 550,66 €
+		//	Над 2 111,64 € → намалява се до 2 111,64 €
+		//	Самото изравняване:
+		//	След като знаеш окончателния си осигурителен доход,
+		//		изчисляваш годишните осигуровки върху него. НАП сравнява тази сума с осигуровките,
+		//		които вече си платил авансово:
+		//	Платил си по-малко от дължимото → доплащаш разликата до 30.04
+		//	Платил си повече от дължимото → надвнесеното се приспада от бъдещи задължения или ти се възстановява
+
+	}
+
+	return result
+}
+
 func (a *App) GenerateDeclarationOne(month int, year int) string {
 	var res string
 	incomeForm, err := GetDataFromFileForMonth(a, month, year)
@@ -421,6 +472,20 @@ func (a *App) SavePaidTaxForQuarter(quarter int, year int, amountCents int64) st
 		ShowWarningDialog(a.ctx, "", "Въведете данните за трите месеца, за да запазите платения данък за тримесечието. Ако сте прекъснали дейност, въведете нулев доход и нулев осигурителен доход.")
 		return ""
 	}
+
+	if row.TaxesReallyPaidCents > 0 {
+		answer := ShowQuestionDialog(
+			a.ctx,
+			"Потвърдете действието",
+			"Вече имате въведен платен данък за това тримесечие! Да презапиша ли стойността?",
+			"",
+		)
+
+		if answer == "No" {
+			return ""
+		}
+	}
+
 	row.TaxesReallyPaidCents = amountCents
 	return a.UpdateForm(row)
 }

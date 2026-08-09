@@ -10,6 +10,10 @@ export function DeleteData(arg1, arg2) {
   return window['go']['main']['App']['DeleteData'](arg1, arg2);
 }
 
+export function DoYearlyAlignment(arg1) {
+  return window['go']['main']['App']['DoYearlyAlignment'](arg1);
+}
+
 export function ExportData() {
   return window['go']['main']['App']['ExportData']();
 }
@@ -20,6 +24,10 @@ export function GenerateDeclarationOne(arg1, arg2) {
 
 export function GenerateDeclarationSix(arg1, arg2) {
   return window['go']['main']['App']['GenerateDeclarationSix'](arg1, arg2);
+}
+
+export function GetActiveMonthsNumber(arg1) {
+  return window['go']['main']['App']['GetActiveMonthsNumber'](arg1);
 }
 
 export function ImportData() {
