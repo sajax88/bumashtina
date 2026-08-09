@@ -81,12 +81,13 @@
     <AlertsBanner/>
 
     <div id="home-page-block-right" class="input-box">
-        <DeclarationSix/>
-        <Taxes/>
-
         <div class="alert-small">
             <span>Ако искате да генерирате Декларация 1, въведете дохода си във формата отляво или проверете вече въведените данни.</span>
         </div>
+
+        <DeclarationSix/>
+        <Taxes/>
+
     </div>
 
     <div class="input-box" id="home-page-input-box">
@@ -287,42 +288,6 @@
 
     #home-page-input-box label.checkbox-label {
         width: auto;
-    }
-
-    .alert-small {
-        font-size: 0.9em;
-        color: #444;
-        margin-top: 20px;
-        padding: 10px;
-        background-color: #dfd6c1;
-    }
-
-    .info-icon-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0;
-        margin-left: 4px;
-        vertical-align: middle;
-        display: inline-flex;
-        align-items: center;
-    }
-
-    .info-icon-btn:hover {
-        opacity: 0.7;
-    }
-
-    .info-popup {
-        position: relative;
-        margin-top: 8px;
-        padding: 10px;
-        background-color: #f5f5f5;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 0.9em;
-        color: #444;
-        line-height: 1.4;
-        max-width: 300px;
     }
 
     .form-row-first {

@@ -42,7 +42,10 @@
                     on:click={() => {document.getElementById('declaration-six-block').style.display = 'block';}}>
                 <span><BookText color="#444" size="20"/> Генерирай Декларация 6</span>
             </button>
+
             <div id="declaration-six-block" class="hidden-form-block" style="display: none;">
+                <div class="alert-small">Декларация 6 се подава до 30 април, по ЕГН</div>
+
                 Година <input type="number" id="tax-calculator-year" class="year-input"
                               bind:value={declarationSixForm.Year}/>
 
@@ -84,8 +87,8 @@
         padding-top: 20px;
     }
 
-    #declaration-six-block {
-        padding-top: 10px;
+    #declaration-six-block .alert-small{
+        margin: 10px 0;
     }
 
     .paid-insurance-input {

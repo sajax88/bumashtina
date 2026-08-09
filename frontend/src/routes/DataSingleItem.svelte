@@ -101,7 +101,7 @@
             <table class="table">
                 <tbody>
                 <tr>
-                    <td>Доход за месец</td>
+                    <td style="width:30%">Доход за месец</td>
                     <td colspan="2">{numberWithSpaces(dataSingle.MonthIncomeCents / MONEY_DIVIDER)}</td>
                 </tr>
                 <tr>
@@ -109,7 +109,7 @@
                     <td colspan="2">{numberWithSpaces(dataSingle.TaxedIncomeCents / MONEY_DIVIDER)}</td>
                 </tr>
                 <tr>
-                    <td>Изчислен данък<br></td>
+                    <td>Изчислен данък<br><small>* авансовият данък се плаща за тримесечие</small></td>
                     <td colspan="2">
                        <CalculatedTaxForMonth dataSingle={dataSingle}/>
                     </td>
@@ -121,8 +121,13 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Платени осигуровки</td>
                     <td>
+                        Платени осигуровки
+                        <button class="btn btn-small" on:click="{() => showPaidInsuranceEditInput()}">
+                            <Edit color="#444" size="20"/>
+                        </button>
+                    </td>
+                    <td colspan="2">
                         <span id="paid-insurance-value">
                             {#if dataSingle.SocialSecurityReallyPaidCents}
                                 {numberWithSpaces(socialSecurityPaidParts.PensionPartOneCents / MONEY_DIVIDER)} ДОО {#if dataSingle.Settings.IsPregnancyInsuranceEnabled} + ОЗМ{/if}<br>
@@ -154,11 +159,7 @@
                             <Save color="#444" size="20"/>
                         </button>
                     </td>
-                    <td>
-                        <button class="btn btn-small" on:click="{() => showPaidInsuranceEditInput()}">
-                            <Edit color="#444" size="20"/>
-                        </button>
-                    </td>
+
                 </tr>
                 <tr>
                     <td>Работни дни</td>

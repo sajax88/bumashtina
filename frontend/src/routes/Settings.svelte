@@ -145,7 +145,7 @@
                         <td>
                             <span class="taxes-config-display-value" id="taxes-config-display-value-{key}">
                             {#if Object.keys(taxesConfig).indexOf(key) < 2}
-                                {value} EUR
+                                {value.toFixed(2)} EUR
                             {:else}
                                 {value} %
                             {/if}
