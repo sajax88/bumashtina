@@ -208,3 +208,47 @@ func CalculateAdvanceTaxForThreeMonths(forms []IncomeForm, result *CalculatedTax
 
 	return nil
 }
+
+// TODO: return this instead of string
+type YearlyAlignmentResult struct {
+	IsCalculated      bool
+	YearlyIncomeCents int64
+}
+
+func GetYearlyAlignmentResult(forms []IncomeForm) YearlyAlignmentResult {
+	var result YearlyAlignmentResult
+	for _, f := range forms {
+		if f.IsMonthSkipped {
+			continue
+		}
+
+		//f.MonthIncomeCents
+		//f.ExpensesCents
+		//f.TaxesConfig.MaxInsuranceIncomeCents, f.TaxesConfig.MinInsuranceIncomeCents
+		//f.TaxesReallyPaidCents
+
+		// Total Yearly income
+		result.YearlyIncomeCents += f.MonthIncomeCents
+
+		//Формулата:
+		//	Окончателен месечен осигурителен доход = годишен облагаем доход (след НПР) ÷ брой активни месеци
+		//	Делиш на месеците, през които си упражнявал дейност, не непременно на 12 (чл. 3, ал. 3 от НЕВДПОВ).
+		//	Ако си стартирал през април, делиш на 9.
+		//Пример: Годишен облагаем доход от 18 000 €,
+		//	дейност през всичките 12 месеца → 18 000 ÷ 12 = 1 500 € окончателен месечен осигурителен доход.
+		//		Тъй като доходът се разпределя по равно, получената стойност е еднаква за всеки активен месец.
+		//		Под 550,66 € → вдига се до 550,66 €
+		//	Над 2 111,64 € → намалява се до 2 111,64 €
+		//	Самото изравняване:
+		//	След като знаеш окончателния си осигурителен доход,
+		//		изчисляваш годишните осигуровки върху него. НАП сравнява тази сума с осигуровките,
+		//		които вече си платил авансово:
+		//	Платил си по-малко от дължимото → доплащаш разликата до 30.04
+		//	Платил си повече от дължимото → надвнесеното се приспада от бъдещи задължения или ти се възстановява
+	}
+
+	// TODO: build income form, CalculateSocialSecurity(f *IncomeForm)
+
+	result.IsCalculated = true
+	return result
+}

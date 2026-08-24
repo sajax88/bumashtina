@@ -195,6 +195,20 @@ export namespace main {
 	        this.Email = source["Email"];
 	    }
 	}
+	export class YearlyAlignmentResult {
+	    IsCalculated: boolean;
+	    YearlyIncomeCents: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new YearlyAlignmentResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.IsCalculated = source["IsCalculated"];
+	        this.YearlyIncomeCents = source["YearlyIncomeCents"];
+	    }
+	}
 
 }
 

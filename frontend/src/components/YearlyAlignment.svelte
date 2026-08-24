@@ -2,8 +2,13 @@
     import {Check, Scale} from "lucide-svelte";
     import {GetActiveMonthsNumber, DoYearlyAlignment} from "../../wailsjs/go/main/App";
     import {onMount} from "svelte";
+    import {MONEY_DIVIDER} from "../constants";
+    import {fade} from 'svelte/transition';
+    import {main} from "../../wailsjs/go/models";
+    import YearlyAlignmentResult = main.YearlyAlignmentResult;
+    import {numberWithSpaces} from "../common_functions";
 
-    let alignmentResult = ''
+    let alignmentResult = new YearlyAlignmentResult;
 
     let yearlyAlignmentForm = {
         Year: new Date().getFullYear(),
@@ -15,7 +20,7 @@
     }
 
     function displayYearlyAlignmentForm(): void {
-        DoYearlyAlignment(yearlyAlignmentForm.Year).then((result: string) => (alignmentResult = result))
+        DoYearlyAlignment(yearlyAlignmentForm.Year).then((result: YearlyAlignmentResult) => (alignmentResult = result))
     }
 
     $: fetchActiveMonthsNumber(yearlyAlignmentForm.Year);
@@ -43,9 +48,9 @@
                     <span><Check color="#444" size="20"/></span>
                 </button>
 
-                {#if alignmentResult}
-                    <div id="yearly-alignment-result-block">
-                        {alignmentResult}
+                {#if alignmentResult.IsCalculated}
+                    <div id="yearly-alignment-result-block"  in:fade={{duration:300}} class="alert alert-info">
+                        Годишен доход: <b>{numberWithSpaces(alignmentResult.YearlyIncomeCents / MONEY_DIVIDER)} EUR</b>
                     </div>
                 {/if}
             </div>
