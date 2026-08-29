@@ -12,7 +12,6 @@
     import IncomeForm = main.IncomeForm;
     import {fade} from 'svelte/transition';
     import {MONEY_DIVIDER} from "../constants";
-    import YearlyAlignment from "../components/YearlyAlignment.svelte";
 
     let form = {
         Month: String(new Date().getMonth()), // We want a previous month
@@ -69,9 +68,6 @@
             form.TaxedIncome = String(taxedIncomeFloat);
         }
     }
-    
-
-    // TODO When MonthIncome is changed and > 0 and TaxedIncome = "", calculate TaxedIncome (gross-expenses, within limits)
 
     function saveIncome(): void {
         let formToSave = new IncomeForm({
@@ -109,7 +105,6 @@
 
         <DeclarationSix/>
         <Taxes/>
-        <YearlyAlignment/>
 
     </div>
 

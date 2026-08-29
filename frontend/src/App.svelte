@@ -9,7 +9,8 @@
 
     import {BrowserOpenURL} from "../wailsjs/runtime";
 
-    import {House, NotebookText, Settings2, User} from 'lucide-svelte';
+    import {House, NotebookText, Settings2, User, Scale} from 'lucide-svelte';
+    import YearlyAlignment from "./routes/YearlyAlignment.svelte";
 </script>
 
 
@@ -18,6 +19,8 @@
         <House size="16"/> Начало</a>
     <a href="#/data">
         <NotebookText size="16"/> Въведени данни</a>
+    <a href="#/alignment">
+        <Scale size="16"/> Годишно изравняване</a>
     <a href="#/personal">
         <User size="16"/> Лични данни</a>
     <a href="#/settings">
@@ -28,6 +31,7 @@
         routes={{
         "/": Home,
         "/settings": Settings,
+        "/alignment": YearlyAlignment,
         "/personal": Personal,
         "/data": Data,
         "/item-single/:year/:month": DataSingleItem,

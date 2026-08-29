@@ -210,6 +210,8 @@ func CalculateAdvanceTaxForThreeMonths(forms []IncomeForm, result *CalculatedTax
 }
 
 type MonthlyAlignmentResult struct {
+	Month                     int16
+	GrossIncomeCents          int64
 	AverageTaxedIncomeCents   int64
 	FinalInsuranceIncomeCents int64 // Осигурителен доход (= облагаем между лимитите)
 }
@@ -250,21 +252,13 @@ func GetYearlyAlignmentResult(forms []IncomeForm) YearlyAlignmentResult {
 		monthlyResult := getMonthlyAlignmentResult(f, averageMonthlyTaxedIncome)
 		result.Months = append(result.Months, monthlyResult)
 
-		//Пример: Годишен облагаем доход от 18 000 €,
-		//	дейност през всичките 12 месеца → 18 000 ÷ 12 = 1 500 € окончателен месечен осигурителен доход.
-		//		Тъй като доходът се разпределя по равно, получената стойност е еднаква за всеки активен месец.
-		//		Под 550,66 € → вдига се до 550,66 €
-		//	Над 2 111,64 € → намалява се до 2 111,64 €
-		//
-
+		// TODO
 		//	След като знаеш окончателния си осигурителен доход,
 		//		изчисляваш годишните осигуровки върху него. НАП сравнява тази сума с осигуровките,
 		//		които вече си платил авансово:
 		//	Платил си по-малко от дължимото → доплащаш разликата до 30.04
 		//	Платил си повече от дължимото → надвнесеното се приспада от бъдещи задължения или ти се възстановява
 	}
-
-	// TODO: build income form, CalculateSocialSecurity(f *IncomeForm)
 
 	result.IsCalculated = true
 	return result
@@ -283,6 +277,8 @@ func getMonthlyAlignmentResult(f IncomeForm, averageMonthlyTaxedIncome int64) Mo
 	}
 
 	monthlyResult := MonthlyAlignmentResult{
+		Month:                     f.Month,
+		GrossIncomeCents:          f.MonthIncomeCents,
 		AverageTaxedIncomeCents:   averageMonthlyTaxedIncome,
 		FinalInsuranceIncomeCents: insuranceIncome,
 		// TODO: count insurance

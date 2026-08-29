@@ -169,6 +169,8 @@ export namespace main {
 		}
 	}
 	export class MonthlyAlignmentResult {
+	    Month: number;
+	    GrossIncomeCents: number;
 	    AverageTaxedIncomeCents: number;
 	    FinalInsuranceIncomeCents: number;
 	
@@ -178,6 +180,8 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.Month = source["Month"];
+	        this.GrossIncomeCents = source["GrossIncomeCents"];
 	        this.AverageTaxedIncomeCents = source["AverageTaxedIncomeCents"];
 	        this.FinalInsuranceIncomeCents = source["FinalInsuranceIncomeCents"];
 	    }
