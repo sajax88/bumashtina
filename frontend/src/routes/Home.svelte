@@ -50,9 +50,30 @@
         form.TaxedIncome = String(configTaxes.MaxInsuranceIncomeCents / MONEY_DIVIDER);
     }
 
-    function saveIncome(): void {
-        console.log(form)
+    const onGrossIncomeChange = () => {
+        if (
+            form.MonthIncome !== ""
+            && parseFloat(form.MonthIncome) > 0
+        ) {
+            let monthIncomeFloat = parseFloat(form.MonthIncome);
+            let taxedIncomeFloat = monthIncomeFloat - monthIncomeFloat * configTaxes.ExpensesPercentage / 100
 
+            if (taxedIncomeFloat < configTaxes.MinInsuranceIncomeCents / MONEY_DIVIDER) {
+                taxedIncomeFloat = configTaxes.MinInsuranceIncomeCents / MONEY_DIVIDER;
+            }
+
+            if (taxedIncomeFloat > configTaxes.MaxInsuranceIncomeCents / MONEY_DIVIDER) {
+                taxedIncomeFloat = configTaxes.MaxInsuranceIncomeCents / MONEY_DIVIDER;
+            }
+
+            form.TaxedIncome = String(taxedIncomeFloat);
+        }
+    }
+    
+
+    // TODO When MonthIncome is changed and > 0 and TaxedIncome = "", calculate TaxedIncome (gross-expenses, within limits)
+
+    function saveIncome(): void {
         let formToSave = new IncomeForm({
             Month: parseInt(form.Month),
             Year: form.Year,
@@ -147,7 +168,7 @@
         <div class="form-row">
             <div class="form-group">
                 <label for="MonthIncome">Доход за месец</label>
-                <input class="input" min="0" required id="MonthIncome" type="text" bind:value={form.MonthIncome}/>
+                <input class="input" min="0" required id="MonthIncome" type="text" bind:value={form.MonthIncome} on:change={onGrossIncomeChange}/>
             </div>
         </div>
 

@@ -50,7 +50,30 @@
 
                 {#if alignmentResult.IsCalculated}
                     <div id="yearly-alignment-result-block"  in:fade={{duration:300}} class="alert alert-info">
-                        Годишен доход: <b>{numberWithSpaces(alignmentResult.YearlyIncomeCents / MONEY_DIVIDER)} EUR</b>
+                        Брутен годишен доход: <b>{numberWithSpaces(alignmentResult.YearlyGrossIncomeCents / MONEY_DIVIDER)} EUR</b><br>
+                        Облагаем доход: <b>{numberWithSpaces(alignmentResult.TaxedYearlyIncomeCents / MONEY_DIVIDER)} EUR</b><br>
+                        Платени данъци: <b>{numberWithSpaces(alignmentResult.TaxesReallyPaidCents / MONEY_DIVIDER)} EUR</b><br>
+                        <!-- TODO
+                        <table class="months-table">
+                            <thead>
+                            <tr>
+                                <th>Месец</th>
+                                <th>Брутен доход</th>
+                                <th>Изравнен облагаем доход</th>
+                                <th>Платени данъци</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {#each alignmentResult.Months as month}
+                                <tr>
+                                    <td>{month.MonthNumber}</td>
+                                    <td>{numberWithSpaces(month.GrossIncomeCents / MONEY_DIVIDER)} EUR</td>
+                                    <td>{numberWithSpaces(month.TaxedIncomeCents / MONEY_DIVIDER)} EUR</td>
+                                    <td>{numberWithSpaces(month.TaxesPaidCents / MONEY_DIVIDER)} EUR</td>
+                                </tr>
+                            {/each}
+                            </tbody>
+                        </table>-->
                     </div>
                 {/if}
             </div>
@@ -65,5 +88,23 @@
 
     #yearly-alignment-block {
         padding-top: 10px;
+    }
+
+    .months-table {
+        margin-top: 15px;
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .months-table th,
+    .months-table td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .months-table th {
+        font-weight: bold;
+        background-color: #f5f5f5;
     }
 </style>
