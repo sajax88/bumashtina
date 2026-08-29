@@ -210,21 +210,30 @@ func CalculateAdvanceTaxForThreeMonths(forms []IncomeForm, result *CalculatedTax
 }
 
 type MonthlyAlignmentResult struct {
-	Month                     int16
-	GrossIncomeCents          int64
-	AverageTaxedIncomeCents   int64
-	FinalInsuranceIncomeCents int64 // Осигурителен доход (= облагаем между лимитите)
+	Month                           int16
+	GrossIncomeCents                int64
+	AverageTaxedIncomeCents         int64
+	FinalInsuranceIncomeCents       int64
+	PaidSocialSecurityCents         int64
+	RecalculatedSocialSecurityCents int64
 }
 
 type YearlyAlignmentResult struct {
-	IsCalculated           bool
-	YearlyGrossIncomeCents int64
-	TaxedYearlyIncomeCents int64
-	TaxesReallyPaidCents   int64
-	Months                 []MonthlyAlignmentResult
+	IsCalculated                  bool
+	YearlyGrossIncomeCents        int64
+	TaxedYearlyIncomeCents        int64
+	TaxesReallyPaidCents          int64
+	SocialSecurityReallyPaidCents int64
+	Months                        []MonthlyAlignmentResult
+
+	RecalculatedSocialSecurityCents int64
+	RecalculatedTaxCents            int64
+
+	InsuranceDiffCents int64 // TODO
+	TaxesDiffCents     int64 // TODO
 }
 
-// TODO: unit tests
+// TODO: unit tests, 3 examples from effortlesstax
 func GetYearlyAlignmentResult(forms []IncomeForm) YearlyAlignmentResult {
 	var result YearlyAlignmentResult
 
@@ -239,6 +248,7 @@ func GetYearlyAlignmentResult(forms []IncomeForm) YearlyAlignmentResult {
 		result.YearlyGrossIncomeCents += f.MonthIncomeCents
 		result.TaxedYearlyIncomeCents += f.MonthIncomeCents - f.ExpensesCents
 		result.TaxesReallyPaidCents += f.TaxesReallyPaidCents
+		result.SocialSecurityReallyPaidCents += f.SocialSecurityReallyPaidCents
 	}
 
 	averageMonthlyTaxedIncome := result.TaxedYearlyIncomeCents / int64(activeMonths)
@@ -251,13 +261,10 @@ func GetYearlyAlignmentResult(forms []IncomeForm) YearlyAlignmentResult {
 
 		monthlyResult := getMonthlyAlignmentResult(f, averageMonthlyTaxedIncome)
 		result.Months = append(result.Months, monthlyResult)
+		result.RecalculatedSocialSecurityCents += monthlyResult.RecalculatedSocialSecurityCents
 
-		// TODO
-		//	След като знаеш окончателния си осигурителен доход,
-		//		изчисляваш годишните осигуровки върху него. НАП сравнява тази сума с осигуровките,
-		//		които вече си платил авансово:
-		//	Платил си по-малко от дължимото → доплащаш разликата до 30.04
-		//	Платил си повече от дължимото → надвнесеното се приспада от бъдещи задължения или ти се възстановява
+		taxedIncome := math.Round(float64(f.MonthIncomeCents - f.ExpensesCents - monthlyResult.RecalculatedSocialSecurityCents))
+		result.RecalculatedTaxCents += int64(math.Round(taxedIncome * f.TaxesConfig.TaxPercentage / 100))
 	}
 
 	result.IsCalculated = true
@@ -276,12 +283,18 @@ func getMonthlyAlignmentResult(f IncomeForm, averageMonthlyTaxedIncome int64) Mo
 		insuranceIncome = maxTaxedIncome
 	}
 
+	alignedForm := f
+	alignedForm.TaxedIncomeCents = insuranceIncome
+	// Re-calculate the social security for the new taxed income
+	CalculateSocialSecurity(&alignedForm)
+
 	monthlyResult := MonthlyAlignmentResult{
-		Month:                     f.Month,
-		GrossIncomeCents:          f.MonthIncomeCents,
-		AverageTaxedIncomeCents:   averageMonthlyTaxedIncome,
-		FinalInsuranceIncomeCents: insuranceIncome,
-		// TODO: count insurance
+		Month:                           f.Month,
+		GrossIncomeCents:                f.MonthIncomeCents,
+		AverageTaxedIncomeCents:         averageMonthlyTaxedIncome,
+		FinalInsuranceIncomeCents:       insuranceIncome,
+		PaidSocialSecurityCents:         f.SocialSecurityReallyPaidCents,
+		RecalculatedSocialSecurityCents: alignedForm.SocialSecurityToPayCents,
 	}
 
 	return monthlyResult

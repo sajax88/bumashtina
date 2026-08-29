@@ -173,6 +173,8 @@ export namespace main {
 	    GrossIncomeCents: number;
 	    AverageTaxedIncomeCents: number;
 	    FinalInsuranceIncomeCents: number;
+	    PaidSocialSecurityCents: number;
+	    RecalculatedSocialSecurityCents: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new MonthlyAlignmentResult(source);
@@ -184,6 +186,8 @@ export namespace main {
 	        this.GrossIncomeCents = source["GrossIncomeCents"];
 	        this.AverageTaxedIncomeCents = source["AverageTaxedIncomeCents"];
 	        this.FinalInsuranceIncomeCents = source["FinalInsuranceIncomeCents"];
+	        this.PaidSocialSecurityCents = source["PaidSocialSecurityCents"];
+	        this.RecalculatedSocialSecurityCents = source["RecalculatedSocialSecurityCents"];
 	    }
 	}
 	
@@ -218,7 +222,12 @@ export namespace main {
 	    YearlyGrossIncomeCents: number;
 	    TaxedYearlyIncomeCents: number;
 	    TaxesReallyPaidCents: number;
+	    SocialSecurityReallyPaidCents: number;
 	    Months: MonthlyAlignmentResult[];
+	    RecalculatedSocialSecurityCents: number;
+	    RecalculatedTaxCents: number;
+	    InsuranceDiffCents: number;
+	    TaxesDiffCents: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new YearlyAlignmentResult(source);
@@ -230,7 +239,12 @@ export namespace main {
 	        this.YearlyGrossIncomeCents = source["YearlyGrossIncomeCents"];
 	        this.TaxedYearlyIncomeCents = source["TaxedYearlyIncomeCents"];
 	        this.TaxesReallyPaidCents = source["TaxesReallyPaidCents"];
+	        this.SocialSecurityReallyPaidCents = source["SocialSecurityReallyPaidCents"];
 	        this.Months = this.convertValues(source["Months"], MonthlyAlignmentResult);
+	        this.RecalculatedSocialSecurityCents = source["RecalculatedSocialSecurityCents"];
+	        this.RecalculatedTaxCents = source["RecalculatedTaxCents"];
+	        this.InsuranceDiffCents = source["InsuranceDiffCents"];
+	        this.TaxesDiffCents = source["TaxesDiffCents"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
