@@ -411,15 +411,15 @@ func TestGetYearlyAlignmentResult(t *testing.T) {
 				MonthIncomeCents:              100000,
 				ExpensesCents:                 25000,
 				SocialSecurityReallyPaidCents: 20850,
-				TaxesReallyPaidCents:          5416,
+				TaxesReallyPaidCents:          5416, // 3rd quarter
 				TaxesConfig:                   config,
 			},
 			{
-				Month:                         10,
+				Month:                         12,
 				MonthIncomeCents:              200000,
 				ExpensesCents:                 50000,
 				SocialSecurityReallyPaidCents: 41700,
-				TaxesReallyPaidCents:          10830,
+				TaxesReallyPaidCents:          0,
 				TaxesConfig:                   config,
 			},
 		}
@@ -430,12 +430,12 @@ func TestGetYearlyAlignmentResult(t *testing.T) {
 			IsCalculated:                    true,
 			YearlyGrossIncomeCents:          300000,
 			TaxedYearlyIncomeCents:          225000, // (100000 - 25% expenses) + (200000 - 25% expenses)
-			TaxesReallyPaidCents:            16246,  // 5416 + 10830
-			SocialSecurityReallyPaidCents:   62550,  // 20850 + 41700
-			RecalculatedSocialSecurityCents: 62550,  // 31275 * 2
-			RecalculatedTaxCents:            16246,  // Recalculated based on taxed income minus recalculated insurance
-			InsuranceDiffCents:              0,      // 62550 - 62550
-			TaxesDiffCents:                  0,      // 16246 - 16246
+			TaxesReallyPaidCents:            5416,
+			SocialSecurityReallyPaidCents:   62550, // 20850 + 41700
+			RecalculatedSocialSecurityCents: 62550, // 31275 * 2
+			RecalculatedTaxCents:            16246, // Recalculated based on taxed income minus recalculated insurance
+			InsuranceDiffCents:              0,     // 62550 - 62550
+			TaxesDiffCents:                  10830, // Left to pay: 16246 - 5416
 			ExpensesPercentage:              25.0,
 			Months: []MonthlyAlignmentResult{
 				{
@@ -447,7 +447,7 @@ func TestGetYearlyAlignmentResult(t *testing.T) {
 					RecalculatedSocialSecurityCents: 31275, // 14.8% + 5% + 8% of 112500
 				},
 				{
-					Month:                           10,
+					Month:                           12,
 					GrossIncomeCents:                200000,
 					AverageTaxedIncomeCents:         112500,
 					FinalInsuranceIncomeCents:       112500,
@@ -461,11 +461,133 @@ func TestGetYearlyAlignmentResult(t *testing.T) {
 	})
 
 	t.Run("Minimal insurance income, big alignment", func(t *testing.T) {
-		// TODO
+		config := baseConfig
+		var forms = []IncomeForm{
+			{
+				Month:                         9,
+				MonthIncomeCents:              200000,
+				ExpensesCents:                 50000,
+				SocialSecurityReallyPaidCents: 15309, // On the minimal income
+				TaxesReallyPaidCents:          13469,
+				TaxesConfig:                   config,
+			},
+			{
+				Month:                         11,
+				MonthIncomeCents:              200000,
+				ExpensesCents:                 50000,
+				SocialSecurityReallyPaidCents: 15309,
+				TaxesReallyPaidCents:          0,
+				TaxesConfig:                   config,
+			},
+			{
+				Month:                         12,
+				MonthIncomeCents:              200000,
+				ExpensesCents:                 50000,
+				SocialSecurityReallyPaidCents: 15309,
+				TaxesReallyPaidCents:          0,
+				TaxesConfig:                   config,
+			},
+		}
+
+		result := GetYearlyAlignmentResult(forms)
+
+		expected := YearlyAlignmentResult{
+			IsCalculated:                    true,
+			YearlyGrossIncomeCents:          600000,
+			TaxedYearlyIncomeCents:          450000,
+			TaxesReallyPaidCents:            13469,
+			SocialSecurityReallyPaidCents:   45927,
+			RecalculatedSocialSecurityCents: 125100,
+			RecalculatedTaxCents:            32490,
+			InsuranceDiffCents:              79173,
+			TaxesDiffCents:                  19021,
+			ExpensesPercentage:              25.0,
+			Months: []MonthlyAlignmentResult{
+				{
+					Month:                           9,
+					GrossIncomeCents:                200000,
+					AverageTaxedIncomeCents:         150000,
+					FinalInsuranceIncomeCents:       150000,
+					PaidSocialSecurityCents:         15309,
+					RecalculatedSocialSecurityCents: 41700,
+				},
+				{
+					Month:                           11,
+					GrossIncomeCents:                200000,
+					AverageTaxedIncomeCents:         150000,
+					FinalInsuranceIncomeCents:       150000,
+					PaidSocialSecurityCents:         15309,
+					RecalculatedSocialSecurityCents: 41700,
+				},
+				{
+					Month:                           12,
+					GrossIncomeCents:                200000,
+					AverageTaxedIncomeCents:         150000,
+					FinalInsuranceIncomeCents:       150000,
+					PaidSocialSecurityCents:         15309,
+					RecalculatedSocialSecurityCents: 41700,
+				},
+			},
+		}
+
+		assert.Equal(t, result, expected)
 	})
 
 	t.Run("Paid too much, overpayment left", func(t *testing.T) {
-		// TODO
+		config := baseConfig
+		var forms = []IncomeForm{
+			{
+				Month:                         9,
+				MonthIncomeCents:              100000,
+				ExpensesCents:                 25000,
+				SocialSecurityReallyPaidCents: 58703, // Max insurance income
+				TaxesReallyPaidCents:          1630,  // 3rd quarter
+				TaxesConfig:                   config,
+			},
+			{
+				Month:                         12,
+				MonthIncomeCents:              200000,
+				ExpensesCents:                 50000,
+				SocialSecurityReallyPaidCents: 58703, // Max insurance income
+				TaxesReallyPaidCents:          0,
+				TaxesConfig:                   config,
+			},
+		}
+
+		result := GetYearlyAlignmentResult(forms)
+
+		expected := YearlyAlignmentResult{
+			IsCalculated:                    true,
+			YearlyGrossIncomeCents:          300000,
+			TaxedYearlyIncomeCents:          225000, // (100000 - 25% expenses) + (200000 - 25% expenses)
+			TaxesReallyPaidCents:            1630,
+			SocialSecurityReallyPaidCents:   117406, // 58703 * 2
+			RecalculatedSocialSecurityCents: 62550,  // 31275 * 2
+			RecalculatedTaxCents:            16246,  // Recalculated based on taxed income minus recalculated insurance
+			InsuranceDiffCents:              -54856, // 62550 - 117406
+			TaxesDiffCents:                  14616,  // Left to pay: 16246 - 1630
+			ExpensesPercentage:              25.0,
+			Months: []MonthlyAlignmentResult{
+				{
+					Month:                           9,
+					GrossIncomeCents:                100000,
+					AverageTaxedIncomeCents:         112500, // (75000 + 150000) / 2
+					FinalInsuranceIncomeCents:       112500, // Clamped between min/max
+					PaidSocialSecurityCents:         58703,
+					RecalculatedSocialSecurityCents: 31275, // 14.8% + 5% + 8% of 112500
+				},
+				{
+					Month:                           12,
+					GrossIncomeCents:                200000,
+					AverageTaxedIncomeCents:         112500,
+					FinalInsuranceIncomeCents:       112500,
+					PaidSocialSecurityCents:         58703,
+					RecalculatedSocialSecurityCents: 31275, // 14.8% + 5% + 8% of 112500
+				},
+			},
+		}
+
+		assert.Equal(t, result, expected)
 	})
 
 	t.Run("Same income, but max insurance threshold suddenly raised", func(t *testing.T) {
