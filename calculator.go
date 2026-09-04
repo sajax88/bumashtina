@@ -235,7 +235,6 @@ type YearlyAlignmentResult struct {
 	ExpensesPercentage float64
 }
 
-// TODO: unit tests, 3 examples from effortlesstax + my case
 func GetYearlyAlignmentResult(forms []IncomeForm) YearlyAlignmentResult {
 	var result YearlyAlignmentResult
 

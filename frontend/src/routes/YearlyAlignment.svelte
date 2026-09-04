@@ -1,6 +1,6 @@
 <script lang="ts">
     import {Check} from "lucide-svelte";
-    import {DoYearlyAlignment, GetActiveMonthsNumber, LoadTaxesConfig} from "../../wailsjs/go/main/App";
+    import {DoYearlyAlignment, GetActiveMonthsNumber} from "../../wailsjs/go/main/App";
     import {onMount} from "svelte";
     import {MONEY_DIVIDER} from "../constants";
     import {fade} from 'svelte/transition';
@@ -21,6 +21,20 @@
 
     function displayYearlyAlignmentForm(): void {
         DoYearlyAlignment(yearlyAlignmentForm.Year).then((result: YearlyAlignmentResult) => (alignmentResult = result))
+    }
+
+    function getPaymentClass(paidSum, calculatedSum): string {
+        return calculatedSum - paidSum > 0 ? "payment-required" : "nothing-to-pay";
+    }
+
+    function getPaymentText(paidSum, calculatedSum, sumString): string {
+        if (calculatedSum - paidSum > 0) {
+            return sumString + " за доплащане"
+        } else if (calculatedSum - paidSum < 0) {
+            return sumString + " надвнесени"
+        }
+
+        return "изравнени"
     }
 
     $: fetchActiveMonthsNumber(yearlyAlignmentForm.Year);
@@ -44,7 +58,7 @@
     </button>
 
     {#if alignmentResult.IsCalculated}
-        <div id="yearly-alignment-result-block" in:fade={{duration:300}} >
+        <div id="yearly-alignment-result-block" in:fade={{duration:300}}>
             <table class="result-table">
                 <tbody>
                 <tr>
@@ -67,18 +81,21 @@
                     <td></td>
                     <td>Изравнени данъци:</td>
                     <td>
-                        <!-- TODO: color -->
-                        <b>{numberWithSpaces(alignmentResult.RecalculatedTaxCents / MONEY_DIVIDER)} EUR</b>
+                        <b class={getPaymentClass(alignmentResult.TaxesReallyPaidCents, alignmentResult.RecalculatedTaxCents)}>
+                            {numberWithSpaces(alignmentResult.RecalculatedTaxCents / MONEY_DIVIDER)} EUR
+                        </b>
                     </td>
                 </tr>
                 <tr>
                     <td>Платени осигуровки:</td>
-                    <td><b>{numberWithSpaces(alignmentResult.SocialSecurityReallyPaidCents / MONEY_DIVIDER)} EUR</b></td>
+                    <td><b>{numberWithSpaces(alignmentResult.SocialSecurityReallyPaidCents / MONEY_DIVIDER)} EUR</b>
+                    </td>
                     <td></td>
-                    <td>Изравнени осигуровки</td>
+                    <td>Изравнени осигуровки:</td>
                     <td>
-                        <!-- TODO: color -->
-                        <b>{numberWithSpaces(alignmentResult.RecalculatedSocialSecurityCents / MONEY_DIVIDER)} EUR</b>
+                        <b class={getPaymentClass(alignmentResult.SocialSecurityReallyPaidCents, alignmentResult.RecalculatedSocialSecurityCents)}>
+                            {numberWithSpaces(alignmentResult.RecalculatedSocialSecurityCents / MONEY_DIVIDER)} EUR
+                        </b>
                     </td>
                 </tr>
                 </tbody>
@@ -86,14 +103,25 @@
 
             <div class="alert alert-info" style="margin: 10px 0;">
                 <p>Проверете тези суми при попълване на годишната данъчна декларация</p>
-                <!-- TODO: color -->
-                <p>Осигуровки: <b>{numberWithSpaces(alignmentResult.InsuranceDiffCents / MONEY_DIVIDER)} EUR</b></p>
-                <p>Данъци: <b>{numberWithSpaces(alignmentResult.TaxesDiffCents / MONEY_DIVIDER)} EUR</b></p>
+                <p>Осигуровки: <b class={getPaymentClass(alignmentResult.SocialSecurityReallyPaidCents, alignmentResult.RecalculatedSocialSecurityCents)}>
+                    {getPaymentText(
+                        alignmentResult.SocialSecurityReallyPaidCents,
+                        alignmentResult.RecalculatedSocialSecurityCents,
+                        numberWithSpaces(alignmentResult.InsuranceDiffCents / MONEY_DIVIDER) + " EUR")
+                    }
+                </b></p>
+                <p>Данъци: <b class={getPaymentClass(alignmentResult.TaxesReallyPaidCents, alignmentResult.RecalculatedTaxCents)}>
+                    {getPaymentText(
+                        alignmentResult.TaxesReallyPaidCents,
+                        alignmentResult.RecalculatedTaxCents,
+                        numberWithSpaces(alignmentResult.TaxesDiffCents / MONEY_DIVIDER) + " EUR")
+                    }
+                </b></p>
 
                 <p>Разликата се доплаща до 30 април. Надвнесеното приспада от бъдещите задължения или се възстановява:
-                търсете "Възстановяване на надвнесени суми" в портала на НАП.</p>
+                    търсете "Възстановяване на надвнесени суми" в портала на НАП.</p>
 
-                </div>
+            </div>
 
             <table class="table">
                 <thead>
@@ -108,7 +136,6 @@
                 </thead>
                 <tbody>
                 {#each alignmentResult.Months as month}
-                    <!-- TODO: color -->
                     <tr>
                         <td>{month.Month}</td>
                         <td>{numberWithSpaces(month.GrossIncomeCents / MONEY_DIVIDER)}</td>
@@ -126,7 +153,7 @@
 
 <style>
     .result-table {
-        width:auto;
+        width: auto;
         margin-top: 15px;
         border-collapse: collapse;
     }
@@ -135,5 +162,13 @@
         padding: 8px 5px;
         text-align: left;
         border-bottom: 1px solid #c9c1ad;
+    }
+
+    .nothing-to-pay {
+        color: #2a5007;
+    }
+
+    .payment-required {
+        color: #700404;
     }
 </style>
