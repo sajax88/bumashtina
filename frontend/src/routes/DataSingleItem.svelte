@@ -86,8 +86,8 @@
 
 <main>
     <div class="input-box" id="input-box">
-        <a href="#/data">
-            <CircleArrowLeft color="#444" size="20"/>
+        <a href="#/data" class="btn-back">
+            <span><CircleArrowLeft color="#444" size="30"/> <span>Назад</span></span>
         </a>
 
         <h2>Въведени данни за {month}/{year}</h2>
@@ -248,5 +248,27 @@
 
     label.paid-insurance-label {
         width: auto;
+    }
+
+
+    .btn-back {
+        cursor: pointer;
+        text-decoration: none;
+        color: #444444;
+        display:block;
+        font-size: 1.1em;
+    }
+
+    .btn-back > span {
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-back > span > span {
+        margin-left: 6px;
+    }
+
+    .btn-back:hover {
+        color: #777777;
     }
 </style>

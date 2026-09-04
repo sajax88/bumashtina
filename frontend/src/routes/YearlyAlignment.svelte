@@ -102,7 +102,7 @@
             </table>
 
             <div class="alert alert-info" style="margin: 10px 0;">
-                <p>Проверете тези суми при попълване на годишната данъчна декларация</p>
+                <p>Проверете тези суми при попълване на годишната данъчна декларация.</p>
                 <p>Осигуровки: <b class={getPaymentClass(alignmentResult.SocialSecurityReallyPaidCents, alignmentResult.RecalculatedSocialSecurityCents)}>
                     {getPaymentText(
                         alignmentResult.SocialSecurityReallyPaidCents,
@@ -118,7 +118,7 @@
                     }
                 </b></p>
 
-                <p>Разликата се доплаща до 30 април. Надвнесеното приспада от бъдещите задължения или се възстановява:
+                <p>Разликата се доплаща до 30 април. Надвнесеното се приспада от бъдещите задължения или се възстановява:
                     търсете "Възстановяване на надвнесени суми" в портала на НАП.</p>
 
             </div>

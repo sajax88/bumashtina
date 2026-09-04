@@ -258,7 +258,12 @@ func (a *App) DoYearlyAlignment(year int) YearlyAlignmentResult {
 		return YearlyAlignmentResult{}
 	}
 
-	return GetYearlyAlignmentResult(rows)
+	result := GetYearlyAlignmentResult(rows)
+	if !result.IsCalculated {
+		ShowWarningDialog(a.ctx, "", "Няма данни за тази година")
+		return YearlyAlignmentResult{}
+	}
+	return result
 }
 
 func (a *App) GenerateDeclarationOne(month int, year int) string {

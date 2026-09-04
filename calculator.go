@@ -255,6 +255,10 @@ func GetYearlyAlignmentResult(forms []IncomeForm) YearlyAlignmentResult {
 		result.ExpensesPercentage = f.TaxesConfig.ExpensesPercentage
 	}
 
+	if activeMonths == 0 {
+		return result
+	}
+
 	averageMonthlyTaxedIncome := result.TaxedYearlyIncomeCents / int64(activeMonths)
 
 	// Now recalculate the average monthly taxed income and adjust it between the min and max taxed income

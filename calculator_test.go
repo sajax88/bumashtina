@@ -267,6 +267,8 @@ func TestCalculateTaxesForThreeMonthsLowIncome(t *testing.T) {
 	if result.TaxCents != 0 {
 		t.Errorf("TaxCents = %d; want 0", result.TaxCents)
 	}
-
-	// TODO: unit tests for yearly alignment: 3 examples from effortlesstax + my case
 }
+
+//TODO: getMonthlyAlignmentResult unit test
+
+// TODO: unit tests for yearly alignment: 3 examples from effortlesstax + my case
