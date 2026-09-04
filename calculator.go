@@ -276,7 +276,14 @@ func GetYearlyAlignmentResult(forms []IncomeForm) YearlyAlignmentResult {
 	}
 
 	result.InsuranceDiffCents = result.RecalculatedSocialSecurityCents - result.SocialSecurityReallyPaidCents
+	if result.InsuranceDiffCents < 0 {
+		result.InsuranceDiffCents = -result.InsuranceDiffCents
+	}
+
 	result.TaxesDiffCents = result.RecalculatedTaxCents - result.TaxesReallyPaidCents
+	if result.TaxesDiffCents < 0 {
+		result.TaxesDiffCents = -result.TaxesDiffCents
+	}
 
 	result.IsCalculated = true
 	return result
