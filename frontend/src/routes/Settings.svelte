@@ -100,12 +100,12 @@
 
         {#if settingsConfig}
             <div class="form-row">
-                <p><small><i>
+                <p><small>
                     Самоосигуряващи се лица избират дали да се осигуряват за общо заболяване и майчинство
                     при подаване на "Декларация за регистрация на самоосигуряващо се лице". Преди да промените тази настройка,
                     убедете се, че сте подали такава Декларация в НАП, тъй като настройката ще промени данните
                     в следващите ви Декларации 1.
-                </i></small></p>
+                </small></p>
                 <div class="form-group checkbox-group">
                     <input class="checkbox" id="IsPregnancyInsuranceEnabled"
                            bind:checked={settingsConfig.IsPregnancyInsuranceEnabled} type="checkbox"/>
@@ -129,13 +129,13 @@
         {/if}
 
         <h2>Данъци и осигуровки</h2>
-        <p><small><i>
+        <p><small>
             Размерът на осигурителните вноски може да се провери <a
                 href=""
                 on:click={function(e) {BrowserOpenURL('https://nra.bg/wps/portal/nra/osiguryavane/osiguryavam-se-sam#osigurqvam-se-sam2'); e.preventDefault();}}
                 >тук</a>.
             Промяната на тези настройки ще се отрази на новите ви Декларации 1, но няма да засегне вече въведените данни.
-        </i></small></p>
+        </small></p>
         {#if taxesConfig && taxesLabels}
             <table class="table">
                 <tbody>

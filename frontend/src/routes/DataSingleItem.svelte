@@ -188,10 +188,10 @@
             </table>
             <br>
             <p>
-                <small><i>
+                <small>
                     Изчисленията стават на базата на таксите и осигуровките, които са били активни по време на въвеждането на данните.
                     За да промените таксите и осигуровките за следващите месеци, отидете в <a href="#/settings">"Настройки"</a>
-                </i></small>
+                </small>
             </p>
             <button class="btn btn-small" on:click={() => showTaxesConfig = !showTaxesConfig}>
                             <span>{#if showTaxesConfig}<EyeOff color="#444" size="16"/>{:else}<Eye color="#444"
