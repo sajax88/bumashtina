@@ -229,11 +229,13 @@ type YearlyAlignmentResult struct {
 	RecalculatedSocialSecurityCents int64
 	RecalculatedTaxCents            int64
 
-	InsuranceDiffCents int64 // TODO
-	TaxesDiffCents     int64 // TODO
+	InsuranceDiffCents int64
+	TaxesDiffCents     int64
+
+	ExpensesPercentage float64
 }
 
-// TODO: unit tests, 3 examples from effortlesstax
+// TODO: unit tests, 3 examples from effortlesstax + my case
 func GetYearlyAlignmentResult(forms []IncomeForm) YearlyAlignmentResult {
 	var result YearlyAlignmentResult
 
@@ -249,6 +251,9 @@ func GetYearlyAlignmentResult(forms []IncomeForm) YearlyAlignmentResult {
 		result.TaxedYearlyIncomeCents += f.MonthIncomeCents - f.ExpensesCents
 		result.TaxesReallyPaidCents += f.TaxesReallyPaidCents
 		result.SocialSecurityReallyPaidCents += f.SocialSecurityReallyPaidCents
+
+		// Should be the same for all months of the year
+		result.ExpensesPercentage = f.TaxesConfig.ExpensesPercentage
 	}
 
 	averageMonthlyTaxedIncome := result.TaxedYearlyIncomeCents / int64(activeMonths)
@@ -266,6 +271,9 @@ func GetYearlyAlignmentResult(forms []IncomeForm) YearlyAlignmentResult {
 		taxedIncome := math.Round(float64(f.MonthIncomeCents - f.ExpensesCents - monthlyResult.RecalculatedSocialSecurityCents))
 		result.RecalculatedTaxCents += int64(math.Round(taxedIncome * f.TaxesConfig.TaxPercentage / 100))
 	}
+
+	result.InsuranceDiffCents = result.RecalculatedSocialSecurityCents - result.SocialSecurityReallyPaidCents
+	result.TaxesDiffCents = result.RecalculatedTaxCents - result.TaxesReallyPaidCents
 
 	result.IsCalculated = true
 	return result

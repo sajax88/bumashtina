@@ -55,7 +55,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td>Облагаем доход (-разходи):</td>
+                    <td>Облагаем доход (-{alignmentResult.ExpensesPercentage}% разходи):</td>
                     <td><b>{numberWithSpaces(alignmentResult.TaxedYearlyIncomeCents / MONEY_DIVIDER)} EUR</b></td>
                     <td></td>
                     <td></td>
@@ -67,8 +67,8 @@
                     <td></td>
                     <td>Изравнени данъци:</td>
                     <td>
+                        <!-- TODO: color -->
                         <b>{numberWithSpaces(alignmentResult.RecalculatedTaxCents / MONEY_DIVIDER)} EUR</b>
-                        <!-- TODO: diff with paid -->
                     </td>
                 </tr>
                 <tr>
@@ -77,22 +77,23 @@
                     <td></td>
                     <td>Изравнени осигуровки</td>
                     <td>
+                        <!-- TODO: color -->
                         <b>{numberWithSpaces(alignmentResult.RecalculatedSocialSecurityCents / MONEY_DIVIDER)} EUR</b>
-                        <!-- TODO: diff with paid -->
                     </td>
                 </tr>
                 </tbody>
             </table>
 
-            <!--
-		// TODO
-		//	След като знаеш окончателния си осигурителен доход,
-		//		изчисляваш годишните осигуровки върху него. НАП сравнява тази сума с осигуровките,
-		//		които вече си платил авансово:
-		//	Платил си по-малко от дължимото → доплащаш разликата до 30.04
-		//	Платил си повече от дължимото → надвнесеното се приспада от бъдещи задължения или ти се възстановява
+            <div class="alert alert-info" style="margin: 10px 0;">
+                <p>Проверете тези суми при попълване на годишната данъчна декларация</p>
+                <!-- TODO: color -->
+                <p>Осигуровки: <b>{numberWithSpaces(alignmentResult.InsuranceDiffCents / MONEY_DIVIDER)} EUR</b></p>
+                <p>Данъци: <b>{numberWithSpaces(alignmentResult.TaxesDiffCents / MONEY_DIVIDER)} EUR</b></p>
 
-		-->
+                <p>Разликата се доплаща до 30 април. Надвнесеното приспада от бъдещите задължения или се възстановява:
+                търсете "Възстановяване на надвнесени суми" в портала на НАП.</p>
+
+                </div>
 
             <table class="table">
                 <thead>
@@ -107,7 +108,7 @@
                 </thead>
                 <tbody>
                 {#each alignmentResult.Months as month}
-                    <!-- TODO: beautify, maybe add colors where there're diffs -->
+                    <!-- TODO: color -->
                     <tr>
                         <td>{month.Month}</td>
                         <td>{numberWithSpaces(month.GrossIncomeCents / MONEY_DIVIDER)}</td>
@@ -122,7 +123,6 @@
         </div>
     {/if}
 </div>
-
 
 <style>
     .result-table {

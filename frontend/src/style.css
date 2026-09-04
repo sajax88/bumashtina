@@ -253,3 +253,8 @@ table .dark-row td {
     line-height: 1.4;
     max-width: 300px;
 }
+
+
+.info-popup.info-popup-wide {
+    max-width: 500px;
+}

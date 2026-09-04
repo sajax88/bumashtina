@@ -28,6 +28,7 @@
     let configTaxes;
     let declarationResult;
     let showSkippedMonthInfo = false;
+    let showInsuranceIncomeInfo = false;
 
 
     onMount(async () => {
@@ -179,6 +180,21 @@
                 <button class="btn btn-small" on:click={setMaxIncome}>
                     <span><ArrowBigUp color="#444" size="16"/> Макс</span>
                 </button>
+
+                <button
+                        type="button"
+                        class="info-icon-btn"
+                        on:click={() => showInsuranceIncomeInfo = !showInsuranceIncomeInfo}
+                        aria-label="Информация"
+                >
+                    <InfoIcon color="#444" size="16"/>
+                </button>
+                {#if showInsuranceIncomeInfo}
+                    <div class="info-popup info-popup-wide" transition:fade={{duration: 200}}>
+                        Изберете осигурителен доход между минималния и максималния.
+                        В "Годишно изравняване" можете да изчислите окончателния осигурителен доход за година.
+                    </div>
+                {/if}
             </div>
         </div>
 

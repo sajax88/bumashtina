@@ -228,6 +228,7 @@ export namespace main {
 	    RecalculatedTaxCents: number;
 	    InsuranceDiffCents: number;
 	    TaxesDiffCents: number;
+	    ExpensesPercentage: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new YearlyAlignmentResult(source);
@@ -245,6 +246,7 @@ export namespace main {
 	        this.RecalculatedTaxCents = source["RecalculatedTaxCents"];
 	        this.InsuranceDiffCents = source["InsuranceDiffCents"];
 	        this.TaxesDiffCents = source["TaxesDiffCents"];
+	        this.ExpensesPercentage = source["ExpensesPercentage"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
