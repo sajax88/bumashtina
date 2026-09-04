@@ -2,28 +2,30 @@
 
 <h3>BG</h3>
 
-<a href="https://github.com/sajax88/bumashtina/releases/latest">Свали последната версия</a>
+<b><a href="https://github.com/sajax88/bumashtina/releases/latest">Свали последната версия</a></b>
 
-Тази програмка може да ви бъде полезна, ако сте самоосигуряващо се лице по смисъла на КСО.
+Тази програмка може да ви бъде полезна, ако сте самоосигуряващо се лице по смисъла на КСО: https://nra.bg/wps/portal/nra/osiguryavane/osiguryavam-se-sam#osigurqvam-se-sam0.
 
-Функции:
+<h4>Функции:</h4>
+
 - генерира Декларация 1 и Декларация 6, които се качват в портала на НАП https://portal.nra.bg/
 - изчислява данък за тримесечие за подаване на Декларация по чл. 55
+- изчислява окончателните годишни осигуровки и данъци
 
 Всичко се изчислява и се запазва локално. За повече информация вижте инструкциите долу. 
 
-<img width="1022" height="521" alt="image" src="https://github.com/user-attachments/assets/7717fcc1-59f0-4537-8047-e0467b821845" />
+<img width="1069" height="699" alt="image" src="https://github.com/user-attachments/assets/ababebb9-551e-4728-8642-3fba5a743464" />
 
 <h3>EN</h3>
 
-<a href="https://github.com/sajax88/bumashtina/releases/latest">Download the latest version</a>
+<b><a href="https://github.com/sajax88/bumashtina/releases/latest">Download the latest version</a></b>
 
 This is a desktop app for all the poor souls in the Republic of Bulgaria who happen to pay their taxes and social security themselves. Only for the **self-employed** people who know what they're doing!
 Check if this is your case: https://nra.bg/wps/portal/nra/osiguryavane/osiguryavam-se-sam#osigurqvam-se-sam0
 
 App language: **BG only**!
 
-The app can help you generate Declarations One and Six that can then be submitted to the NRA portal. You can also calculate your taxes and keep track of your general income.
+The app can help you generate Declarations One and Six that can then be submitted to the NRA portal. You can also calculate your social security payments and taxes and keep track of your general income.
 The Declarations output is the same as the original NRA software gives you, but hopefully the interface is slightly better.
 
 The data is stored locally in the user's directory. 
