@@ -16,6 +16,21 @@
 
 <img width="1069" height="699" alt="image" src="https://github.com/user-attachments/assets/ababebb9-551e-4728-8642-3fba5a743464" />
 
+## Как да пусна програмата
+
+Последната версия се намира [тук](https://github.com/sajax88/bumashtina/releases), разопаковайте архива и пуснете изпълнимия файл.
+При свалянето на новата версия просто заменяте файла с по-новия.
+
+- Windows: **bumashtina.exe-windows-amd64.zip**
+- MacOS: **bumashtina-darwin-arm64.zip** (това е универсална версия за arm64 и x86_64)
+- Linux with libwebkit2gtk 4.0 (например Ubuntu 22): **bumashtina-linux-amd64.zip**
+- Linux with libwebkit2gtk 4.1 (например Ubuntu 24): **bumashtina_with_libwebkit2gtk_41**
+
+- Windows може да се оплаква, че файлът не е безопасен; трябва да разрешите да го изпълни.
+- На MacOS преименувайте файла в **bumashtina.app**. Ако казва, че файлът не е безопасен, трябва да изпълните тази команда: `xattr -dr com.apple.quarantine ./bumashtina.app`
+- На Linux трябва да промените правата на файла, така че да стане изпълним: `chmod +x bumashtina`
+
+
 <h3>EN</h3>
 
 <b><a href="https://github.com/sajax88/bumashtina/releases/latest">Download the latest version</a></b>
@@ -37,16 +52,23 @@ The data is stored locally in the user's directory.
 ## I just want to run the program
 
 Download the latest version for your OS from [releases](https://github.com/sajax88/bumashtina/releases), unpack and run the executable file. 
-- On Ubuntu 24 download **bumashtina_with_libwebkit2gtk_41** version
-- On Linux you'll need to make the file executable first!
+When you download a new version, just replace the old file with the new one.
+- Windows: **bumashtina.exe-windows-amd64.zip**
+- MacOS: **bumashtina-darwin-arm64.zip** (this is a universal version for arm64 and x86_64)
+- Linux with libwebkit2gtk 4.0 (e.g. Ubuntu 22): **bumashtina-linux-amd64.zip**
+- Linux with libwebkit2gtk 4.1 (e.g. Ubuntu 24): **bumashtina_with_libwebkit2gtk_41** 
+
+- Windows might complain that the file is unsafe; you'll have to allow to run it.
 - On MacOS rename the file to **bumashtina.app**. If the app is considered unsafe, remove the quarantine attribute: `xattr -dr com.apple.quarantine ./bumashtina.app`
+- On Linux you'll need to make the file executable: `chmod +x bumashtina`
+
 
 ## I want to customize or contribute
 
 Cool! The tech stack is Wails plus Svelte.
 
 The following are the standard Wails commands for development. See Wails docs for more: https://wails.io/docs/introduction
-The current framework version is 2.13.0.
+We use *Wails 2* and *Svelte 3*.
 
 ### Run dev
 
