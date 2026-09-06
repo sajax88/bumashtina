@@ -27,6 +27,7 @@ export namespace main {
 	    }
 	}
 	export class CalculatedTax {
+	    IsCalculated: boolean;
 	    TotalIncomeCents: number;
 	    TaxCents: number;
 	    ExpensesCents: number;
@@ -44,6 +45,7 @@ export namespace main {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.IsCalculated = source["IsCalculated"];
 	        this.TotalIncomeCents = source["TotalIncomeCents"];
 	        this.TaxCents = source["TaxCents"];
 	        this.ExpensesCents = source["ExpensesCents"];

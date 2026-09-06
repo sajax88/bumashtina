@@ -590,7 +590,7 @@ func TestGetYearlyAlignmentResult(t *testing.T) {
 		assert.Equal(t, result, expected)
 	})
 
-	t.Run("Same income, but max insurance threshold suddenly raised", func(t *testing.T) {
+	t.Run("Income lowered, max insurance threshold raised", func(t *testing.T) {
 		// TODO
 	})
 }

@@ -43,6 +43,7 @@ type SocialSecurityParts struct {
 }
 
 type CalculatedTax struct {
+	IsCalculated       bool
 	TotalIncomeCents   int64
 	TaxCents           int64
 	ExpensesCents      int64
@@ -175,6 +176,10 @@ func CalculateAdvanceTaxForThreeMonths(forms []IncomeForm, result *CalculatedTax
 	var expensesPercent float64
 	var paidInsuranceCents int64
 	for _, f := range forms {
+		if f.IsMonthSkipped {
+			continue
+		}
+
 		// We suppose that the taxes are the same for all months of the quarter!
 		if taxPercent == 0 {
 			taxPercent = f.TaxesConfig.TaxPercentage

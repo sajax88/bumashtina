@@ -33,10 +33,14 @@
     function calculateTaxForQuarter() {
         CalculateTaxForQuarter(parseInt(taxCalculatorForm.Quarter), taxCalculatorForm.Year).then(
             function (result) {
-                taxCalculationResult = result
-                taxEnterForm.AmountPaid = String(result.TaxCents / MONEY_DIVIDER);
-                taxEnterForm.Quarter = taxCalculatorForm.Quarter;
-                taxEnterForm.Year = taxCalculatorForm.Year;
+                if (result.IsCalculated) {
+                    taxCalculationResult = result
+                    taxEnterForm.AmountPaid = String(result.TaxCents / MONEY_DIVIDER);
+                    taxEnterForm.Quarter = taxCalculatorForm.Quarter;
+                    taxEnterForm.Year = taxCalculatorForm.Year;
+                } else {
+                    taxCalculationResult = null;
+                }
             }
         );
     }

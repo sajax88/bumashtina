@@ -420,6 +420,7 @@ func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
 	}
 
 	if len(rows) == 0 {
+		ShowWarningDialog(a.ctx, "", "Няма данни за това тримесечие")
 		return result
 	}
 
@@ -435,6 +436,7 @@ func (a *App) CalculateTaxForQuarter(quarter int, year int) CalculatedTax {
 		return result
 	}
 
+	result.IsCalculated = true
 	result.TaxesConfig = rows[0].TaxesConfig
 	return result
 }
