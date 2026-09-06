@@ -218,7 +218,7 @@ type MonthlyAlignmentResult struct {
 	Month                           int16
 	GrossIncomeCents                int64
 	AverageTaxedIncomeCents         int64
-	FinalInsuranceIncomeCents       int64
+	FinalSocSecIncomeCents          int64
 	PaidSocialSecurityCents         int64
 	RecalculatedSocialSecurityCents int64
 }
@@ -234,8 +234,8 @@ type YearlyAlignmentResult struct {
 	RecalculatedSocialSecurityCents int64
 	RecalculatedTaxCents            int64
 
-	InsuranceDiffCents int64
-	TaxesDiffCents     int64
+	SocialSecurityDiffCents int64
+	TaxesDiffCents          int64
 
 	ExpensesPercentage float64
 }
@@ -280,9 +280,9 @@ func GetYearlyAlignmentResult(forms []IncomeForm) YearlyAlignmentResult {
 		result.RecalculatedTaxCents += int64(math.Round(taxedIncome * f.TaxesConfig.TaxPercentage / 100))
 	}
 
-	result.InsuranceDiffCents = result.RecalculatedSocialSecurityCents - result.SocialSecurityReallyPaidCents
-	if result.InsuranceDiffCents < 0 {
-		result.InsuranceDiffCents = -result.InsuranceDiffCents
+	result.SocialSecurityDiffCents = result.RecalculatedSocialSecurityCents - result.SocialSecurityReallyPaidCents
+	if result.SocialSecurityDiffCents < 0 {
+		result.SocialSecurityDiffCents = -result.SocialSecurityDiffCents
 	}
 
 	result.TaxesDiffCents = result.RecalculatedTaxCents - result.TaxesReallyPaidCents
@@ -315,7 +315,7 @@ func getMonthlyAlignmentResult(f IncomeForm, averageMonthlyTaxedIncome int64) Mo
 		Month:                           f.Month,
 		GrossIncomeCents:                f.MonthIncomeCents,
 		AverageTaxedIncomeCents:         averageMonthlyTaxedIncome,
-		FinalInsuranceIncomeCents:       insuranceIncome,
+		FinalSocSecIncomeCents:          insuranceIncome,
 		PaidSocialSecurityCents:         f.SocialSecurityReallyPaidCents,
 		RecalculatedSocialSecurityCents: alignedForm.SocialSecurityToPayCents,
 	}

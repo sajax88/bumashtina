@@ -174,7 +174,7 @@ export namespace main {
 	    Month: number;
 	    GrossIncomeCents: number;
 	    AverageTaxedIncomeCents: number;
-	    FinalInsuranceIncomeCents: number;
+	    FinalSocSecIncomeCents: number;
 	    PaidSocialSecurityCents: number;
 	    RecalculatedSocialSecurityCents: number;
 	
@@ -187,7 +187,7 @@ export namespace main {
 	        this.Month = source["Month"];
 	        this.GrossIncomeCents = source["GrossIncomeCents"];
 	        this.AverageTaxedIncomeCents = source["AverageTaxedIncomeCents"];
-	        this.FinalInsuranceIncomeCents = source["FinalInsuranceIncomeCents"];
+	        this.FinalSocSecIncomeCents = source["FinalSocSecIncomeCents"];
 	        this.PaidSocialSecurityCents = source["PaidSocialSecurityCents"];
 	        this.RecalculatedSocialSecurityCents = source["RecalculatedSocialSecurityCents"];
 	    }
@@ -228,7 +228,7 @@ export namespace main {
 	    Months: MonthlyAlignmentResult[];
 	    RecalculatedSocialSecurityCents: number;
 	    RecalculatedTaxCents: number;
-	    InsuranceDiffCents: number;
+	    SocialSecurityDiffCents: number;
 	    TaxesDiffCents: number;
 	    ExpensesPercentage: number;
 	
@@ -246,7 +246,7 @@ export namespace main {
 	        this.Months = this.convertValues(source["Months"], MonthlyAlignmentResult);
 	        this.RecalculatedSocialSecurityCents = source["RecalculatedSocialSecurityCents"];
 	        this.RecalculatedTaxCents = source["RecalculatedTaxCents"];
-	        this.InsuranceDiffCents = source["InsuranceDiffCents"];
+	        this.SocialSecurityDiffCents = source["SocialSecurityDiffCents"];
 	        this.TaxesDiffCents = source["TaxesDiffCents"];
 	        this.ExpensesPercentage = source["ExpensesPercentage"];
 	    }

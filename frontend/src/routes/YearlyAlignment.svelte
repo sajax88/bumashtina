@@ -107,7 +107,7 @@
                     {getPaymentText(
                         alignmentResult.SocialSecurityReallyPaidCents,
                         alignmentResult.RecalculatedSocialSecurityCents,
-                        numberWithSpaces(alignmentResult.InsuranceDiffCents / MONEY_DIVIDER) + " EUR")
+                        numberWithSpaces(alignmentResult.SocialSecurityDiffCents / MONEY_DIVIDER) + " EUR")
                     }
                 </b></p>
                 <p>Данъци: <b class={getPaymentClass(alignmentResult.TaxesReallyPaidCents, alignmentResult.RecalculatedTaxCents)}>
@@ -140,7 +140,7 @@
                         <td>{month.Month}</td>
                         <td>{numberWithSpaces(month.GrossIncomeCents / MONEY_DIVIDER)}</td>
                         <td>{numberWithSpaces(month.AverageTaxedIncomeCents / MONEY_DIVIDER)}</td>
-                        <td>{numberWithSpaces(month.FinalInsuranceIncomeCents / MONEY_DIVIDER)}</td>
+                        <td>{numberWithSpaces(month.FinalSocSecIncomeCents / MONEY_DIVIDER)}</td>
                         <td>{numberWithSpaces(month.RecalculatedSocialSecurityCents / MONEY_DIVIDER)}</td>
                         <td>{numberWithSpaces(month.PaidSocialSecurityCents / MONEY_DIVIDER)}</td>
                     </tr>

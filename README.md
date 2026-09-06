@@ -26,7 +26,7 @@
 - Linux with libwebkit2gtk 4.0 (например Ubuntu 22): **bumashtina-linux-amd64.zip**
 - Linux with libwebkit2gtk 4.1 (например Ubuntu 24): **bumashtina_with_libwebkit2gtk_41**
 
-- Windows може да се оплаква, че файлът не е безопасен; трябва да разрешите да го изпълни.
+- Windows може да се оплаква, че файлът не е безопасен; трябва да разрешите да го изпълни
 - На MacOS преименувайте файла в **bumashtina.app**. Ако казва, че файлът не е безопасен, трябва да изпълните тази команда: `xattr -dr com.apple.quarantine ./bumashtina.app`
 - На Linux трябва да промените правата на файла, така че да стане изпълним: `chmod +x bumashtina`
 
@@ -58,7 +58,7 @@ When you download a new version, just replace the old file with the new one.
 - Linux with libwebkit2gtk 4.0 (e.g. Ubuntu 22): **bumashtina-linux-amd64.zip**
 - Linux with libwebkit2gtk 4.1 (e.g. Ubuntu 24): **bumashtina_with_libwebkit2gtk_41** 
 
-- Windows might complain that the file is unsafe; you'll have to allow to run it.
+- Windows might complain that the file is unsafe; you'll have to allow to run it
 - On MacOS rename the file to **bumashtina.app**. If the app is considered unsafe, remove the quarantine attribute: `xattr -dr com.apple.quarantine ./bumashtina.app`
 - On Linux you'll need to make the file executable: `chmod +x bumashtina`
 
