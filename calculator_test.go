@@ -564,7 +564,7 @@ func TestGetYearlyAlignmentResult(t *testing.T) {
 			SocialSecurityReallyPaidCents:   117406, // 58703 * 2
 			RecalculatedSocialSecurityCents: 62550,  // 31275 * 2
 			RecalculatedTaxCents:            16246,  // Recalculated based on taxed income minus recalculated insurance
-			InsuranceDiffCents:              -54856, // 62550 - 117406
+			InsuranceDiffCents:              54856,  // 62550 - 117406, overpayment should be positive
 			TaxesDiffCents:                  14616,  // Left to pay: 16246 - 1630
 			ExpensesPercentage:              25.0,
 			Months: []MonthlyAlignmentResult{

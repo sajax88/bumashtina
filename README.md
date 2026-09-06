@@ -74,7 +74,7 @@ On Ubuntu 24 you have to build with this tag:
 
 ### Unit tests
 
-Don't forget to run the unit tests before committing. Feel free to add more.
+Don't forget to run the unit tests with `go test` before committing. Feel free to add more.
 
 
 ## I like your app and want to buy you a coffee/beer
