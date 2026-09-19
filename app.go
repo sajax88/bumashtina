@@ -172,6 +172,26 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 		return ""
 	}
 
+	// If this is not the 1st month and there were other months added for this year,
+	// check that we don't have a gap
+	if f.Month > 1 {
+		previousMonthThisYear, err := GetDataFromFileForPreviousMonth(a, f.Month, f.Year)
+		if err != nil {
+			ShowErrorDialog(a.ctx, "", err.Error())
+			return err.Error()
+		}
+
+		if previousMonthThisYear != 0 && previousMonthThisYear != f.Month-1 {
+			errorMessagePreviousMonth := fmt.Sprintf(
+				"Моля, първо въведете данни за останалите месеци след %d/%d. Ако нямате дейност, отбележете \"Не съм упражнявал дейност\". Това е необходимо за правилното изчисляване.",
+				previousMonthThisYear,
+				f.Year,
+			)
+			ShowWarningDialog(a.ctx, "", errorMessagePreviousMonth)
+			return ""
+		}
+	}
+
 	// Calculate approximate taxes and social security, save them together with the form
 	CalculateSocialSecurityAndTaxForMonth(&f)
 

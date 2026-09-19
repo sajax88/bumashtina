@@ -43,6 +43,30 @@ func GetDataFromFileForMonth(a *App, month int, year int) (IncomeForm, error) {
 	return IncomeForm{}, nil
 }
 
+func GetDataFromFileForPreviousMonth(a *App, month int16, year int16) (int16, error) {
+	rows, err := GetIncomeData(a)
+	if err != nil {
+		return 0, err
+	}
+
+	var latestPreviousMonth int16
+	for _, f := range rows {
+		if f.Year < year {
+			continue
+		}
+
+		if f.Year > year {
+			break
+		}
+
+		if f.Month < month && f.Month > latestPreviousMonth {
+			latestPreviousMonth = f.Month
+		}
+	}
+
+	return latestPreviousMonth, nil
+}
+
 func GetDataFromFileForYear(a *App, year int) ([]IncomeForm, error) {
 	row, err := GetIncomeData(a)
 	if err != nil {
