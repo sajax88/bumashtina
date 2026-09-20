@@ -62,8 +62,8 @@ export function LoadUserConfig() {
   return window['go']['main']['App']['LoadUserConfig']();
 }
 
-export function LoadWorkDaysForMonth(arg1, arg2) {
-  return window['go']['main']['App']['LoadWorkDaysForMonth'](arg1, arg2);
+export function LoadWorkDaysForMonth(arg1) {
+  return window['go']['main']['App']['LoadWorkDaysForMonth'](arg1);
 }
 
 export function PreviewDeclarationSix(arg1) {

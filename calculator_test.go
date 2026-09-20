@@ -35,8 +35,21 @@ func TestIncomeForm_Validate(t *testing.T) {
 		{"Invalid Year", func() IncomeForm { f := validForm; f.Year = 2025; return f }(), false},
 		{"TaxedIncome < MinInsurance", func() IncomeForm { f := validForm; f.TaxedIncomeCents = 50000; return f }(), false},
 		{"TaxedIncome > MaxInsurance", func() IncomeForm { f := validForm; f.TaxedIncomeCents = 300000; return f }(), false},
-		{"Zero income but taxed income non-zero", func() IncomeForm { f := validForm; f.MonthIncomeCents = 0; f.TaxedIncomeCents = 70000; return f }(), false},
-		{"Zero income and zero taxed income", func() IncomeForm { f := validForm; f.MonthIncomeCents = 0; f.TaxedIncomeCents = 0; return f }(), true},
+		{"Zero income but taxed income more than min", func() IncomeForm { f := validForm; f.MonthIncomeCents = 0; f.TaxedIncomeCents = 70000; return f }(), false},
+		{"Month skipped: zero income and zero taxed income", func() IncomeForm {
+			f := validForm
+			f.MonthIncomeCents = 0
+			f.TaxedIncomeCents = 0
+			f.IsMonthSkipped = true
+			return f
+		}(), true},
+		{"Month not skipped: zero taxed income not allowed", func() IncomeForm {
+			f := validForm
+			f.MonthIncomeCents = 0
+			f.TaxedIncomeCents = 0
+			f.IsMonthSkipped = false
+			return f
+		}(), false},
 	}
 
 	for _, tt := range tests {

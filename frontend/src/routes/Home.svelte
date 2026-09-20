@@ -38,7 +38,7 @@
     async function load_configs(): Promise<void> {
         const [taxes, workDays] = await Promise.all([
             LoadTaxesConfig(),
-            LoadWorkDaysForMonth(parseInt(form.Month), form.Year),
+            LoadWorkDaysForMonth(buildFormPayload()),
         ]);
         configTaxes = taxes;
         form.WorkDaysTotal = workDays;
@@ -53,7 +53,7 @@
     }
 
     async function onMonthChange() {
-        form.WorkDaysTotal = await LoadWorkDaysForMonth(parseInt(form.Month), form.Year)
+        form.WorkDaysTotal = await LoadWorkDaysForMonth(buildFormPayload())
     }
 
     const onGrossIncomeChange = () => {
@@ -77,17 +77,7 @@
     }
 
     function saveIncome(): void {
-        let formToSave = new IncomeForm({
-            Month: parseInt(form.Month),
-            Year: form.Year,
-            MonthIncomeCents: Math.round(parseFloat(form.MonthIncome) * MONEY_DIVIDER),
-            TaxedIncomeCents: Math.round(parseFloat(form.TaxedIncome) * MONEY_DIVIDER),
-            DayStart: form.DayStart,
-            DayEnd: form.DayEnd,
-            WorkDaysTotal: form.WorkDaysTotal,
-            WorkDaysSickLeave: form.WorkDaysSickLeave,
-            IsMonthSkipped: form.IsMonthSkipped,
-        })
+        let formToSave = buildFormPayload()
 
         SaveIncomeForm(formToSave).then((result) => {
             declarationResult = result;
@@ -99,6 +89,20 @@
 
     function generateDeclarationOne(): void {
         GenerateDeclarationOne(parseInt(form.Month), form.Year);
+    }
+
+    function buildFormPayload(): IncomeForm {
+        return new IncomeForm({
+            Month: parseInt(form.Month),
+            Year: form.Year,
+            MonthIncomeCents: Math.round(parseFloat(form.MonthIncome) * MONEY_DIVIDER),
+            TaxedIncomeCents: Math.round(parseFloat(form.TaxedIncome) * MONEY_DIVIDER),
+            DayStart: form.DayStart,
+            DayEnd: form.DayEnd,
+            WorkDaysTotal: form.WorkDaysTotal,
+            WorkDaysSickLeave: form.WorkDaysSickLeave,
+            IsMonthSkipped: form.IsMonthSkipped,
+        })
     }
 </script>
 
@@ -209,7 +213,7 @@
                 <label for="WorkDaysTotal">Общо работни дни</label>
                 <input class="input" min="0" max="31" id="WorkDaysTotal" type="number" bind:value={form.WorkDaysTotal}/>
 
-                <div class="info">Проверете работни дни: <a href="#"
+                <div class="info">Проверете работни дни:<br/><a href="#"
                                                           on:click={function(e){
                                                               BrowserOpenURL('https://kik-info.com/spravochnik/calendar/' + form.Year);
                                                               e.preventDefault();
@@ -261,7 +265,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="DayStart">Начален ден на дейност</label>
-                    <input class="input" id="DayStart" type="number" min="0" max="31" bind:value={form.DayStart}/>
+                    <input class="input" id="DayStart" type="number" min="0" max="31" bind:value={form.DayStart} on:change={onMonthChange} />
                     <div class="info">Само ако започвате дейност през този месец</div>
                 </div>
 
@@ -270,7 +274,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="DayEnd">Краен ден на дейност</label>
-                    <input class="input" id="DayEnd" type="number" min="0" max="31" bind:value={form.DayEnd}/>
+                    <input class="input" id="DayEnd" type="number" min="0" max="31" bind:value={form.DayEnd} on:change={onMonthChange} />
                     <div class="info">Само ако приключвате дейност през този месец</div>
                 </div>
             </div>

@@ -1,20 +1,20 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func ValidateWorkDays(f IncomeForm) (bool, string) {
 	expectedWorkDays := GetWorkDaysNumber(f.Year, f.Month)
 
-	if f.DayStart > 0 {
-		// TODO Subtract only work days
-	}
-
-	if f.DayEnd > 0 {
-		// TODO Subtract only work days
+	if f.DayStart > 0 || f.DayEnd > 0 {
+		expectedWorkDays = subtractWorkDays(expectedWorkDays, f)
 	}
 
 	if expectedWorkDays != f.WorkDaysTotal {
-		return false, fmt.Sprintf("Изчислени работни дни са %d, вие въведохте %d.", expectedWorkDays, f.WorkDaysTotal) // TODO: CHECK MESSAGE
+		// TODO: CHECK MESSAGE
+		return false, fmt.Sprintf("Изчислени работни дни са %d, вие въведохте %d.", expectedWorkDays, f.WorkDaysTotal)
 	}
 
 	return true, ""
@@ -71,4 +71,32 @@ func getWorkDaysFromCalendar(year int16, month int16) int16 {
 
 	// Decided not to fall back to the naive calculation, better to make the user check and enter the days
 	return 0
+}
+
+/**
+* If the user enters a start or/and end date,
+* we need to subtract the work days from the start/end of the month
+* from the expected number of work days
+ */
+func subtractWorkDays(expectedWorkDays int16, f IncomeForm) int16 {
+	dayStart := int(f.DayStart)
+	dayEnd := int(f.DayEnd)
+
+	dt := time.Date(int(f.Year), time.Month(f.Month), 1, 0, 0, 0, 0, time.UTC)
+	for dt.Month() == time.Month(f.Month) {
+		// TODO v1.2: check official holidays if exist for this year, unit test cases for this
+		if dt.Weekday() != time.Saturday && dt.Weekday() != time.Sunday {
+			if dayStart > 1 && dt.Day() < dayStart {
+				expectedWorkDays--
+			}
+			if dayEnd > 0 && dt.Day() > dayEnd {
+				expectedWorkDays--
+			}
+		}
+		dt = dt.AddDate(0, 0, 1)
+	}
+	if expectedWorkDays < 0 {
+		return 0
+	}
+	return expectedWorkDays
 }
