@@ -1,13 +1,26 @@
 package main
 
-func ValidateWorkDays(f IncomeForm) (bool, string) {
+import "fmt"
 
-	// TODO: check workdays (mind DayStart and DayEnd), warning message like "we think this might be wrong"
+func ValidateWorkDays(f IncomeForm) (bool, string) {
+	expectedWorkDays := GetWorkDaysNumber(f.Year, f.Month)
+
+	if f.DayStart > 0 {
+		// TODO Subtract only work days
+	}
+
+	if f.DayEnd > 0 {
+		// TODO Subtract only work days
+	}
+
+	if expectedWorkDays != f.WorkDaysTotal {
+		return false, fmt.Sprintf("Изчислени работни дни са %d, вие въведохте %d.", expectedWorkDays, f.WorkDaysTotal) // TODO: CHECK MESSAGE
+	}
 
 	return true, ""
 }
 
-func getWorkDaysFromCalendar(year int16, month int16) int16 {
+func GetWorkDaysNumber(year int16, month int16) int16 {
 	if year < MinYear {
 		return 0
 	}
@@ -16,6 +29,10 @@ func getWorkDaysFromCalendar(year int16, month int16) int16 {
 		return 0
 	}
 
+	return getWorkDaysFromCalendar(year, month)
+}
+
+func getWorkDaysFromCalendar(year int16, month int16) int16 {
 	calendar := map[int16]map[int16]int16{
 		2026: {
 			1:  20,
@@ -52,7 +69,6 @@ func getWorkDaysFromCalendar(year int16, month int16) int16 {
 		return y[month]
 	}
 
-	// TODO: calculate with time.Weekday
-
+	// Decided not to fall back to the naive calculation, better to make the user check and enter the days
 	return 0
 }

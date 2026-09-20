@@ -144,7 +144,7 @@ func (a *App) LoadIncomeDataForMonth(month int, year int) IncomeForm {
 }
 
 func (a *App) LoadWorkDaysForMonth(month int, year int) int {
-	return int(getWorkDaysFromCalendar(int16(year), int16(month)))
+	return int(GetWorkDaysNumber(int16(year), int16(month)))
 }
 
 func (a *App) LoadAlerts() string {
@@ -176,13 +176,17 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 		return ""
 	}
 
-	// The number of workdays might change, we don't want to forbid entering the data altogether,
-	// just show the warning message that according to the program, the number is incorrect
-	areWorkDaysValid, errorMsg := ValidateWorkDays(f)
-	if !areWorkDaysValid {
-		answer := ShowQuestionDialog(a.ctx, "", errorMsg+" "+"Сигурни ли сте, че искате да продължите?", "")
-		if answer == "No" {
-			return ""
+	// For the skipped month the Declaration 1 is not required, so we don't need to check the number of workdays
+	if !f.IsMonthSkipped {
+		// The number of workdays might change, we don't want to forbid entering the data altogether,
+		// just show the warning message that according to the program, the number is incorrect
+		areWorkDaysValid, errorMsg := ValidateWorkDays(f)
+		if !areWorkDaysValid {
+			// TODO: CHECK MESSAGE
+			answer := ShowQuestionDialog(a.ctx, "", errorMsg+" Сигурни ли сте, че искате да продължите?", "")
+			if answer == "No" {
+				return ""
+			}
 		}
 	}
 
@@ -195,6 +199,7 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 			return err.Error()
 		}
 
+		// TODO: CHECK MESSAGE
 		if previousMonthThisYear != 0 && previousMonthThisYear != f.Month-1 {
 			errorMessagePreviousMonth := fmt.Sprintf(
 				"Моля, първо въведете данни за останалите месеци след %d/%d. Ако нямате дейност, отбележете \"Не съм упражнявал дейност\". Това е необходимо за правилното изчисляване.",
