@@ -89,9 +89,8 @@ func (f IncomeForm) Validate() (bool, string) {
 		return false, fmt.Sprintf("Ако нямате приходи, осигурителният доход не може да е над минималения")
 	}
 
-	// TODO: CHECK MESSAGE
 	if f.MonthIncomeCents == 0 && !f.IsMonthSkipped && f.TaxedIncomeCents < f.TaxesConfig.MinInsuranceIncomeCents {
-		return false, fmt.Sprintf("Ако нямате приходи, но не сте спирали дейността, осигуровките се изчисляват върху минималния осигурителен доход")
+		return false, fmt.Sprintf("Ако нямате приходи, но не сте спирали дейността, въведете минималния осигурителен доход.")
 	}
 
 	if f.Month < 1 || f.Month > 12 {

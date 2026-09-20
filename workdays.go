@@ -13,8 +13,7 @@ func ValidateWorkDays(f IncomeForm) (bool, string) {
 	}
 
 	if expectedWorkDays != f.WorkDaysTotal {
-		// TODO: CHECK MESSAGE
-		return false, fmt.Sprintf("Изчислени работни дни са %d, вие въведохте %d.", expectedWorkDays, f.WorkDaysTotal)
+		return false, fmt.Sprintf("Изчислените работни дни са %d, а вие въведохте %d.", expectedWorkDays, f.WorkDaysTotal)
 	}
 
 	return true, ""

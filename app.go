@@ -188,7 +188,6 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 		// just show the warning message that according to the program, the number is incorrect
 		areWorkDaysValid, errorMsg := ValidateWorkDays(f)
 		if !areWorkDaysValid {
-			// TODO: CHECK MESSAGE
 			answer := ShowQuestionDialog(a.ctx, "", errorMsg+" Сигурни ли сте, че искате да продължите?", "")
 			if answer == "No" {
 				return ""
@@ -205,7 +204,6 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 			return err.Error()
 		}
 
-		// TODO: CHECK MESSAGE
 		if previousMonthThisYear != 0 && previousMonthThisYear != f.Month-1 {
 			errorMessagePreviousMonth := fmt.Sprintf(
 				"Моля, първо въведете данни за останалите месеци след %d/%d. Ако нямате дейност, отбележете \"Не съм упражнявал дейност\". Това е необходимо за правилното изчисляване.",
