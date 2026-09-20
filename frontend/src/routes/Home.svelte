@@ -1,6 +1,6 @@
 <script lang="ts">
     import {ArrowBigDown, ArrowBigUp, BookText, CircleCheck, Info as InfoIcon, Save} from 'lucide-svelte';
-    import {GenerateDeclarationOne, LoadTaxesConfig, SaveIncomeForm,} from "../../wailsjs/go/main/App.js";
+    import {GenerateDeclarationOne, LoadTaxesConfig, SaveIncomeForm, LoadWorkDaysForMonth} from "../../wailsjs/go/main/App.js";
     import {BrowserOpenURL} from "../../wailsjs/runtime";
     import {onMount} from 'svelte';
 
@@ -36,10 +36,12 @@
     });
 
     async function load_configs(): Promise<void> {
-        const [taxes] = await Promise.all([
+        const [taxes, workDays] = await Promise.all([
             LoadTaxesConfig(),
+            LoadWorkDaysForMonth(parseInt(form.Month), form.Year),
         ]);
         configTaxes = taxes;
+        form.WorkDaysTotal = workDays;
     }
 
     function setMinIncome(): void {
@@ -48,6 +50,10 @@
 
     function setMaxIncome(): void {
         form.TaxedIncome = String(configTaxes.MaxInsuranceIncomeCents / MONEY_DIVIDER);
+    }
+
+    async function onMonthChange() {
+        form.WorkDaysTotal = await LoadWorkDaysForMonth(parseInt(form.Month), form.Year)
     }
 
     const onGrossIncomeChange = () => {
@@ -137,7 +143,7 @@
         <div class="form-row">
             <div class="form-group">
                 <label for="Month">Месец</label>
-                <select class="input" required id="Month" bind:value={form.Month}>
+                <select class="input" required id="Month" bind:value={form.Month} on:change={onMonthChange}>
                     <option value="1">Януари</option>
                     <option value="2">Февруари</option>
                     <option value="3">Март</option>
@@ -157,7 +163,7 @@
         <div class="form-row">
             <div class="form-group">
                 <label for="Year">Година</label>
-                <input class="input" min="2026" required id="Year" type="number" bind:value={form.Year}/>
+                <input class="input" min="2026" required id="Year" type="number" bind:value={form.Year} on:change={onMonthChange}/>
             </div>
         </div>
 

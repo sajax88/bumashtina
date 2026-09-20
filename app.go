@@ -143,6 +143,10 @@ func (a *App) LoadIncomeDataForMonth(month int, year int) IncomeForm {
 	return row
 }
 
+func (a *App) LoadWorkDaysForMonth(month int, year int) int {
+	return int(getWorkDaysFromCalendar(int16(year), int16(month)))
+}
+
 func (a *App) LoadAlerts() string {
 	personalData := a.LoadUserConfig()
 	if !personalData.isPopulated() {
@@ -170,6 +174,16 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 	if !isValid {
 		ShowWarningDialog(a.ctx, "", errorMessage)
 		return ""
+	}
+
+	// The number of workdays might change, we don't want to forbid entering the data altogether,
+	// just show the warning message that according to the program, the number is incorrect
+	areWorkDaysValid, errorMsg := ValidateWorkDays(f)
+	if !areWorkDaysValid {
+		answer := ShowQuestionDialog(a.ctx, "", errorMsg+" "+"Сигурни ли сте, че искате да продължите?", "")
+		if answer == "No" {
+			return ""
+		}
 	}
 
 	// If this is not the 1st month and there were other months added for this year,

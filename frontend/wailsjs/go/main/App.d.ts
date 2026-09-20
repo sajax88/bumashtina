@@ -32,6 +32,8 @@ export function LoadTaxesConfigLabels():Promise<Array<string>>;
 
 export function LoadUserConfig():Promise<main.UserConfig>;
 
+export function LoadWorkDaysForMonth(arg1:number,arg2:number):Promise<number>;
+
 export function PreviewDeclarationSix(arg1:number):Promise<main.SocialSecurityParts>;
 
 export function SaveDeclarationToFile(arg1:Array<number>,arg2:string):Promise<string>;
