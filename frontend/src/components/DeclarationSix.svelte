@@ -1,8 +1,9 @@
 <script lang="ts">
-    import {BookText, Check, Save} from "lucide-svelte";
+    import {BookText, Check, CircleCheck, Save} from "lucide-svelte";
     import {GenerateDeclarationSix, PreviewDeclarationSix} from "../../wailsjs/go/main/App";
     import {MONEY_DIVIDER} from "../constants";
     import {moneyToCents} from "../functions";
+    import {fade} from 'svelte/transition';
 
     let declarationSixValues = {
         PensionPartOne: 0,
@@ -55,7 +56,10 @@
             </div>
 
             {#if declarationSixResult}
-                {declarationSixResult}
+                <div class="alert success" in:fade={{duration:300}} out:fade={{duration:800}}>
+                    <CircleCheck color="#748733" size="20"/>
+                    {declarationSixResult}
+                </div>
             {/if}
 
             {#if declarationSixValues.PensionPartOne}
