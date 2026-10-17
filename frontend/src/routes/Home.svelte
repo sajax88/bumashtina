@@ -72,7 +72,7 @@
                 taxedIncomeFloat = configTaxes.MaxInsuranceIncomeCents / MONEY_DIVIDER;
             }
 
-            form.TaxedIncome = String(taxedIncomeFloat);
+            form.TaxedIncome = String(Math.round(taxedIncomeFloat * 100) / 100);
         }
     }
 
