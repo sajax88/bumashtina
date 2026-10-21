@@ -4,7 +4,7 @@
 
 <b><a href="https://github.com/sajax88/bumashtina/releases/latest">Свали последната версия</a></b>
 
-<b><a href="https://bumashtina.bg/">Документация</a>
+<b><a href="https://bumashtina.bg/">Документация</a></b>
 
 Тази програмка може да ви бъде полезна, ако сте самоосигуряващо се лице по смисъла на КСО: https://nra.bg/wps/portal/nra/osiguryavane/osiguryavam-se-sam#osigurqvam-se-sam0.
 
