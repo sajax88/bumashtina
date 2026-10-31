@@ -45,15 +45,29 @@
     }
 
     function setMinIncome(): void {
+        if (form.IsMonthSkipped) {
+            return;
+        }
         form.TaxedIncome = String(configTaxes.MinInsuranceIncomeCents / MONEY_DIVIDER);
     }
 
     function setMaxIncome(): void {
+        if (form.IsMonthSkipped) {
+            return;
+        }
         form.TaxedIncome = String(configTaxes.MaxInsuranceIncomeCents / MONEY_DIVIDER);
     }
 
     async function onMonthChange() {
         form.WorkDaysTotal = await LoadWorkDaysForMonth(buildFormPayload())
+    }
+
+    $: onIsMonthSkippedChange(form.IsMonthSkipped);
+    function onIsMonthSkippedChange(isSkipped: boolean) {
+        if (isSkipped) {
+            form.MonthIncome = "";
+            form.TaxedIncome = "";
+        }
     }
 
     const onGrossIncomeChange = () => {
@@ -136,8 +150,7 @@
                 </button>
                 {#if showSkippedMonthInfo}
                     <div class="info-popup" transition:fade={{duration: 200}}>
-                        Отбележете тази опция само ако сте прекъснали дейност с подадена декларация в НАП.
-                        Въведете нулев доход и нулев осигурителен доход.
+                        Отбележете тази опция само ако сте прекъснали дейност с подадена декларация ОКД-5 в НАП.
                         За месеци с прекъсната дейност Декларация 1 не се подава.
                     </div>
                 {/if}
@@ -174,14 +187,16 @@
         <div class="form-row">
             <div class="form-group">
                 <label for="MonthIncome">Доход за месец</label>
-                <input class="input" min="0" required id="MonthIncome" type="text" bind:value={form.MonthIncome} on:change={onGrossIncomeChange}/>
+                <input class="input" min="0" required disabled={form.IsMonthSkipped}
+                       id="MonthIncome" type="text" bind:value={form.MonthIncome} on:change={onGrossIncomeChange}/>
             </div>
         </div>
 
         <div class="form-row">
             <div class="form-group">
                 <label for="TaxedIncome">Осигурителен доход</label>
-                <input class="input" min="0" required id="TaxedIncome" type="text" bind:value={form.TaxedIncome}/>
+                <input class="input" min="0" required disabled={form.IsMonthSkipped}
+                       id="TaxedIncome" type="text" bind:value={form.TaxedIncome}/>
 
                 <button class="btn btn-small" on:click={setMinIncome}>
                     <span><ArrowBigDown color="#444" size="16"/> Мин</span>
@@ -211,7 +226,8 @@
         <div class="form-row">
             <div class="form-group">
                 <label for="WorkDaysTotal">Общо работни дни</label>
-                <input class="input" min="0" max="31" id="WorkDaysTotal" type="number" bind:value={form.WorkDaysTotal}/>
+                <input class="input" disabled={form.IsMonthSkipped} min="0" max="31"
+                       id="WorkDaysTotal" type="number" bind:value={form.WorkDaysTotal}/>
 
                 <div class="info">Проверете работни дни:<br/><a href="#"
                                                           on:click={function(e){
@@ -226,7 +242,7 @@
 
         <div class="form-row">
             <div class="form-group checkbox-group">
-                <input id="ShowSickLeave" type="checkbox" on:change={(e) => {
+                <input id="ShowSickLeave" disabled={form.IsMonthSkipped} type="checkbox" on:change={(e) => {
                     document.getElementById('SickLeaveFieldset').style.display = e.target.checked ? 'block' : 'none';
                     if (!e.target.checked) {
                       form.WorkDaysSickLeave = 0;
@@ -249,14 +265,13 @@
 
         <div class="form-row">
             <div class="form-group checkbox-group">
-                <input id="AddStartOrEnd" type="checkbox" on:change={(e) => {
+                <input disabled={form.IsMonthSkipped} id="AddStartOrEnd" type="checkbox" on:change={(e) => {
         document.getElementById('AddStartOrEndFieldset').style.display = e.target.checked ? 'block' : 'none';
         if (!e.target.checked) {
           form.DayStart = 0;
           form.DayEnd = 0;
         }
       }}/>
-
                 <label class='checkbox-label' for="AddStartOrEnd">Приключвам или започвам дейност този месец</label>
             </div>
         </div>
@@ -293,12 +308,13 @@
                 {declarationResult}
             </div>
 
-            <div>
+            {#if !form.IsMonthSkipped}
+            <div in:fade={{duration:300}}>
                 <button class="btn" on:click={generateDeclarationOne}>
                     <span><BookText color="#444" size="20"/> Генерирай Декларация 1 за {form.Month}/{form.Year}</span>
                 </button>
             </div>
-
+            {/if}
         {/if}
     </div>
 

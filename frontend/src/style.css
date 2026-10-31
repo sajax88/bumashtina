@@ -123,6 +123,10 @@ fieldset {
     width: auto;
 }
 
+input[type="text"]:disabled, input[type="number"]:disabled, input[type="email"]:disabled {
+    background-color: #f3f2ec;
+}
+
 .submit-group {
     padding: 10px 0 0 210px;
 }
@@ -189,7 +193,6 @@ input[type="text"], input[type="number"], input[type="email"] {
 
 div.info {
     font-size: small;
-    padding-left: 210px;
     padding: 5px 0 5px 210px;
 }
 

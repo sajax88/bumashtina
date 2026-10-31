@@ -223,7 +223,12 @@ func (a *App) SaveIncomeForm(f IncomeForm) string {
 		return err.Error()
 	}
 
-	return "Успешно запазено"
+	res := "Успешно запазено."
+	if f.IsMonthSkipped {
+		res += " Декларация 1 не се подава."
+	}
+
+	return res
 }
 
 func (a *App) UpdateForm(f IncomeForm) string {
