@@ -10,13 +10,14 @@ import (
 
 func TestMakeDeclarationOne(t *testing.T) {
 	tests := []struct {
-		name     string
-		form     IncomeForm
-		user     UserConfig
-		settings Settings
-		wantErr  bool
-		errMsg   string
-		expected []byte
+		name         string
+		form         IncomeForm
+		user         UserConfig
+		settings     Settings
+		isCorrection bool
+		wantErr      bool
+		errMsg       string
+		expected     []byte
 	}{
 		{
 			name: "Valid Input",
@@ -40,8 +41,35 @@ func TestMakeDeclarationOne(t *testing.T) {
 			settings: Settings{
 				IsPregnancyInsuranceEnabled: false,
 			},
-			wantErr:  false,
-			expected: readFileOrPanic("testdata/declaration_one_valid.txt"),
+			isCorrection: false,
+			wantErr:      false,
+			expected:     readFileOrPanic("testdata/declaration_one_valid.txt"),
+		},
+		{
+			name: "Valid with Correction",
+			form: IncomeForm{
+				Month:             7,
+				Year:              2026,
+				TaxedIncomeCents:  206320,
+				DayStart:          0,
+				DayEnd:            0,
+				WorkDaysTotal:     22,
+				WorkDaysSickLeave: 2,
+				TaxesConfig:       GetDefaultTaxesConfig(),
+			},
+			user: UserConfig{
+				FirstName:  "Иван",
+				MiddleName: "Петров",
+				LastName:   "Иванов",
+				Egn:        "1234567890",
+				Bulstat:    "987654321",
+			},
+			settings: Settings{
+				IsPregnancyInsuranceEnabled: false,
+			},
+			isCorrection: true,
+			wantErr:      false,
+			expected:     readFileOrPanic("testdata/declaration_one_correction_valid.txt"),
 		},
 		{
 			name: "Negative Work Days Real",
@@ -53,10 +81,11 @@ func TestMakeDeclarationOne(t *testing.T) {
 				WorkDaysTotal:     10,
 				WorkDaysSickLeave: 15,
 			},
-			user:     UserConfig{},
-			settings: Settings{},
-			wantErr:  true,
-			errMsg:   "Невалидна стойност на работни дни: -5",
+			user:         UserConfig{},
+			settings:     Settings{},
+			isCorrection: false,
+			wantErr:      true,
+			errMsg:       "Невалидна стойност на работни дни: -5",
 		},
 		{
 			name: "Work Days Real Over Max Limit",
@@ -68,10 +97,11 @@ func TestMakeDeclarationOne(t *testing.T) {
 				WorkDaysTotal:     40,
 				WorkDaysSickLeave: 5,
 			},
-			user:     UserConfig{},
-			settings: Settings{},
-			wantErr:  true,
-			errMsg:   "Невалидна стойност на работни дни: 35",
+			user:         UserConfig{},
+			settings:     Settings{},
+			isCorrection: false,
+			wantErr:      true,
+			errMsg:       "Невалидна стойност на работни дни: 35",
 		},
 		{
 			name: "Zero Taxed Income",
@@ -94,14 +124,15 @@ func TestMakeDeclarationOne(t *testing.T) {
 			settings: Settings{
 				IsPregnancyInsuranceEnabled: true,
 			},
-			wantErr: true,
-			errMsg:  "Нулев осигурителен доход, декларацията не се подава",
+			isCorrection: false,
+			wantErr:      true,
+			errMsg:       "Нулев осигурителен доход, декларацията не се подава",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := MakeDeclarationOne(tt.form, tt.user, tt.settings)
+			result, err := MakeDeclarationOne(tt.form, tt.user, tt.settings, tt.isCorrection)
 
 			if (err != nil) != tt.wantErr {
 				t.Errorf("MakeDeclarationOne() error = %v, wantErr %v", err, tt.wantErr)

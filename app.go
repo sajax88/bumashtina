@@ -314,7 +314,7 @@ func (a *App) DoYearlyAlignment(year int) YearlyAlignmentResult {
 	return result
 }
 
-func (a *App) GenerateDeclarationOne(month int, year int) string {
+func (a *App) GenerateDeclarationOne(month int, year int, isCorrection bool) string {
 	var res string
 	incomeForm, err := GetDataFromFileForMonth(a, month, year)
 	if err != nil {
@@ -329,7 +329,7 @@ func (a *App) GenerateDeclarationOne(month int, year int) string {
 		return ""
 	}
 
-	content, err := MakeDeclarationOne(incomeForm, personalData, settings)
+	content, err := MakeDeclarationOne(incomeForm, personalData, settings, isCorrection)
 	if err != nil {
 		ShowErrorDialog(a.ctx, "", err.Error())
 		return ""

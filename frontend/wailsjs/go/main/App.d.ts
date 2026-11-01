@@ -10,7 +10,7 @@ export function DoYearlyAlignment(arg1:number):Promise<main.YearlyAlignmentResul
 
 export function ExportData():Promise<string>;
 
-export function GenerateDeclarationOne(arg1:number,arg2:number):Promise<string>;
+export function GenerateDeclarationOne(arg1:number,arg2:number,arg3:boolean):Promise<string>;
 
 export function GenerateDeclarationSix(arg1:number,arg2:main.SocialSecurityParts):Promise<string>;
 

@@ -6,12 +6,13 @@
         UpdateForm
     } from "../../wailsjs/go/main/App.js";
     import {onMount} from 'svelte';
-    import {Ban, BookText, Check, CircleArrowLeft, Edit, Eye, EyeOff, Save} from "lucide-svelte";
+    import {Ban, BookText, Check, CircleArrowLeft, Edit, Eye, EyeOff, Save, InfoIcon} from "lucide-svelte";
     import CalculatedTaxForMonth from "../components/CalculatedTaxForMonth.svelte";
     import {numberWithSpaces} from "../common_functions";
     import CalculatedSocialSecurity from "../components/CalculatedSocialSecurity.svelte";
     import {MONEY_DIVIDER} from "../constants";
     import {moneyToCents} from "../functions";
+    import {fade} from 'svelte/transition';
 
     export let params;
 
@@ -21,6 +22,9 @@
 
     let month = parseInt(params.month);
     let year = parseInt(params.year);
+    let isCorrectionDecl1 = false;
+
+    let showCorrectionInfo = false;
 
     let taxesLabels;
     let showTaxesConfig = false;
@@ -58,7 +62,7 @@
     }
 
     function decl1(): void {
-        GenerateDeclarationOne(month, year);
+        GenerateDeclarationOne(month, year, isCorrectionDecl1);
     }
 
     function showPaidInsuranceEditInput() {
@@ -96,6 +100,29 @@
                 <button class="btn btn-large" id="declaration-one-button" on:click={() => decl1()}>
                     <span><BookText color="#444" size="20"/> Генерирай Декларация 1</span>
                 </button>
+
+                <div class="form-group checkbox-group">
+                    <input id="isCorrectionDecl1" type="checkbox" bind:checked={isCorrectionDecl1} class="checkbox" />
+                    <label class='checkbox-label' for="isCorrectionDecl1">Коригираща декларация</label>
+                    <button
+                            type="button"
+                            class="info-icon-btn"
+                            on:click={() => showCorrectionInfo = !showCorrectionInfo}
+                            aria-label="Информация"
+                    >
+                        <InfoIcon color="#444" size="16"/>
+                    </button>
+                    {#if showCorrectionInfo}
+                        <div class="info-popup" transition:fade={{duration: 200}}>
+                            Подава се за коригиране на вече подадени данни до 30 април на следваща година
+                            (след това - само с разрешение на НАП/НОИ).<br>
+                            Можете да коригирате само сумите, но не вид осигуряване, ЕГН, месец/година.
+                            За промяна на тези полета трябва да подадете заличаваща декларация и после отново стандартна декларация 1 с правилни полета.
+                        </div>
+                    {/if}
+                </div>
+
+                <div class="clearfix"></div>
             </div>
 
             <table class="table">
@@ -238,6 +265,21 @@
         margin: 20px 0;
     }
 
+    #data-single-buttons-block #declaration-one-button {
+        float: left;
+    }
+
+    #data-single-buttons-block .checkbox-group {
+        margin-left: 20px;
+        padding-left: 0;
+        padding-top:4px;
+        float: left;
+    }
+
+    #data-single-buttons-block .checkbox-group .info-popup {
+        max-width: 700px;
+    }
+
     #paid-insurance-save-button {
         margin-left: 0;
     }
@@ -249,7 +291,6 @@
     label.paid-insurance-label {
         width: auto;
     }
-
 
     .btn-back {
         cursor: pointer;

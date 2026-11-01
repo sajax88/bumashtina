@@ -12,7 +12,7 @@ import (
 	"golang.org/x/text/transform"
 )
 
-func MakeDeclarationOne(f IncomeForm, u UserConfig, s Settings) ([]byte, error) {
+func MakeDeclarationOne(f IncomeForm, u UserConfig, s Settings, isCorrection bool) ([]byte, error) {
 	f.WorkDaysReal = f.WorkDaysTotal - f.WorkDaysSickLeave
 	if f.WorkDaysReal < 0 || f.WorkDaysReal > 31 {
 		return nil, errors.New(fmt.Sprintf("Невалидна стойност на работни дни: %d", f.WorkDaysReal))
@@ -31,6 +31,11 @@ func MakeDeclarationOne(f IncomeForm, u UserConfig, s Settings) ([]byte, error) 
 	}
 
 	taxedIncome := float32(f.TaxedIncomeCents) / float32(MoneyDivider)
+
+	correctionCode := "0"
+	if isCorrection {
+		correctionCode = "1"
+	}
 
 	fields := []string{
 		fmt.Sprintf("%d", f.Month),
@@ -84,7 +89,7 @@ func MakeDeclarationOne(f IncomeForm, u UserConfig, s Settings) ([]byte, error) 
 		"0.00",
 		"0.00",
 		"0",
-		"0",
+		correctionCode, // Код корекция: 1 - коригиране, 8 - заличаване
 		"NRAD12008",
 	}
 

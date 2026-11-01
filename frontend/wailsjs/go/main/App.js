@@ -18,8 +18,8 @@ export function ExportData() {
   return window['go']['main']['App']['ExportData']();
 }
 
-export function GenerateDeclarationOne(arg1, arg2) {
-  return window['go']['main']['App']['GenerateDeclarationOne'](arg1, arg2);
+export function GenerateDeclarationOne(arg1, arg2, arg3) {
+  return window['go']['main']['App']['GenerateDeclarationOne'](arg1, arg2, arg3);
 }
 
 export function GenerateDeclarationSix(arg1, arg2) {

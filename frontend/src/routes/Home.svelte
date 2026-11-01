@@ -29,7 +29,7 @@
     let declarationResult;
     let showSkippedMonthInfo = false;
     let showInsuranceIncomeInfo = false;
-
+    let isCorrectionDecl1 = false;
 
     onMount(async () => {
         await load_configs()
@@ -102,7 +102,7 @@
     }
 
     function generateDeclarationOne(): void {
-        GenerateDeclarationOne(parseInt(form.Month), form.Year);
+        GenerateDeclarationOne(parseInt(form.Month), form.Year, isCorrectionDecl1);
     }
 
     function buildFormPayload(): IncomeForm {
