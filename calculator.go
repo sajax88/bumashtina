@@ -101,7 +101,7 @@ func (f IncomeForm) Validate() (bool, string) {
 		return false, fmt.Sprintf("Дати преди %d година не се поддържат", MinYear)
 	}
 
-	if f.MonthIncomeCents > 0 &&
+	if f.MonthIncomeCents > 0 && f.DayEnd == 0 && f.DayStart == 0 &&
 		(f.TaxedIncomeCents < f.TaxesConfig.MinInsuranceIncomeCents || f.TaxedIncomeCents > f.TaxesConfig.MaxInsuranceIncomeCents) {
 		return false, fmt.Sprintf(
 			"Осигурителният доход трябва да бъде между %.2f и %.2f EUR",

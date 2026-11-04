@@ -15,6 +15,8 @@ func TestIncomeForm_Validate(t *testing.T) {
 		TaxedIncomeCents: 70000,
 		WorkDaysTotal:    22,
 		TaxesConfig:      defaultConfig,
+		DayStart:         0,
+		DayEnd:           0,
 	}
 
 	tests := []struct {
@@ -50,6 +52,16 @@ func TestIncomeForm_Validate(t *testing.T) {
 			f.IsMonthSkipped = false
 			return f
 		}(), false},
+		{
+			"Lower taxed income allowed for month with DayStart",
+			func() IncomeForm { f := validForm; f.DayStart = 10; f.TaxedIncomeCents = 30000; return f }(),
+			true,
+		},
+		{
+			"Lower taxed income allowed for month with DayEnd",
+			func() IncomeForm { f := validForm; f.DayEnd = 20; f.TaxedIncomeCents = 10000; return f }(),
+			true,
+		},
 	}
 
 	for _, tt := range tests {
