@@ -219,6 +219,20 @@ export namespace main {
 	        this.Email = source["Email"];
 	    }
 	}
+	export class WorkDaysParts {
+	    TotalInMonth: number;
+	    Actual: number;
+	
+	    static createFrom(source: any = {}) {
+	        return new WorkDaysParts(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.TotalInMonth = source["TotalInMonth"];
+	        this.Actual = source["Actual"];
+	    }
+	}
 	export class YearlyAlignmentResult {
 	    IsCalculated: boolean;
 	    YearlyGrossIncomeCents: number;

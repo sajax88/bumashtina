@@ -143,14 +143,15 @@ func (a *App) LoadIncomeDataForMonth(month int, year int) IncomeForm {
 	return row
 }
 
-func (a *App) LoadWorkDaysForMonth(f IncomeForm) int {
-	days := GetWorkDaysNumber(f.Year, f.Month)
+func (a *App) LoadWorkDaysForMonth(f IncomeForm) WorkDaysParts {
+	daysTotal := GetWorkDaysNumber(f.Year, f.Month)
+	daysActual := daysTotal
 
 	if f.DayStart > 0 || f.DayEnd > 0 {
-		days = subtractWorkDays(days, f)
+		daysActual = subtractWorkDays(daysActual, f)
 	}
 
-	return int(days)
+	return WorkDaysParts{TotalInMonth: int(daysTotal), Actual: int(daysActual)}
 }
 
 func (a *App) LoadAlerts() string {

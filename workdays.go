@@ -83,7 +83,7 @@ func subtractWorkDays(expectedWorkDays int16, f IncomeForm) int16 {
 
 	dt := time.Date(int(f.Year), time.Month(f.Month), 1, 0, 0, 0, 0, time.UTC)
 	for dt.Month() == time.Month(f.Month) {
-		// TODO v1.2: check official holidays if exist for this year, unit test cases for this
+		// TODO v1.4: check official holidays if exist for this year, unit test cases for this
 		if dt.Weekday() != time.Saturday && dt.Weekday() != time.Sunday {
 			if dayStart > 1 && dt.Day() < dayStart {
 				expectedWorkDays--

@@ -32,7 +32,7 @@ export function LoadTaxesConfigLabels():Promise<Array<string>>;
 
 export function LoadUserConfig():Promise<main.UserConfig>;
 
-export function LoadWorkDaysForMonth(arg1:main.IncomeForm):Promise<number>;
+export function LoadWorkDaysForMonth(arg1:main.IncomeForm):Promise<main.WorkDaysParts>;
 
 export function PreviewDeclarationSix(arg1:number):Promise<main.SocialSecurityParts>;
 

@@ -56,6 +56,12 @@ type CalculatedTax struct {
 	TaxesConfig        TaxesConfig
 }
 
+// WorkDaysParts contain two values: actual days can be less than totalInMonth if you start or end activity
+type WorkDaysParts struct {
+	TotalInMonth int
+	Actual       int
+}
+
 func (f IncomeForm) Validate() (bool, string) {
 	if f.WorkDaysTotal < 0 || f.WorkDaysTotal > 31 {
 		return false, "Невалидна стойност на работни дни"

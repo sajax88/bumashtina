@@ -190,7 +190,7 @@
                 </tr>
                 <tr>
                     <td>Работни дни</td>
-                    <td colspan="2">{dataSingle.WorkDaysTotal}</td>
+                    <td colspan="2">{dataSingle.WorkDaysTotal}</td> <!-- TODO: from -->
                 </tr>
                 {#if dataSingle.WorkDaysSickLeave}
                     <tr>

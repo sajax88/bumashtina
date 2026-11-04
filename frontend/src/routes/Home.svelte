@@ -25,6 +25,8 @@
         IsMonthSkipped: false,
     }
 
+    let workDaysInMonth = 0;
+
     let configTaxes;
     let declarationResult;
     let showSkippedMonthInfo = false;
@@ -36,12 +38,15 @@
     });
 
     async function load_configs(): Promise<void> {
-        const [taxes, workDays] = await Promise.all([
+        const [taxes, workDaysParts] = await Promise.all([
             LoadTaxesConfig(),
             LoadWorkDaysForMonth(buildFormPayload()),
         ]);
+
         configTaxes = taxes;
-        form.WorkDaysTotal = workDays;
+
+        form.WorkDaysTotal = workDaysParts.Actual
+        workDaysInMonth = workDaysParts.TotalInMonth
     }
 
     function setMinIncome(): void {
@@ -58,8 +63,11 @@
         form.TaxedIncome = String(configTaxes.MaxInsuranceIncomeCents / MONEY_DIVIDER);
     }
 
-    async function onMonthChange() {
-        form.WorkDaysTotal = await LoadWorkDaysForMonth(buildFormPayload())
+    async function recalculateWorkDays() {
+        const workDaysParts = await LoadWorkDaysForMonth(buildFormPayload())
+
+        form.WorkDaysTotal = workDaysParts.Actual
+        workDaysInMonth = workDaysParts.TotalInMonth
     }
 
     $: onIsMonthSkippedChange(form.IsMonthSkipped);
@@ -160,7 +168,7 @@
         <div class="form-row">
             <div class="form-group">
                 <label for="Month">Месец</label>
-                <select class="input" required id="Month" bind:value={form.Month} on:change={onMonthChange}>
+                <select class="input" required id="Month" bind:value={form.Month} on:change={recalculateWorkDays}>
                     <option value="1">Януари</option>
                     <option value="2">Февруари</option>
                     <option value="3">Март</option>
@@ -180,7 +188,7 @@
         <div class="form-row">
             <div class="form-group">
                 <label for="Year">Година</label>
-                <input class="input" min="2026" required id="Year" type="number" bind:value={form.Year} on:change={onMonthChange}/>
+                <input class="input" min="2026" required id="Year" type="number" bind:value={form.Year} on:change={recalculateWorkDays}/>
             </div>
         </div>
 
@@ -227,7 +235,7 @@
             <div class="form-group">
                 <label for="WorkDaysTotal">Общо работни дни</label>
                 <input class="input" disabled={form.IsMonthSkipped} min="0" max="31"
-                       id="WorkDaysTotal" type="number" bind:value={form.WorkDaysTotal}/>
+                       id="WorkDaysTotal" type="number" bind:value={form.WorkDaysTotal}/> {#if workDaysInMonth}от {workDaysInMonth}{/if}
 
                 <div class="info">Проверете работни дни:<br/><a href="#"
                                                           on:click={function(e){
@@ -280,7 +288,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="DayStart">Начален ден на дейност</label>
-                    <input class="input" id="DayStart" type="number" min="0" max="31" bind:value={form.DayStart} on:change={onMonthChange} />
+                    <input class="input" id="DayStart" type="number" min="0" max="31" bind:value={form.DayStart} on:change={recalculateWorkDays} />
                     <div class="info">Само ако започвате дейност през този месец</div>
                 </div>
 
@@ -289,7 +297,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="DayEnd">Краен ден на дейност</label>
-                    <input class="input" id="DayEnd" type="number" min="0" max="31" bind:value={form.DayEnd} on:change={onMonthChange} />
+                    <input class="input" id="DayEnd" type="number" min="0" max="31" bind:value={form.DayEnd} on:change={recalculateWorkDays} />
                     <div class="info">Само ако приключвате дейност през този месец</div>
                 </div>
             </div>
