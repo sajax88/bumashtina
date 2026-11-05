@@ -261,3 +261,7 @@ table .dark-row td {
 .info-popup.info-popup-wide {
     max-width: 500px;
 }
+
+span.small {
+    font-size: 0.8em;
+}

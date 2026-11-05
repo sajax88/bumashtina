@@ -160,6 +160,9 @@ func CalculateSocialSecurityAndTaxForMonth(f *IncomeForm) {
 
 	taxedIncome := math.Round(float64(f.MonthIncomeCents) - expenses - insurance)
 	f.TaxesToPayCents = int64(math.Round(taxedIncome * f.TaxesConfig.TaxPercentage / 100))
+	if f.TaxesToPayCents < 0 {
+		f.TaxesToPayCents = 0
+	}
 }
 
 func CalculateIncomeForThreeMonths(forms []IncomeForm) (int64, error) {

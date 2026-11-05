@@ -3,6 +3,7 @@
         GenerateDeclarationOne,
         LoadIncomeDataForMonth,
         LoadTaxesConfigLabels,
+        LoadWorkDaysForMonth,
         UpdateForm
     } from "../../wailsjs/go/main/App.js";
     import {onMount} from 'svelte';
@@ -28,6 +29,8 @@
 
     let taxesLabels;
     let showTaxesConfig = false;
+
+    let workDaysInMonth = 0;
 
     let paidInsuranceValues = {
         PensionPartOne: 0,
@@ -55,6 +58,11 @@
                 paidInsuranceValues.PensionPartTwo = socialSecurityParts.PensionPartTwoCents / MONEY_DIVIDER
                 paidInsuranceValues.HealthInsurance = socialSecurityParts.HealthInsuranceCents / MONEY_DIVIDER
             }
+
+            // TODO: we do not need the whole form here, add another method to get only the work days
+            LoadWorkDaysForMonth(dataSingle).then(function (workDaysParts) {
+                workDaysInMonth = workDaysParts.TotalInMonth
+            });
         });
         LoadTaxesConfigLabels().then(function (result) {
             taxesLabels = result
@@ -190,7 +198,7 @@
                 </tr>
                 <tr>
                     <td>Работни дни</td>
-                    <td colspan="2">{dataSingle.WorkDaysTotal}</td> <!-- TODO: from -->
+                    <td colspan="2">{dataSingle.WorkDaysTotal} {#if workDaysInMonth}<span class="small">от {workDaysInMonth}</span>{/if}</td>
                 </tr>
                 {#if dataSingle.WorkDaysSickLeave}
                     <tr>

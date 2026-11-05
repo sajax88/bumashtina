@@ -235,7 +235,7 @@
             <div class="form-group">
                 <label for="WorkDaysTotal">Общо работни дни</label>
                 <input class="input" disabled={form.IsMonthSkipped} min="0" max="31"
-                       id="WorkDaysTotal" type="number" bind:value={form.WorkDaysTotal}/> {#if workDaysInMonth}от {workDaysInMonth}{/if}
+                       id="WorkDaysTotal" type="number" bind:value={form.WorkDaysTotal}/> {#if workDaysInMonth}<span class="small">от {workDaysInMonth}</span>{/if}
 
                 <div class="info">Проверете работни дни:<br/><a href="#"
                                                           on:click={function(e){

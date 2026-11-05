@@ -203,6 +203,28 @@ func TestCalculateSocialSecurityAndTaxForMonth(t *testing.T) {
 			t.Errorf("TaxesToPayCents = %d; want 4500", f.TaxesToPayCents)
 		}
 	})
+
+	t.Run("Low income, zero tax", func(t *testing.T) {
+		f := &IncomeForm{
+			MonthIncomeCents: 10000,
+			TaxedIncomeCents: 62020,
+			TaxesConfig:      config,
+		}
+		CalculateSocialSecurityAndTaxForMonth(f)
+		// Insurance = 10% + 5% + 5% = 20% of 62020 = 12404
+		// Expenses = 25% of 10000 = 2500
+		// Taxable = 10000 - 2500 - 12404 = -4904
+		// Tax = 0 (cannot be less than 0)
+		if f.SocialSecurityToPayCents != 12404 {
+			t.Errorf("SocialSecurityToPayCents = %d; want 12404", f.SocialSecurityToPayCents)
+		}
+		if f.ExpensesCents != 2500 {
+			t.Errorf("ExpensesCents = %d; want 2500", f.ExpensesCents)
+		}
+		if f.TaxesToPayCents != 0 {
+			t.Errorf("TaxesToPayCents = %d; want 0", f.TaxesToPayCents)
+		}
+	})
 }
 
 func TestCalculateIncomeForThreeMonths(t *testing.T) {
