@@ -32,6 +32,7 @@
     let showSkippedMonthInfo = false;
     let showInsuranceIncomeInfo = false;
     let isCorrectionDecl1 = false;
+    let recalculateTaxedIncome = true;
 
     onMount(async () => {
         await load_configs()
@@ -66,8 +67,12 @@
     async function recalculateWorkDays() {
         const workDaysParts = await LoadWorkDaysForMonth(buildFormPayload())
 
-        form.WorkDaysTotal = workDaysParts.Actual
-        workDaysInMonth = workDaysParts.TotalInMonth
+        form.WorkDaysTotal = workDaysParts.Actual;
+        workDaysInMonth = workDaysParts.TotalInMonth;
+
+        if (recalculateTaxedIncome && (form.DayStart || form.DayEnd)) {
+            onGrossIncomeChange();
+        }
     }
 
     $: onIsMonthSkippedChange(form.IsMonthSkipped);
@@ -93,6 +98,8 @@
             if (taxedIncomeFloat > configTaxes.MaxInsuranceIncomeCents / MONEY_DIVIDER) {
                 taxedIncomeFloat = configTaxes.MaxInsuranceIncomeCents / MONEY_DIVIDER;
             }
+
+            taxedIncomeFloat = recalculateTaxedIncomeProportionally(taxedIncomeFloat)
 
             form.TaxedIncome = String(Math.round(taxedIncomeFloat * 100) / 100);
         }
@@ -126,6 +133,17 @@
             IsMonthSkipped: form.IsMonthSkipped,
         })
     }
+
+    // In case we start or stop working this month, taxed income should be recalculated proportionally to the actual work days
+    function recalculateTaxedIncomeProportionally(taxedIncomeFloat)
+    {
+        if (!recalculateTaxedIncome || !workDaysInMonth || !(form.DayStart || form.DayEnd)) {
+            return taxedIncomeFloat
+        }
+
+        return taxedIncomeFloat / workDaysInMonth * form.WorkDaysTotal
+    }
+
 </script>
 
 <main>
@@ -299,6 +317,13 @@
                     <label for="DayEnd">Краен ден на дейност</label>
                     <input class="input" id="DayEnd" type="number" min="0" max="31" bind:value={form.DayEnd} on:change={recalculateWorkDays} />
                     <div class="info">Само ако приключвате дейност през този месец</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group checkbox-group">
+                    <input id="RecalculateTaxedIncome" type="checkbox" bind:checked={recalculateTaxedIncome} />
+                    <label class="checkbox-label" for="RecalculateTaxedIncome">Изчисли осигурителния доход пропорционално на работните дни</label>
                 </div>
             </div>
         </fieldset>
