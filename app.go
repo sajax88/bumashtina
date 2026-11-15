@@ -265,6 +265,39 @@ func (a *App) UpdateForm(f IncomeForm) string {
 	return "Успешно запазено"
 }
 
+func (a *App) ConfirmPaidSocialSecurity(month int, year int) bool {
+	f, err := GetDataFromFileForMonth(a, month, year)
+	if err != nil {
+		ShowErrorDialog(a.ctx, "", err.Error())
+		return false
+	}
+
+	toPay := float64(f.SocialSecurityToPayCents) / float64(MoneyDivider)
+
+	question := fmt.Sprintf(
+		"Осигуровките в размер на %s EUR за %d/%d са платени.",
+		fmt.Sprintf("%.2f", toPay),
+		month,
+		year,
+	)
+	answer := ShowQuestionDialog(a.ctx, "Потвърдете действието", question, "")
+	if answer == "No" {
+		return false
+	}
+
+	// The user confirmed that he paid the calculated sum
+	f.SocialSecurityReallyPaidCents = f.SocialSecurityToPayCents
+	f.SocialSecurityReallyPaidParts = SocialSecurityParts{
+		PensionPartOneCents:  f.SocialSecurityToPayParts.PensionPartOneCents,
+		PensionPartTwoCents:  f.SocialSecurityToPayParts.PensionPartTwoCents,
+		HealthInsuranceCents: f.SocialSecurityToPayParts.HealthInsuranceCents,
+	}
+
+	a.UpdateForm(f)
+
+	return true
+}
+
 func (a *App) DeleteData(month int, year int) string {
 	question := fmt.Sprintf(
 		"Сигурни ли сте, че искате да изтриете данните за %d/%d? Изтритите данни не се възстановяват!",

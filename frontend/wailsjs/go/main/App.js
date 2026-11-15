@@ -6,6 +6,10 @@ export function CalculateTaxForQuarter(arg1, arg2) {
   return window['go']['main']['App']['CalculateTaxForQuarter'](arg1, arg2);
 }
 
+export function ConfirmPaidSocialSecurity(arg1, arg2) {
+  return window['go']['main']['App']['ConfirmPaidSocialSecurity'](arg1, arg2);
+}
+
 export function DeleteData(arg1, arg2) {
   return window['go']['main']['App']['DeleteData'](arg1, arg2);
 }

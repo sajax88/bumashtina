@@ -1,6 +1,16 @@
 <script lang="ts">
-    import {DeleteData, LoadAllIncomeData, UpdateForm} from "../../wailsjs/go/main/App.js";
-    import {ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Edit, Save, Trash2, View} from 'lucide-svelte';
+    import {DeleteData, LoadAllIncomeData, UpdateForm, ConfirmPaidSocialSecurity} from "../../wailsjs/go/main/App.js";
+    import {
+        Check,
+        ChevronLeft,
+        ChevronRight,
+        ChevronsLeft,
+        ChevronsRight,
+        Edit,
+        Save,
+        Trash2,
+        View
+    } from 'lucide-svelte';
     import {onMount} from 'svelte';
     import {main} from "../../wailsjs/go/models";
     import IncomeForm = main.IncomeForm;
@@ -18,10 +28,12 @@
         await loadData()
     });
 
-    async function loadData(): Promise<void> {
+    async function loadData(resetPage: boolean = true): Promise<void> {
         LoadAllIncomeData().then(function (result) {
             data = result
-            currentPage = 1;
+            if (resetPage) {
+                currentPage = 1;
+            }
         });
     }
 
@@ -59,6 +71,15 @@
                 document.getElementById('paid-taxes-' + id).innerHTML = amount
             }
         });
+    }
+
+    async function confirmPaidSocialSecurity(month: number, year: number) {
+        ConfirmPaidSocialSecurity(month, year).then(async function (isConfirmed: boolean) {
+            if (isConfirmed) {
+                await loadData(false)
+            }
+        })
+
     }
 
     function getQuarterRomanNumber(m: number): string {
@@ -165,6 +186,12 @@
                                 {numberWithSpaces(row.SocialSecurityReallyPaidCents / MONEY_DIVIDER)}
                                 /{numberWithSpaces(row.SocialSecurityToPayCents / MONEY_DIVIDER)}
 
+                                {#if row.SocialSecurityReallyPaidCents === 0}
+                                    <button class="btn btn-small btn-socsec-paid" title="Платил съм"
+                                            on:click="{() => confirmPaidSocialSecurity(row.Month, row.Year)}">
+                                        <Check color="#444" size="20"/>
+                                    </button>
+                                {/if}
                             </td>
                             <td>-</td>
                         {/if}
@@ -266,5 +293,9 @@
         padding: 6px;
         border: 1px solid #ccc;
         border-radius: 4px;
+    }
+
+    .btn-socsec-paid {
+        padding: 5px 2px 2px 6px;
     }
 </style>

@@ -4,6 +4,8 @@ import {main} from '../models';
 
 export function CalculateTaxForQuarter(arg1:number,arg2:number):Promise<main.CalculatedTax>;
 
+export function ConfirmPaidSocialSecurity(arg1:number,arg2:number):Promise<boolean>;
+
 export function DeleteData(arg1:number,arg2:number):Promise<string>;
 
 export function DoYearlyAlignment(arg1:number):Promise<main.YearlyAlignmentResult>;
